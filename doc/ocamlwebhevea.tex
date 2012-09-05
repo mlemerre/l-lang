@@ -1,0 +1,82 @@
+%% Note: The colors code are those of Emacs org-mode output (which I
+%% think just put those of Emacs).
+
+%% This makes \url links as clickables urls.
+%HEVEA\input{urlhref.hva}
+
+%% Big code blocks.
+\renewcommand{\ocwbegincode}{%
+\begin{rawhtml}
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+\end{rawhtml}}
+
+\renewcommand{\ocwendcode}{\begin{rawhtml}</code></div>\end{rawhtml}}
+
+%% Inline code blocks inside comments (given with [])
+\renewcommand{\ocwbegindcode}{\begin{rawhtml}<code>\end{rawhtml}}
+\renewcommand{\ocwenddcode}{\begin{rawhtml}</code>\end{rawhtml}}
+
+%% Keywords. We distinguish some keywords (those that ``create''
+%% something, and begin, in blue). We rely on HEVEA native support for
+%% the ifthen package.
+\newcommand{\spanpurple}[1]{%
+\begin{rawhtml}<span style="color: #a020f0; ">\end{rawhtml}#1%
+\begin{rawhtml}</span>\end{rawhtml}}
+
+\newcommand{\spanred}[1]{%
+\begin{rawhtml}<span style="color: #a52a2a; ">\end{rawhtml}#1%
+\begin{rawhtml}</span>\end{rawhtml}}
+
+\newcommand{\spanboldblue}[1]{%
+\begin{rawhtml}<span style="color: #0000ff; font-weight: bold;">\end{rawhtml}#1%
+\begin{rawhtml}</span>\end{rawhtml}}
+
+\renewcommand{\ocwkw}[1]{%
+\ifthenelse{\equal{#1}{let}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{and}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{rec}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{in}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{type}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{of}}{\spanred{#1}}{%
+\ifthenelse{\equal{#1}{open}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{struct}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{sig}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{functor}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{module}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{val}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{begin}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{end}}{\spanboldblue{#1}}{%
+\spanpurple{#1}}}}}}}}}}}}}}}}
+
+
+%% Ids that begin in lower case. The textrm command (note: Hevea does
+%% not know about mathrm) allows non-italic typesetting. We also
+%% consider failwith as a keyword (even if it is a function that calls
+%% raise).
+\renewcommand{\ocwlowerid}[1]{%
+\ifthenelse{\equal{#1}{failwith}}{\spanpurple{\textrm{#1}}}{%
+\textrm{#1}}}
+
+%% Ids that begin in upper case.
+\newcommand{\spangreen}[1]{%
+\begin{rawhtml}<span style="color: #228b22; ">\end{rawhtml}#1%
+\begin{rawhtml}</span>\end{rawhtml}}
+
+\renewcommand{\ocwupperid}[1]{\spangreen{\textrm{#1}}}
+
+%% Comments are type set in red, with the leading (* and closing *).
+\renewcommand{\ocwbc}{\begin{rawhtml}<span style="color: #b22222">(&#X2217; \end{rawhtml}}
+\renewcommand{\ocwec}{\begin{rawhtml} &#X2217;)</span>\end{rawhtml}}
+
+%% Strings are typeset in brown.
+\newcommand{\spanbrown}[1]{%
+\begin{rawhtml}<span style="color: #8b2252; ">\end{rawhtml}#1%
+\begin{rawhtml}</span>\end{rawhtml}}
+\renewcommand{\ocwstring}[1]{\spanbrown{\textrm{#1}}}
+
+%% Base types and type variables are in green.
+\renewcommand{\ocwbt}[1]{\spangreen{\textrm{#1}}}
+\renewcommand{\ocwtv}[1]{\spangreen{#1e}}
