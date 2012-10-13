@@ -27,7 +27,7 @@ sig
      there has been a "singleton" operation on them. 
 
      All the functions (except [create]) take a [t] argument; in their
-     secure version this argument is used to checks that other
+     safe version this argument is used to checks that other
      [element] and [partition] arguments indeed belong to the [t]
      argument. *)
   type t
@@ -42,7 +42,7 @@ sig
      returns a new partition [p] in [t], such that [e] is the only
      element of [p]. It also attach the description [d] to [p].
 
-     The secure version checks that [e] was not previously added to
+     The safe version checks that [e] was not previously added to
      another union-find data structure (with the same link). *)
   val singleton : t -> element -> description -> partition
 
@@ -63,7 +63,7 @@ sig
   val set_description : t -> partition -> description -> unit
 end
 
-(*s We defined two types of "union-find makers": Fast and Secure. Both
+(*s We defined two types of "union-find makers": Fast and Safe. Both
   propose a [link] type, and each element of a union-find structure
   must be "associated" to one different link (generally the link is a
   mutable field in the element type). Initially, the link value is
@@ -95,15 +95,15 @@ module type UNION_FIND = sig
   module Make(Link : LINK):S with type description = Link.description and type element = Link.element
 end
 
-(* The difference between the fast and secure version is that secure
+(* The difference between the fast and safe version is that safe
    performs additional checks. The performance difference is small, so
-   the Secure version should be prefered. *)
+   the Safe version should be prefered. *)
 module Fast:UNION_FIND;;
-module Secure:UNION_FIND;;
+module Safe:UNION_FIND;;
 
 (*s Exemple of usage:
 
-  [type test = { x:int; mutable z:(string, test) Union_find.Secure.link };;]
+  [type test = { x:int; mutable z:(string, test) Union_find.Safe.link };;]
 
 
   [module Test = struct
@@ -113,9 +113,9 @@ module Secure:UNION_FIND;;
   let set_link t z = t.z <- z
   end]
 
-  [module A = Union_find.Secure.Make(Test)]
+  [module A = Union_find.Safe.Make(Test)]
 
   [let uf = A.create() in
-  let elt1 = {x=1; z=Secure.empty_link} in
+  let elt1 = {x=1; z=Safe.empty_link} in
   let part1 = A.singleton t elt1 "1" in
   assert(A.description t (A.find t elt1) = "1")] *)

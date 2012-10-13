@@ -25,26 +25,26 @@ and 'a partition_descriptor = { mutable rank:rank; mutable desc:'a }
    the rank, and thus the height of the tree. *)
 and rank = int;;
 
-(*s The implementation is parametrized by the security checks that we
-  perform (which differs between the Fast and Secure modules). 
+(*s The implementation is parametrized by the safety checks that we
+  perform (which differs between the Fast and Safe modules). 
 
-  The secure module identifies all union-find data structures by a
+  The safe module identifies all union-find data structures by a
   unique id, embed that in the links, and checks for all operation
   that they are equal. It also checks initialization of the link. *)
 
 
-module type SECURITY = sig
+module type SAFETY = sig
   type t
   val create: unit -> t
   type ('a,'b) link
 
-  (*c Create a secure link from a baselink. *)
+  (*c Create a safe link from a baselink. *)
   val securize: t -> ('a,'b) baselink -> ('a,'b) link
 
-  (*c Returns the base_link from the secure link. *)
+  (*c Returns the base_link from the safe link. *)
   val get_base: ('a,'b) link -> ('a,'b) baselink
 
-  (*c Check the secure link withat the element (and the secure link) belong to t. *)
+  (*c Check the safe link withat the element (and the safe link) belong to t. *)
   val check_membership: t -> ('a,'b) link -> unit
 
   (*c Check that the element is not yet part of any union find. *)
@@ -54,7 +54,7 @@ module type SECURITY = sig
   val empty_link: ('a,'b) link
 end;;
 
-module No_security:SECURITY = struct
+module No_safety:SAFETY = struct
   type t = unit
   let create() = ()
   type ('a,'b) link = ('a,'b) baselink;;
@@ -70,7 +70,7 @@ type unique = int
 
 module Unique = Unique.Make(struct end)
 
-module Security:SECURITY = struct
+module Safety:SAFETY = struct
   type t = Unique.t
   let create() = Unique.fresh();;
   type ('a,'b) link = t option * ('a,'b) baselink;;
@@ -132,14 +132,14 @@ module type UNION_FIND = sig
 end
 (*i*)
 
-(* This is a double functor with two arguments; [Sec] allows to
-   differenciate the "Fast" and "Secure" modules, while [Link] is used
+(* This is a double functor with two arguments; [Saf] allows to
+   differenciate the "Fast" and "Safe" modules, while [Link] is used
    to find and change the link. *)
-module Make(Sec:SECURITY):UNION_FIND = 
+module Make(Saf:SAFETY):UNION_FIND = 
 struct
 
-  type ('a,'b) link = ('a,'b) Sec.link;;
-  let empty_link = Sec.empty_link;;
+  type ('a,'b) link = ('a,'b) Saf.link;;
+  let empty_link = Saf.empty_link;;
 
   module type LINK =  sig
     type element
@@ -150,20 +150,20 @@ struct
 
   module Make(Link: LINK) =
   struct
-    type t = Sec.t
+    type t = Saf.t
     type element = Link.element
     type description = Link.description
     type partition = Link.element
 
-    let create = Sec.create;;
+    let create = Saf.create;;
 
     (*s [singleton] is the only way to add new elements to the
       union-find structure, and is the place where we check that the
       element is not part of another structure. *)
     let singleton t elt desc = 
       let l = (Link.get elt) in
-      Sec.check_unused l;
-      Link.set elt (Sec.securize t (Partition_descriptor {rank=0;desc=desc}));
+      Saf.check_unused l;
+      Link.set elt (Saf.securize t (Partition_descriptor {rank=0;desc=desc}));
       elt ;;
 
     (*s Basically, [find] just walks the tree until it finds the root.
@@ -182,25 +182,25 @@ struct
       more checks than in Tarjan's version. Thus we stick with path
       compression. 
 
-      Note: we could perform a lighter check in the secure version by
-      checking only the argument, and not all recursive calls; this
-      is probably not worth implementing it, and the heavy check has
-      its uses. *)
+      Note: we could perform a lighter check in the safe version by
+      checking only the argument, and not all recursive calls; this is
+      probably not worth implementing it, and the heavy check has its
+      uses. *)
     let find t x = 
       (* Tail-recursive function to find the root of the algorithm. *)
       let rec find x = 
         let l = (Link.get x) in
-        Sec.check_membership t l;
-        match Sec.get_base l with
+        Saf.check_membership t l;
+        match Saf.get_base l with
           | Partition_descriptor(s) -> x
           | Parent(y) -> find y in
       (* This is also tail-recursive, but we do not perform the checks
          the second time.*)
       let rec compress x r = 
         let l = (Link.get x) in
-        match Sec.get_base l with
+        match Saf.get_base l with
           | Partition_descriptor(s) -> ()
-          | Parent(y) -> Link.set x (Sec.securize t (Parent r)) in
+          | Parent(y) -> Link.set x (Saf.securize t (Parent r)) in
       let root = find x in
       compress x root;
       root;;
@@ -209,8 +209,8 @@ struct
       the root of a partition, but check that. *)
     let get_partition_descriptor t p = 
       let l = (Link.get p) in
-      Sec.check_membership t l;
-      match Sec.get_base l with
+      Saf.check_membership t l;
+      match Saf.get_base l with
         | Partition_descriptor(s) -> s
         | _ -> assert(false) (*r The element is not a partition. *);;
 
@@ -245,18 +245,18 @@ struct
 
       (* Alternatively, the check that p1 and p2 are different could
          have been done here. *)
-      assert (p1 <> p2);
+      assert (p1 != p2);
       if( d1.rank < d2.rank) then 
         begin 
 	  (* Keep d2_repr as root. Height of the merge is max(d1_height +1, d2_height) so does not change. *)
-          Link.set p1 (Sec.securize t (Parent p2));
+          Link.set p1 (Saf.securize t (Parent p2));
           d2.desc <- newdesc;
           p2
         end
       else if (d1.rank > d2.rank) then
         begin 
 	  (* Keep d1_repr as root. Height of the merge is max(d2_height +1, d1_height) so does not change. *)
-          Link.set p2 (Sec.securize t (Parent p1));
+          Link.set p2 (Saf.securize t (Parent p1));
           d1.desc <- newdesc;
 	  p1
         end
@@ -265,7 +265,7 @@ struct
 	  (* We choose arbitrarily p1 to be the root. 
 	     The height may have changed, as all elements in the subset
 	     with root p2 are 1 step further to the root. *)
-	  Link.set p2 (Sec.securize t (Parent p1));
+	  Link.set p2 (Saf.securize t (Parent p1));
           d1.rank <- d1.rank + 1; d1.desc <- newdesc;
           p1
         end
@@ -274,8 +274,8 @@ end;;
 
 (*s The double-functor is not shown in the exposed interface, and we
   only export the following, simpler modules. *)
-module Fast=Make(No_security);;
-module Secure=Make(Security);;
+module Fast=Make(No_safety);;
+module Safe=Make(Safety);;
 
 (*s For a survey of the implementations of union-find algorithms, one
   should read "Worst-Case Analysis of Set Union Algorithms", by
@@ -288,7 +288,7 @@ module Secure=Make(Security);;
 
 
 (*i*)
-type test = { x:int; mutable z:(string, test) Secure.link };;
+type test = { x:int; mutable z:(string, test) Safe.link };;
 
 module Test = struct
   type description = string
@@ -297,7 +297,7 @@ module Test = struct
   let set t z = t.z <- z
 end
 
-module A = Secure.Make(Test)
+module A = Safe.Make(Test)
 
 let autotest() = 
   let t = A.create()  in
@@ -305,10 +305,10 @@ let autotest() =
 
   assert (t <> t2);
 
-  let elt1 = {x=1; z=Secure.empty_link} in
-  let elt2 = {x=2; z=Secure.empty_link} in
-  let elt3 = {x=3; z=Secure.empty_link} in
-  let elt4 = {x=4; z=Secure.empty_link} in
+  let elt1 = {x=1; z=Safe.empty_link} in
+  let elt2 = {x=2; z=Safe.empty_link} in
+  let elt3 = {x=3; z=Safe.empty_link} in
+  let elt4 = {x=4; z=Safe.empty_link} in
 
 
   let part1 = A.singleton t elt1 "1" in
