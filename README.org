@@ -1,0 +1,8 @@
+
+* l-lang
+
+Compiler and tools for the L programming language.
+
+The code is in literate programming form; to generate the
+documentation juste type =make doc=. Documentation is put in the =web=
+directory.
