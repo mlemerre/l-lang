@@ -22,36 +22,35 @@
 
 module Union_find = Union_find.Safe;;
 
+(* Note: a minor problem here is that the unique id is shared between
+   all applications of Cpsvar.Make, but this is not a huge issue. *)
+module UniqueId = Unique.Make(struct end);;
+
 (*s Variables link to their description, and to one occurrence (if
-  there is one). We also add an integer id and the number of integers
-  created so far, but only to help in debugging. *)
+  there is one). We also add a unique id to allow variable comparison.
+  Also, unique variables remove any need for alpha conversion. *)
 type ('a,'b) variable =
     { mutable var_desc: 'a initialized;
       mutable occurrences:('a, 'b) occurrence option;
-      var_id: display_id;
-      mutable occur_nb: display_id }
+      var_id: UniqueId.t;
+      mutable occur_nb: int }
 
 (* Occurrences need a description; a "union-find link" (to retrieve
    the binding variable, which is the description of the union-find
-   partition); and the links of the doubly-linked lists. *)
+   partition); and the links of the doubly-linked lists. We also
+   number the occurrences of a variable, to help in debugging and ease
+   comparison between occurrences. *)
 and ('a,'b) occurrence = 
     { mutable occur_desc: 'b initialized;
       mutable link_var: (('a, 'b) variable,('a, 'b) occurrence) Union_find.link;
       mutable next_occurrence:('a, 'b) occurrence;
       mutable previous_occurrence:('a, 'b) occurrence;
-      occur_id: display_id }
+      occur_id: int }
 
 (* We have to check that the user does not retrieve the description
    until the variable is initialized, or that it does not overwrite an
    already initialized description. *)
-and 'a initialized = Undef | Initialized_to of 'a
-
-(* [display_id] integers are used just as a way of displaying
-   understandable debugging infos, and can be safely removed in
-   non-debug versions. *)
-and display_id = int;;
-
-
+and 'a initialized = Undef | Initialized_to of 'a;;
 
 
 (*s The CPSVar functor takes a DESCRIPTION argument as explained in the interface.  *)
@@ -93,12 +92,10 @@ module Make(Desc:DESCRIPTION) = struct
       [var_counter] provides unique identifiers when displaying
       variables. *)
 
-    let var_counter:display_id ref = ref 0;;
-
-    let make() = var_counter := !var_counter + 1;
+    let make() =
       { var_desc = Undef;
         occurrences = None;
-        var_id = !var_counter;
+        var_id = UniqueId.fresh();
         occur_nb = 0 } ;;
 
     let description b = match b.var_desc with
@@ -139,17 +136,20 @@ module Make(Desc:DESCRIPTION) = struct
             else loop (f value cur) cur.next_occurrence
           in loop init occ.next_occurrence;;
 
-    (*s Utility functions. *)
-    let to_string bv = Desc.var_prefix ^ (string_of_int bv.var_id);;
+    (*s Utility functions. Comparison is done using the unique ids;
+      this allows faster comparisons, and avoid looping indefinitely
+      when there are cyclic references between a [var] and its
+      [description].*)
+    let to_string bv = Desc.var_prefix ^ (UniqueId.to_string bv.var_id);;
 
     module Map = Map.Make(struct
       type t = var
-      let compare = compare
+      let compare a b = compare a.var_id b.var_id
     end)
 
     module Set = Set.Make(struct
       type t = var
-      let compare = compare
+      let compare a b = compare a.var_id b.var_id
     end)
 
   end;;
@@ -212,7 +212,7 @@ module Make(Desc:DESCRIPTION) = struct
        which may be useful to follow code transformations steps. *)
     let to_string occur = 
       let bv = binding_variable occur in
-      Desc.var_prefix ^ (string_of_int bv.var_id) ^ "_" ^ (string_of_int occur.occur_id);;
+      (Var.to_string bv) ^ "_" ^ (string_of_int occur.occur_id);;
   end
 
 end
