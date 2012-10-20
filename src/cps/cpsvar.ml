@@ -144,7 +144,7 @@ module Make(Desc:DESCRIPTION) = struct
         (* If there were already no occurrences of [old], there is
            nothing to do. *)
         | None -> ()
-        | Some(occ_old) -> (match new_.occurrences with
+        | Some(occ_old) -> ((match new_.occurrences with
 
             (* If new_ had no occurrences, there is no need for full
                list merge and union-find: we can just update the
@@ -164,7 +164,9 @@ module Make(Desc:DESCRIPTION) = struct
               occ_new.previous_occurrence <- occ_old;
               let (part_old,part_new) = (Var_union_find.find ufds occ_old,
                                          Var_union_find.find ufds occ_new) in
-              ignore(Var_union_find.union ufds part_old part_new new_));;
+              ignore(Var_union_find.union ufds part_old part_new new_));
+          old.occurrences <- None)
+    ;;
 
 
     (*s Utility functions. Comparison is done using the unique ids;
