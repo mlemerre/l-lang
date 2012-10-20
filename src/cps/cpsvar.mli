@@ -42,8 +42,8 @@ sig
     (* [make ()] create a new variable. *)
     val make : unit -> var
 
-    (* The following function allows to differentiate, in O(1) time,
-       between the 0-occurrence case (the variable is useless), the
+    (* The following function differentiates, in O(1) time, between
+       the 0-occurrence case (the variable is useless), the
        1-occurrence case (a good candidate for inlining), and the case
        with more than one occurrence. *)
     type occurrence_number = 
@@ -52,9 +52,14 @@ sig
       | Several_occurrences
     val occurrence_number: var -> occurrence_number
 
-    (* This function allows to iterate on occurrences. The order is
+    (* This function allows iteration on occurrences. The order is
        arbitrary. *)
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
+
+    (* This function "merges" variables; more specifically it makes
+       all occurrences of [old] become occurrence of [new]. After the
+       call [old] is a variable with no occurrence. *)
+    val replace_with: var -> var -> unit
 
     val description : var -> Desc.variable_description
     val set_description : var -> Desc.variable_description -> unit

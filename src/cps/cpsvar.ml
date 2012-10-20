@@ -136,6 +136,37 @@ module Make(Desc:DESCRIPTION) = struct
             else loop (f value cur) cur.next_occurrence
           in loop init occ.next_occurrence;;
 
+    (*s This function allows "merging" of variables in O(1) time:
+      merging the doubly-linked lists is a O(1) operation, and so is
+      performing union in the union-find algorithm. *)
+    let replace_with old new_ =
+      match old.occurrences with
+        (* If there were already no occurrences of [old], there is
+           nothing to do. *)
+        | None -> ()
+        | Some(occ_old) -> (match new_.occurrences with
+
+            (* If new_ had no occurrences, there is no need for full
+               list merge and union-find: we can just update the
+               partition description. *)
+            | None ->
+              new_.occurrences <- Some(occ_old);
+              let part_old = Var_union_find.find ufds occ_old in
+              Var_union_find.set_description ufds part_old new_
+
+            (* The non-trivial case: merge the two circular
+               doubly-linked lists into one big circular doubly-linked
+               list. Also works on single-elements lists. *)
+            | Some(occ_new) ->
+              occ_old.next_occurrence.previous_occurrence <- occ_new.previous_occurrence;
+              occ_new.previous_occurrence.next_occurrence <- occ_old.next_occurrence;
+              occ_old.next_occurrence <- occ_new;
+              occ_new.previous_occurrence <- occ_old;
+              let (part_old,part_new) = (Var_union_find.find ufds occ_old,
+                                         Var_union_find.find ufds occ_new) in
+              ignore(Var_union_find.union ufds part_old part_new new_));;
+
+
     (*s Utility functions. Comparison is done using the unique ids;
       this allows faster comparisons, and avoid looping indefinitely
       when there are cyclic references between a [var] and its
