@@ -221,32 +221,79 @@ user must then use the <code>fold_on_occurrences</code> function.
 <span style="color: #a020f0; ">then</span> f value cur<BR>            
 <span style="color: #a020f0; ">else</span> loop (f value cur) cur.next_occurrence<BR>          
 <span style="color: #0000ff; font-weight: bold;">in</span> loop init occ.next_occurrence<BR></code></div><B>7.</B> 
-<A NAME="src/cps/cpsvar.ml:5564"></A>Utility functions. Comparison is done using the unique ids;
-this allows faster comparisons, and avoid looping indefinitely
-when there are cyclic references between a <code>var</code> and its
-<code>description</code>.
-<BR><A NAME="src/cps/cpsvar.ml:5781"></A>
+<A NAME="src/cps/cpsvar.ml:5564"></A>This function allows "merging" of variables in O(1) time:
+merging the doubly-linked lists is a O(1) operation, and so is
+performing union in the union-find algorithm. 
+<BR><A NAME="src/cps/cpsvar.ml:5748"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
     
-<span style="color: #0000ff; font-weight: bold;">let</span> to_string bv = <span style="color: #228b22; ">Desc.</span>var_prefix ^ (<span style="color: #228b22; ">UniqueId.</span>to_string bv.var_id)</P><P><A NAME="src/cps/cpsvar.ml:5856"></A>    
+<span style="color: #0000ff; font-weight: bold;">let</span> replace_with old new_ =<BR>      
+<span style="color: #a020f0; ">match</span> old.occurrences <span style="color: #a020f0; ">with</span><BR>        
+<span style="color: #b22222">(&#X2217;  If there were already no occurrences of <code>old</code>, there is
+nothing to do.  &#X2217;)</span><BR>        
+&#X2223; <span style="color: #228b22; ">None</span> &#X2192; ()<BR>        
+&#X2223; <span style="color: #228b22; ">Some</span>(occ_old) &#X2192; ((<span style="color: #a020f0; ">match</span> new_.occurrences <span style="color: #a020f0; ">with</span></P><P></code></div>            
+If new_ had no occurrences, there is no need for full
+list merge and union-find: we can just update the
+partition description. 
+<BR><A NAME="src/cps/cpsvar.ml:6163"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+            
+&#X2223; <span style="color: #228b22; ">None</span> &#X2192;<BR>              
+new_.occurrences &#X2190; <span style="color: #228b22; ">Some</span>(occ_old);<BR>              
+<span style="color: #0000ff; font-weight: bold;">let</span> part_old = <span style="color: #228b22; ">Var_union_find.</span>find ufds occ_old <span style="color: #0000ff; font-weight: bold;">in</span><BR>              
+<span style="color: #228b22; ">Var_union_find.</span>set_description ufds part_old new_</P><P></code></div>            
+The non-trivial case: merge the two circular
+doubly-linked lists into one big circular doubly-linked
+list. Also works on single-elements lists. 
+<BR><A NAME="src/cps/cpsvar.ml:6556"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+            
+&#X2223; <span style="color: #228b22; ">Some</span>(occ_new) &#X2192;<BR>              
+occ_old.next_occurrence.previous_occurrence &#X2190; occ_new.previous_occurrence;<BR>              
+occ_new.previous_occurrence.next_occurrence &#X2190; occ_old.next_occurrence;<BR>              
+occ_old.next_occurrence &#X2190; occ_new;<BR>              
+occ_new.previous_occurrence &#X2190; occ_old;<BR>              
+<span style="color: #0000ff; font-weight: bold;">let</span> (part_old,part_new) = (<span style="color: #228b22; ">Var_union_find.</span>find ufds occ_old,<BR>                                          
+<span style="color: #228b22; ">Var_union_find.</span>find ufds occ_new) <span style="color: #0000ff; font-weight: bold;">in</span><BR>              
+ignore(<span style="color: #228b22; ">Var_union_find.</span>union ufds part_old part_new new_));<BR>          
+old.occurrences &#X2190; <span style="color: #228b22; ">None</span>)<BR>    
+<BR></code></div><B>8.</B> 
+<A NAME="src/cps/cpsvar.ml:7143"></A>Utility functions. Comparison is done using the unique ids;
+this allows faster comparisons, and avoid looping indefinitely
+when there are cyclic references between a <code>var</code> and its
+<code>description</code>.
+<BR><A NAME="src/cps/cpsvar.ml:7360"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+    
+<span style="color: #0000ff; font-weight: bold;">let</span> to_string bv = <span style="color: #228b22; ">Desc.</span>var_prefix ^ (<span style="color: #228b22; ">UniqueId.</span>to_string bv.var_id)</P><P><A NAME="src/cps/cpsvar.ml:7435"></A>    
 <span style="color: #0000ff; font-weight: bold;">module</span> <span style="color: #228b22; ">Map</span> = <span style="color: #228b22; ">Map.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span><BR>      
 <span style="color: #0000ff; font-weight: bold;">type</span> t = var<BR>      
 <span style="color: #0000ff; font-weight: bold;">let</span> compare a b = compare a.var_id b.var_id<BR>    
-<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/cps/cpsvar.ml:5968"></A>    
+<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/cps/cpsvar.ml:7547"></A>    
 <span style="color: #0000ff; font-weight: bold;">module</span> <span style="color: #228b22; ">Set</span> = <span style="color: #228b22; ">Set.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span><BR>      
 <span style="color: #0000ff; font-weight: bold;">type</span> t = var<BR>      
 <span style="color: #0000ff; font-weight: bold;">let</span> compare a b = compare a.var_id b.var_id<BR>    
-<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/cps/cpsvar.ml:6080"></A>  
-<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsvar.ml:6089"></A>  
+<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/cps/cpsvar.ml:7659"></A>  
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsvar.ml:7668"></A>  
 <span style="color: #0000ff; font-weight: bold;">module</span> <span style="color: #228b22; ">Occur</span> = <BR>  
-<span style="color: #0000ff; font-weight: bold;">struct</span><BR></code></div><B>8.</B> 
-<A NAME="src/cps/cpsvar.ml:6123"></A>Create a new occurrence of VAR, i.e. add it to the
+<span style="color: #0000ff; font-weight: bold;">struct</span><BR></code></div><B>9.</B> 
+<A NAME="src/cps/cpsvar.ml:7702"></A>Create a new occurrence of VAR, i.e. add it to the
 doubly-linked list of all the occurrences of VAR, and to the
 union-find partition of the occurrences of VAR. 
-<BR><A NAME="src/cps/cpsvar.ml:6300"></A>
+<BR><A NAME="src/cps/cpsvar.ml:7879"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
@@ -286,7 +333,7 @@ following_occur.previous_occurrence &#X2190; new_occur;<BR>          
 <span style="color: #228b22; ">Var_union_find.</span>union ufds new_part existing_part var;<BR>          
 new_occur</P><P></code></div>    
 Returns the variable of which <code>occur</code> is an occurrence. 
-<BR><A NAME="src/cps/cpsvar.ml:7965"></A>
+<BR><A NAME="src/cps/cpsvar.ml:9544"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
@@ -296,7 +343,7 @@ Returns the variable of which <code>occur</code> is an occurrence.
 <span style="color: #0000ff; font-weight: bold;">let</span> part = <span style="color: #228b22; ">Var_union_find.</span>find ufds occur <span style="color: #0000ff; font-weight: bold;">in</span><BR>      
 <span style="color: #228b22; ">Var_union_find.</span>description ufds part</P><P></code></div>    
 Similarly to <code><span style="color: #228b22; ">Var</span></code>, description can be get and set only once. 
-<BR><A NAME="src/cps/cpsvar.ml:8168"></A>
+<BR><A NAME="src/cps/cpsvar.ml:9747"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
@@ -304,13 +351,13 @@ Similarly to <code><span style="color: #228b22; ">Var</span></code>, description
     
 <span style="color: #0000ff; font-weight: bold;">let</span> description b = <span style="color: #a020f0; ">match</span> b.occur_desc <span style="color: #a020f0; ">with</span><BR>      
 &#X2223; <span style="color: #228b22; ">Initialized_to</span>(d) &#X2192; d<BR>      
-&#X2223; <span style="color: #228b22; ">Undef</span> &#X2192; <span style="color: #a020f0; ">assert</span> <span style="color: #a020f0; ">false</span> <span style="color: #b22222">(&#X2217;  Trying to access an uninitialized description.  &#X2217;)</span></P><P><A NAME="src/cps/cpsvar.ml:8332"></A>    
+&#X2223; <span style="color: #228b22; ">Undef</span> &#X2192; <span style="color: #a020f0; ">assert</span> <span style="color: #a020f0; ">false</span> <span style="color: #b22222">(&#X2217;  Trying to access an uninitialized description.  &#X2217;)</span></P><P><A NAME="src/cps/cpsvar.ml:9911"></A>    
 <span style="color: #0000ff; font-weight: bold;">let</span> set_description b d = <span style="color: #a020f0; ">match</span> b.occur_desc <span style="color: #a020f0; ">with</span><BR>      
 &#X2223; <span style="color: #228b22; ">Initialized_to</span>(d) &#X2192; <span style="color: #a020f0; ">assert</span> <span style="color: #a020f0; ">false</span> <span style="color: #b22222">(&#X2217;  Description already initialized.  &#X2217;)</span><BR>      
 &#X2223; <span style="color: #228b22; ">Undef</span> &#X2192; b.occur_desc &#X2190; <span style="color: #228b22; ">Initialized_to</span>(d)</P><P></code></div>    
 We suffix the name of the variable by the occurrence number,
 which may be useful to follow code transformations steps. 
-<BR><A NAME="src/cps/cpsvar.ml:8659"></A>
+<BR><A NAME="src/cps/cpsvar.ml:10238"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
@@ -318,8 +365,8 @@ which may be useful to follow code transformations steps.
     
 <span style="color: #0000ff; font-weight: bold;">let</span> to_string occur = <BR>      
 <span style="color: #0000ff; font-weight: bold;">let</span> bv = binding_variable occur <span style="color: #0000ff; font-weight: bold;">in</span><BR>      
-(<span style="color: #228b22; ">Var.</span>to_string bv) ^ <span style="color: #8b2252; ">"_"</span> ^ (string_of_int occur.occur_id)</P><P><A NAME="src/cps/cpsvar.ml:8793"></A>  
-<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsvar.ml:8800"></A>
+(<span style="color: #228b22; ">Var.</span>to_string bv) ^ <span style="color: #8b2252; ">"_"</span> ^ (string_of_int occur.occur_id)</P><P><A NAME="src/cps/cpsvar.ml:10372"></A>  
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsvar.ml:10379"></A>
 <span style="color: #0000ff; font-weight: bold;">end</span><BR><BR></code></div></P><!--CUT END -->
 <!--HTMLFOOT-->
 <!--ENDHTML-->

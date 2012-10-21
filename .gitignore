@@ -7,3 +7,10 @@
 *.cmx
 *.cmxs
 *.cmxa
+
+# Documentation.
+*.ml.haux
+*.ml.tex
+*.mli.haux
+*.mli.tex
+_build

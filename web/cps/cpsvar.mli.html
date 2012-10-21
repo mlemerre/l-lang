@@ -98,11 +98,11 @@ function. For exemple if prefix is "x", <code>to_string</code> may return
             font-family:mono"><code>
     
 <span style="color: #0000ff; font-weight: bold;">val</span> make : <span style="color: #228b22; ">unit</span> &#X2192; var</P><P></code></div>    
-The following function allows to differentiate, in O(1) time,
-between the 0-occurrence case (the variable is useless), the
+The following function differentiates, in O(1) time, between
+the 0-occurrence case (the variable is useless), the
 1-occurrence case (a good candidate for inlining), and the case
 with more than one occurrence. 
-<BR><A NAME="src/cps/cpsvar.mli:2042"></A>
+<BR><A NAME="src/cps/cpsvar.mli:2033"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
@@ -113,25 +113,35 @@ with more than one occurrence.
 &#X2223; <span style="color: #228b22; ">One_occurrence</span> <span style="color: #a52a2a; ">of</span> occur<BR>      
 &#X2223; <span style="color: #228b22; ">Several_occurrences</span><BR>    
 <span style="color: #0000ff; font-weight: bold;">val</span> occurrence_number: var &#X2192; occurrence_number</P><P></code></div>    
-This function allows to iterate on occurrences. The order is
+This function allows iteration on occurrences. The order is
 arbitrary. 
-<BR><A NAME="src/cps/cpsvar.mli:2296"></A>
+<BR><A NAME="src/cps/cpsvar.mli:2286"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
     
-<span style="color: #0000ff; font-weight: bold;">val</span> fold_on_occurrences: var &#X2192; &#X3B1; &#X2192; (&#X3B1; &#X2192; occur &#X2192; &#X3B1;) &#X2192; &#X3B1;</P><P><A NAME="src/cps/cpsvar.mli:2365"></A>    
+<span style="color: #0000ff; font-weight: bold;">val</span> fold_on_occurrences: var &#X2192; &#X3B1; &#X2192; (&#X3B1; &#X2192; occur &#X2192; &#X3B1;) &#X2192; &#X3B1;</P><P></code></div>    
+This function "merges" variables; more specifically it makes
+all occurrences of <code>old</code> become occurrence of <code><span style="color: #a020f0; ">new</span></code>. After the
+call <code>old</code> is a variable with no occurrence. 
+<BR><A NAME="src/cps/cpsvar.mli:2548"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+    
+<span style="color: #0000ff; font-weight: bold;">val</span> replace_with: var &#X2192; var &#X2192; <span style="color: #228b22; ">unit</span></P><P><A NAME="src/cps/cpsvar.mli:2590"></A>    
 <span style="color: #0000ff; font-weight: bold;">val</span> description : var &#X2192; <span style="color: #228b22; ">Desc.</span>variable_description<BR>    
 <span style="color: #0000ff; font-weight: bold;">val</span> set_description : var &#X2192; <span style="color: #228b22; ">Desc.</span>variable_description &#X2192; <span style="color: #228b22; ">unit</span><BR>    
-<span style="color: #0000ff; font-weight: bold;">val</span> to_string : var &#X2192; <span style="color: #228b22; ">string</span></P><P><A NAME="src/cps/cpsvar.mli:2522"></A>    
+<span style="color: #0000ff; font-weight: bold;">val</span> to_string : var &#X2192; <span style="color: #228b22; ">string</span></P><P><A NAME="src/cps/cpsvar.mli:2747"></A>    
 <span style="color: #0000ff; font-weight: bold;">module</span> <span style="color: #228b22; ">Map</span> : <span style="color: #228b22; ">Map.S</span> <span style="color: #a020f0; ">with</span> <span style="color: #0000ff; font-weight: bold;">type</span> key = var<BR>    
 <span style="color: #0000ff; font-weight: bold;">module</span> <span style="color: #228b22; ">Set</span> : <span style="color: #228b22; ">Set.S</span> <span style="color: #a020f0; ">with</span> <span style="color: #0000ff; font-weight: bold;">type</span> elt = var<BR>  
-<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsvar.mli:2615"></A>  
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsvar.mli:2840"></A>  
 <span style="color: #0000ff; font-weight: bold;">module</span> <span style="color: #228b22; ">Occur</span> :<BR>  
 <span style="color: #0000ff; font-weight: bold;">sig</span></P><P></code></div>    
 <code>make var</code> creates a new occurrence of <code>var</code>. 
-<BR><A NAME="src/cps/cpsvar.mli:2695"></A>
+<BR><A NAME="src/cps/cpsvar.mli:2920"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
@@ -141,13 +151,13 @@ arbitrary.
 <code>binding_variable occur</code> returns the binding variable of
 <code>occur</code>, i.e. the variable <code>var</code> such that <code>occur</code> is an
 occurrence of <code>var</code>. 
-<BR><A NAME="src/cps/cpsvar.mli:2883"></A>
+<BR><A NAME="src/cps/cpsvar.mli:3108"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
     
-<span style="color: #0000ff; font-weight: bold;">val</span> binding_variable : occur &#X2192; var</P><P><A NAME="src/cps/cpsvar.mli:2924"></A>    
+<span style="color: #0000ff; font-weight: bold;">val</span> binding_variable : occur &#X2192; var</P><P><A NAME="src/cps/cpsvar.mli:3149"></A>    
 <span style="color: #0000ff; font-weight: bold;">val</span> description: occur &#X2192; <span style="color: #228b22; ">Desc.</span>occurrence_description<BR>    
 <span style="color: #0000ff; font-weight: bold;">val</span> set_description: occur &#X2192; <span style="color: #228b22; ">Desc.</span>occurrence_description &#X2192; <span style="color: #228b22; ">unit</span><BR>    
 <span style="color: #0000ff; font-weight: bold;">val</span> to_string : occur &#X2192; <span style="color: #228b22; ">string</span><BR>  
