@@ -1,4 +1,15 @@
-all: doc next_
+all: unit_tests doc 
+
+################################################################
+# Unit tests.
+
+test_union_find:
+	ocamlbuild -I src/support unit_tests/support/test_union_find.byte && ./test_union_find.byte
+
+unit_tests: test_union_find
+
+################################################################
+# Documentation.
 
 # Note: the order of the doc is important.
 doc-files = support/union_find.mli support/union_find.ml cps/cpsvar.mli cps/cpsvar.ml cps/cpsbase.ml llvm/cpsllvm.mli llvm/cpsllvm.ml 
@@ -14,7 +25,13 @@ web/%.html: src/%
 next_:
 	cd next && make
 
+################################################################
+
 clean: 
 	rm -Rf web
 	rm -Rf src/support/_build
 	rm -Rf src/_build
+	rm -Rf _build
+	rm -f test_*.byte
+
+.PHONY: unit_tests
