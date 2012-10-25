@@ -12,7 +12,9 @@ unit_tests: test_union_find
 # Documentation.
 
 # Note: the order of the doc is important.
-doc-files = support/union_find.mli support/union_find.ml cps/cpsvar.mli cps/cpsvar.ml cps/cpsbase.ml llvm/cpsllvm.mli llvm/cpsllvm.ml 
+doc-files = support/union_find.mli support/union_find.ml cps/cpsvar.mli cps/cpsvar.ml \
+	cps/cpsbase.ml cps/cpsprint.mli cps/cpsprint.ml \
+	llvm/cpsllvm.mli llvm/cpsllvm.ml
 
 doc: $(addsuffix .html,$(addprefix web/,$(doc-files))) check_doc
 
