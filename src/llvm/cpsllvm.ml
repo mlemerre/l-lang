@@ -5,11 +5,11 @@
 (*s This module translates a term written in CPS representation to
   LLVM instructions in SSA form.
 
-  The CPS representations stems from the paper "Compiling with
+  The CPS representation stems from the paper "Compiling with
   continuations, continued" by Andrew Kennedy. In particular this
   representation separates continuations from standard lambda
   functions, which allows calling and returning from functions using
-  the normal stack.
+  the normal stack, and allow close correspondance with the SSA form.
 
   This module assumes that functions have no free variables (or
   continuation variables). Closure conversion removes free variables
@@ -24,7 +24,7 @@
 
   To keep things simple in this first version, no external functions
   is called (only lambdas defined in the body of the expression, and
-  primitive operations, can be called). 
+  primitive operations, can be called).
 
   In addition, all data is boxed, allocated using malloc (and never
   freed; this could be improved by using libgc). Unboxed data would
@@ -42,9 +42,11 @@
   \item Other values (i.e. int, floats, and tuples) are all translated
   boxed. Thus they all have a single llvm type, which is i8 *.
 
-  \item A CPS variable $x$ is mapped to a SSA variables (of type
+  \item A local CPS variable $x$ is mapped to a SSA variables (of type
   [Llvm.llvalue]). CPS variables are introduced as arguments to lambda
-  and continuations, and in the $let x = ... $ form.
+  and continuations, and in the $let x = ... $ form. CPS variables and
+  SSA variables have the same name in their respective printed
+  representation.
 
   \item A CPS continuation variable $k$ introduced by $\lambda k. x. t$
   corresponds to the return from the lambda. A call $k(y)$ to this
@@ -74,13 +76,23 @@
   \item Primitive operations, such as $let x = primitive(args)$
   are translated to the corresponding LLVM operations.
 
+  \item A global CPS variables $x$ is mapped to a SSA variable, but
+  may have additional indirection. If $x$ is defined as a
+  [Dynamic_value(term)], its size cannot be statically computed; so we
+  allocate the space for a global variable [s] that contains one
+  pointer, and compile [term] as a constructor that stores the
+  dynamically allocated result of initialization, in [s]. Accesses to
+  [x] are transformed to dereferences to [s]. A future
+  "staticalization" transformation will try to maximize the amount of
+  static values, to avoid this indirection.
+
   \end{itemize}
 
   Note that the SSA representation are well-formed only if "the
   definition of a variable \verb|%x| does not dominate all of its uses"
   (\url{http://llvm.org/docs/LangRef.html#introduction}). The translation
   from a CPS term (without free variables) ensures that. *)
-  
+
 (*s Here is a simplified example of how the translation from CPS to
   SSA works.
 
@@ -92,17 +104,17 @@
 
   Is translated to SSA (ignoring boxing):
   \begin{verbatim}
-  entry: 
+  entry:
     v = 3
     n_ = 11
     jmp k
 
   k:
     x = phi (entry n_) (k o_)
-    m_ = 2 
+    m_ = 2
     o_ = m_ + x
     jmp k \end{verbatim}
-  
+
   This shows how $k$ is translated to a separate basic block, and the
   argument $x$ to a phi node connected to all the uses of $k$.
 *)
@@ -111,7 +123,7 @@
   related  code, this may be caused by:
 
   \begin{itemize}
-  
+
   \item Calling [Llvm.build_call] on a value which does not have the
   function [lltype], or [Llvm.build_gep] with operations that do not
   correspond to the lltype of the value.
@@ -135,6 +147,9 @@ let i32_type = Llvm.i32_type context;;
 let i32star_type = Llvm.pointer_type i32_type;;
 let anystar_type = Llvm.pointer_type (Llvm.i8_type context);;
 
+let undef_anystar = Llvm.undef anystar_type;;
+let null_anystar = Llvm.const_null anystar_type;;
+
 open Cpsbase;;
 
 (* \subsection*{Creating and accessing memory objects}  *)
@@ -155,71 +170,70 @@ open Cpsbase;;
   code. *)
 
 (*s Store [llvalue] in heap-allocated memory. *)
-let build_box llvalue name builder = 
+let build_box name llvalue builder =
   let lltype = Llvm.type_of llvalue in
-  let pointer = Llvm.build_malloc lltype name builder in
+  let pointer = Llvm.build_malloc lltype (name ^ "_uncasted") builder in
   ignore(Llvm.build_store llvalue pointer builder);
-  Llvm.build_bitcast pointer anystar_type (name ^ "box") builder;;
+  Llvm.build_bitcast pointer anystar_type name builder;;
 
 (*s Unbox a [llvalue] of type [lltype].  *)
-let build_unbox llvalue lltype name builder = 
+let build_unbox name llvalue lltype builder =
   let typeptr = Llvm.pointer_type lltype in
-  let castedptr = Llvm.build_bitcast llvalue typeptr (name ^ "castedptr") builder in
-  Llvm.build_load castedptr (name ^ "unbox") builder;;
-  
+  let castedptr = Llvm.build_bitcast llvalue typeptr (name ^ "_casted") builder in
+  Llvm.build_load castedptr name builder;;
+
 (*s A n-tuple is allocated as an array of n [anystar_type]. Each
    element of the array contains the llvalue in l. *)
-let build_tuple l builder = 
+let build_tuple name l builder =
   let length = List.length l in
-  let array_type = Llvm.array_type anystar_type length in 
-  let pointer = Llvm.build_malloc array_type "tuple" builder in
+  let array_type = Llvm.array_type anystar_type length in
+  let pointer = Llvm.build_malloc array_type (name ^ "_tuple") builder in
 
-  let f () (int,elem) = 
+  let f () (int,elem) =
     (* Note: the first 0 is because pointer is not the start of
        the array, but a pointer to the start of the array, that
        must thus be dereferenced. *)
     let path = [| (Llvm.const_int i32_type 0); (Llvm.const_int i32_type int) |] in
-    let gep_ptr = Llvm.build_gep pointer path "gep" builder in
+    let gep_ptr = Llvm.build_gep pointer path (name ^ "_tuple_" ^ (string_of_int int)) builder in
     ignore(Llvm.build_store elem gep_ptr builder) in
 
   Utils.Int.fold_with_list f () (0,l);
-  Llvm.build_bitcast pointer anystar_type ("tuplecast") builder;;
+  Llvm.build_bitcast pointer anystar_type name builder;;
 
 (*s Retrieve an element from a tuple.  *)
-let build_letproj pointer i builder = 
-  let stringi = (string_of_int i) in 
+let build_letproj name pointer i builder =
   (* First we compute an acceptable LLvm type, and cast the pointer to
      that type (failure to do that makes [Llvm.build_gep] segfault).
      As we try to access the ith element, we assume we are accessing
      an array of size i+1. *)
-  let array_type = Llvm.array_type anystar_type (i+1) in 
+  let array_type = Llvm.array_type anystar_type (i+1) in
   let arraystar_type = Llvm.pointer_type array_type in
-  let cast_pointer = Llvm.build_bitcast pointer arraystar_type ("castptr") builder in
+  let cast_pointer = Llvm.build_bitcast pointer arraystar_type (name ^ "_casted") builder in
   let gep_ptr = Llvm.build_gep cast_pointer [| (Llvm.const_int i32_type 0);
-                                               (Llvm.const_int i32_type i) |] 
-    ("gep" ^ stringi) builder in 
-  let result = Llvm.build_load gep_ptr ("builder" ^ stringi) builder in
+                                               (Llvm.const_int i32_type i) |]
+    (name ^ "_gep" ^ (string_of_int i)) builder in
+  let result = Llvm.build_load gep_ptr name builder in
   result ;;
 
 (*s Apply primitive operations.  *)
-let build_integer_binary_op op a b builder = 
+let build_integer_binary_op name op a b builder =
   let build_fn = match op with
     | Constant.IAdd -> Llvm.build_add
     | Constant.ISub -> Llvm.build_sub
     | Constant.IMul -> Llvm.build_mul
     | Constant.IDiv -> Llvm.build_udiv in
-  let a_unbox = (build_unbox a i32_type "a" builder) in
-  let b_unbox = (build_unbox b i32_type "b" builder) in
-  let res = build_fn a_unbox b_unbox "bop" builder in
-  build_box res "res" builder;;
-  
+  let a_unbox = (build_unbox (name ^ "_a") a i32_type builder) in
+  let b_unbox = (build_unbox (name ^ "_b") b i32_type builder) in
+  let res = build_fn a_unbox b_unbox (name ^ "_bop") builder in
+  build_box name res builder;;
+
 
 
 (*s Build a call instruction, casting [caller] to a function pointer. *)
-let build_call caller callee builder =
+let build_call name caller callee builder =
   let function_type = Llvm.pointer_type (Llvm.function_type anystar_type [| anystar_type |]) in
-  let casted_caller = Llvm.build_bitcast caller function_type "function" builder in 
-  let retval = Llvm.build_call casted_caller [| callee |] "retval" builder in
+  let casted_caller = Llvm.build_bitcast caller function_type (name ^ "_function") builder in
+  let retval = Llvm.build_call casted_caller [| callee |] (name ^"_result") builder in
   retval;;
 
 (* \subsection*{Creating and accessing basic blocks}  *)
@@ -236,19 +250,19 @@ type termination = End_of_block;;
 
    Note that LLVM basic blocks are associated to a parent function,
    that we need to retrieve to create a new basic block. *)
-let new_block builder = 
+let new_block name builder =
   let current_bb = Llvm.insertion_block builder in
   let the_function = Llvm.block_parent current_bb in
-  let new_bb = Llvm.append_block context "k" the_function in
+  let new_bb = Llvm.append_block context name the_function in
   new_bb;;
 
 (*s Returns [Some(phi)] if the block already begins with a phi instruction,
    or [None] otherwise. *)
-let begin_with_phi_node basic_block = 
+let begin_with_phi_node basic_block =
   let pos = Llvm.instr_begin basic_block in
   match pos with
     | Llvm.At_end(_) -> None
-    | Llvm.Before(inst) -> 
+    | Llvm.Before(inst) ->
       (match Llvm.instr_opcode inst with
         | Llvm.Opcode.PHI -> Some(inst)
         | _ -> None);;
@@ -264,10 +278,10 @@ let begin_with_phi_node basic_block =
    phi node. *)
 let build_jmp_to_and_add_incoming destination_block v builder =
 
-  let add_incoming_to_block basic_block (value,curblock) = 
+  let add_incoming_to_block basic_block (value,curblock) =
     match begin_with_phi_node basic_block with
       | Some(phi) -> Llvm.add_incoming (value,curblock) phi
-      | None -> 
+      | None ->
         (* Temporarily create a builder to build the phi instruction. *)
         let builder = Llvm.builder_at context (Llvm.instr_begin basic_block) in
         ignore(Llvm.build_phi [value,curblock] "phi" builder) in
@@ -291,15 +305,15 @@ let build_jmp_to_and_add_incoming destination_block v builder =
    the call [k( x)] is passed to the phi node starting this basic
    block.
 
-   \end{itemize} 
+   \end{itemize}
   The CPS$\to{}$LLVM translation maps continuation variables to [dest_type]s.
 *)
-type dest_type = 
-  | Ret 
-  | Jmp_to of Llvm.llbasicblock 
+type dest_type =
+  | Ret
+  | Jmp_to of Llvm.llbasicblock
 
 (* Build a call to a continuation [k x]. *)
-let build_applycont k x builder = 
+let build_applycont k x builder =
   match k with
     | Ret -> ignore(Llvm.build_ret x builder); End_of_block
     | Jmp_to(destination) -> build_jmp_to_and_add_incoming destination x builder;;
@@ -308,6 +322,27 @@ let build_applycont k x builder =
 
 (* It is important for LLVM that function names are unique. *)
 module UniqueFunctionId = Unique.Make(struct end);;
+let uniquify_name name = name ^ "_uniq" ^ (UniqueFunctionId.to_string (UniqueFunctionId.fresh()));;
+
+(* The environment comprehends [contvarmap], a mapping from local
+   continuation variables to dest_type; [globalvarmap], a mapping from
+   the global variables to llvalues; [varmap], containing a mapping
+   from both the global and local variables to llvalues; and
+   [handle_halt], which explains how [Halt] is translated. *)
+type env = { contvarmap: dest_type Cpsbase.Cont_var.Var.Map.t;
+             varmap: Llvm.llvalue Cpsbase.Var.Var.Map.t;
+             globalvarmap: Llvm.llvalue Cpsbase.Var.Var.Map.t;
+             handle_halt: handle_halt
+           }
+
+(* This type states how a [Halt(x)] CPS term must be translated:
+   either we return [x], or we ignore [x] return nothing, or [x] is
+   stored in some memory region. *)
+and handle_halt =
+  | Halt_returns_value
+  | Halt_returns_void
+  | Halt_stores_results_in of Llvm.llvalue
+
 
 (*s This function builds the CPS term [cps], in the current block
   pointed to by [builder]. [varmap] maps CPS variables to LLVM
@@ -320,26 +355,40 @@ module UniqueFunctionId = Unique.Make(struct end);;
   (even the one in [varmap] and [contvarmap]). Closure conversion
   deals with this. Note: previously-defined global variables are not
   considered free. *)
-let rec build_term cps (contvarmap, varmap) builder = 
+let rec build_term cps env builder =
 
-  (*s Helper functions to retrieve/add values from/to maps.  *)
-  let lookup_var x = 
-    try VarMap.find x varmap 
-    with _ -> failwith "in lookup" in
+  (*s These functions return a llvalue corresponding to the occurrence
+    of a variable or continuation variable given as an argument. *)
+  let translate_occurrence x =
+    let bound_var = Cpsbase.Var.Occur.binding_variable x in
+    let llvalue =
+      try Cpsbase.Var.Var.Map.find bound_var env.varmap
+      with _ -> failwith "in translate_var" in
+    let bound_var_desc = (Cpsbase.Var.Var.description bound_var) in
+    match bound_var_desc.Cpsbase.binding_site_var with
+      (* Global dynamic values are allocated with an extra level of
+         indirection, so we need to unbox them. *)
+      | Cpsbase.Enclosing_definition(_,Dynamic_value(_)) ->
+        build_unbox (Cpsbase.Var.Occur.to_string x) llvalue anystar_type builder
+      (* Note: we could directly return constant integer here. It
+         seems not worth it, because LLVM should be able to deal
+         with them itself. *)
+      | _ -> llvalue
+  in
 
-  let lookup_contvar k = 
-    try ContVarMap.find k contvarmap 
-    with _ -> failwith "in contvar lookup" in
+  let translate_cont_occurrence k =
+    try Cpsbase.Cont_var.Var.Map.find (Cpsbase.Cont_var.Occur.binding_variable k) env.contvarmap
+    with _ -> failwith "in translate_cont_occurrence" in
 
-  let add_to_varmap var value = VarMap.add var value varmap in
-  let add_to_contvarmap contvar block = ContVarMap.add contvar (Jmp_to block) contvarmap in
+  let add_to_varmap var value = Cpsbase.Var.Var.Map.add var value env.varmap in
+  let add_to_contvarmap contvar block = Cpsbase.Cont_var.Var.Map.add contvar (Jmp_to block) env.contvarmap in
 
   (*s Converting the term is done by inductive decomposition. There are
-    three kind of cases: 
+    three kind of cases:
     \begin{itemize}
     \item those that only build new values (letvalue, letproj,
     letprimop...) in the current basic block
-    \item those that return a value and end a basic block 
+    \item those that return a value and end a basic block
     (apply, applycont, and halt)
     \item the one that build a new basic blocks (letcont).
     \end{itemize}
@@ -348,62 +397,60 @@ let rec build_term cps (contvarmap, varmap) builder =
     in the heap and accessed through a pointer), and of llvm type "i8
     *". Pointer conversions are done according to the use of the
     value. *)
-  match cps with 
+  match cps.Cpsbase.term with
 
-    (*s These cases build a new value, then continue building the
-      basic block. *)
-    | Let_value(x, value, body) -> 
-      let newllvalue = 
-        (match value with 
-          | Constant(Constant.Int i) ->
-            let llvalue = Llvm.const_int i32_type i in
-            build_box llvalue ("int" ^ string_of_int i) builder
-              
-          | Tuple(l) ->
-            let llvalues = List.map lookup_var l in
-            build_tuple llvalues builder
+    (*s For [Let_prim(x,prim,body)] we just build the new llvalue
+      corresponding to [prim], map it to [x], then continue building
+      [body]. *)
+    | Let_prim(x,prim,body) ->
+      let xname = (Cpsbase.Var.Var.to_string x) in
+      let result = (match prim with
+        | Value (Constant(Constant.Int i)) ->
+          let llvalue = Llvm.const_int i32_type i in
+          build_box (xname ^ "_is_const_" ^ string_of_int i) llvalue  builder
 
-          (* This build a new function, with private linkage (since
-             that it can be used only by the current term), which
-             allows llvm optimizations.
+        (* For now, any value is a pointer, including void; so we
+           compile void to (void * ) 0. *)
+        | Value (Constant(Constant.Void)) ->
+          let zero = Llvm.const_int i32_type 0 in
+          Llvm.const_pointercast zero anystar_type
 
-             Note that [build_function] will use a new builder, so the
-             lambda can be built in parallel with the current
-             function. Also it will use new variables and continuation
-             variable maps (with only the x parameter), so the lambda
-             expression must not contain any free variables. *)
-          | Lambda(k,x,body) ->         
-            let f = build_function "lambda" k x body in
-            Llvm.set_linkage Llvm.Linkage.Private f;
-            Llvm.build_bitcast f anystar_type "lambdacast" builder
+        | Value (Tuple(l)) ->
+          let llvalues = List.map translate_occurrence l in
+          build_tuple xname llvalues builder
 
-          (* Expressions such as $let x = primitive] should have
-             been translated into something like $let x = { (a,b) ->
-             primitiveop( a,b) }$] in previous compilation stage, so
-             should fail here. *)
-          | Constant(c) -> 
-            assert( Constant.is_function c);
-            failwith "ICE: primitive operations as value in LLVM translation."
-        )
-      in build_term body (contvarmap, (add_to_varmap x newllvalue)) builder
+        (* This build a new function, with private linkage (since
+           that it can be used only by the current term), which
+           allows llvm optimizations.
 
-    (* Primitive operations are similar to letvalue.  *)
-    | Let_primop(x,prim,body) -> 
-      let result = (match prim with 
-        | Integer_binary_op(op,xa,xb) -> 
-          build_integer_binary_op op (lookup_var xa) (lookup_var xb) builder
-        | Projection(x,i) -> build_letproj (lookup_var x) i builder
-      ) in
-      build_term body (contvarmap, (add_to_varmap x result)) builder
+           Note that [build_function] will use a new builder, so the
+           lambda can be built in parallel with the current
+           function. Also it will use new variables and continuation
+           variable maps (with only the x parameter), so the lambda
+           expression must not contain any free variables. *)
+        | Value (Lambda(k,x,body)) ->
+          let f = build_function (Cpsbase.Var.Var.to_string x) k x body env.globalvarmap in
+          Llvm.set_linkage Llvm.Linkage.Private f;
+          Llvm.build_bitcast f anystar_type xname builder
 
-    (*i
-      XXX: And If? as it is special, we will wait until we have if to
-      decide for how cpsbase should look like. I don't know yet how
-      ifs (and and, or...) will be handled. It is not a terminator
-      instruction in CPS.
+        (* Primitive ops are handled here. Notice that we handle the
+           translation of a call to a primitive operation (e.g.
+           +(a,b)), and not the use of a primitive as a function (e.g.
+           let a = +). *)
+        | Integer_binary_op(op,xa,xb) ->
+          build_integer_binary_op xname op (translate_occurrence xa) (translate_occurrence xb) builder
+        | Projection(x,i) -> build_letproj xname (translate_occurrence x) i builder
 
-      i*)
+        (* Expressions such as $let x = primitive$ should have been
+           eta-expanded into something like $let x = { (a,b) ->
+           primitiveop( a,b) }$ in previous compilation stage, and
+           fail here. *)
+        | Value (Constant(c)) -> print_endline (Constant.to_string c);
+          assert( Constant.is_function c);
+          failwith "ICE: primitive operations as value in LLVM translation."
 
+      )
+      in build_term body {env with varmap=(add_to_varmap x result)} builder
 
     (*s Building new basic blocks. The algorithm first creates an
       empty basic block, bound to [k], then build [body], then build
@@ -419,63 +466,135 @@ let rec build_term cps (contvarmap, varmap) builder =
 
       Doing the operations in this order ensures that calls to [k] are
       processed before [k] is built. *)
-    | Let_cont(k,x,term,body) -> 
-      let new_bb = new_block builder in
+    | Let_cont(k,x,term,body) ->
+      let new_bb = new_block (Cpsbase.Cont_var.Var.to_string k) builder in
       let newcvm = add_to_contvarmap k new_bb in
-      let End_of_block = build_term body (newcvm, varmap) builder in
+      let End_of_block = build_term body {env with contvarmap=newcvm} builder in
       Llvm.position_at_end new_bb builder;
       (match begin_with_phi_node new_bb with
         | None -> End_of_block
-        | Some(phi) -> build_term term (newcvm, (add_to_varmap x phi)) builder)
+        | Some(phi) -> build_term term {env with contvarmap=newcvm; varmap=add_to_varmap x phi} builder)
 
     (*s Cases that change or create basic blocks. *)
     (* Depending on k, applycont either returns or jumps to k.  *)
-    | Apply_cont(k,x) -> 
-      build_applycont (lookup_contvar k) (lookup_var x) builder
+    | Apply_cont(k,x) ->
+      build_applycont (translate_cont_occurrence k) (translate_occurrence x) builder
 
     (* The CPS semantics state that caller should return to k, but
        LLVM SSA does not require that calls end basic blocks. So we
        just build a call instruction, and then a call to [k]. LLVM
        optimizations will eliminate the superfluous jump if needed. *)
-    | Apply(caller,k,callee) -> 
-      let retval = build_call (lookup_var caller) (lookup_var callee) builder in
-      build_applycont (lookup_contvar k) retval builder
+    | Apply(func,k,arg) ->
+      let retval = build_call (Cpsbase.Var.Occur.to_string func) (translate_occurrence func) (translate_occurrence arg) builder in
+      build_applycont (translate_cont_occurrence k) retval builder
 
-    | Halt(x) -> ignore(Llvm.build_ret (lookup_var x) builder); End_of_block
+    | Halt(x) -> (match env.handle_halt with
+        | Halt_returns_void -> ignore(Llvm.build_ret_void builder)
+        | Halt_returns_value -> ignore(Llvm.build_ret (translate_occurrence x) builder)
+        | Halt_stores_results_in(llvalue) ->
+          Llvm.build_store (translate_occurrence x) llvalue builder;
+          ignore(Llvm.build_ret_void builder)
+    ); End_of_block
 
-(* Expression built out of a definition are put in a "void -> void" function. *)  
-and build_nodef name cpsbody = 
-  prepare_build name cpsbody None
+(*s The following function factorizes the creation of a function with
+  LLVM. It takes the following arguments:
 
-and build_function name contparam param cpsbody =
-  prepare_build name cpsbody (Some (contparam,param))
+  \begin{itemize}
 
-(* Build the function around the main term cpsbody, possibly taking
-   some parameters k and x. *)
-and prepare_build name cpsbody param = 
-  let params_type = match param with None -> [| |] | _ -> [| anystar_type |] in
-  let function_type = Llvm.function_type anystar_type params_type in
+  \item [name], a string [name] does not need to be unique, just
+  informative.
+
+  \item [params] is [Some(cont_var,var)] if the LLvm function takes
+  arguments, or None otherwise.
+
+  \item [cpsbody] is the CPS term representing the body of the
+  function to be translated.
+
+  \item [handle_halt] states how [Halt(x)] CPS terms must be
+  translated.
+
+  \item [globalvarmap] is the mapping from global CPS variables to
+  llvalues.
+
+  \end{itemize}
+*)
+and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
   (* Note: it is important for LLVM that function names are unique.  *)
-  let funname = name ^ "#" ^ (UniqueFunctionId.to_string (UniqueFunctionId.fresh())) in
+  let funname = uniquify_name name in
+
+  (* Compute [function_type]. *)
+  let args_type = match params with
+    | Some(_) -> [| anystar_type |]
+    | None -> [| |] in
+  let ret_type = match handle_halt with
+    | Halt_returns_value -> anystar_type
+    | Halt_stores_results_in _ | Halt_returns_void -> void_type in
+  let function_type = Llvm.function_type ret_type args_type in
+
   let the_function = Llvm.declare_function funname function_type the_module in
+
+  (* Compute the initial environment; this requires that [the_function] is created. *)
+  let (initial_contvarmap, initial_varmap) = match params with
+    | Some(k,x) -> (Cpsbase.Cont_var.Var.Map.singleton k Ret,
+                    Cpsbase.Var.Var.Map.add x (Llvm.param the_function 0) globalvarmap)
+    | None -> (Cpsbase.Cont_var.Var.Map.empty, globalvarmap) in
+  let initial_env = { contvarmap = initial_contvarmap;
+                      varmap = initial_varmap;
+                      globalvarmap = globalvarmap;
+                      handle_halt = handle_halt
+                    } in
+
+  (* Build the function. *)
   let bb = Llvm.append_block context "entry" the_function in
-  (* Note that we use a new builder. We could even build the functions in parallel. *)
+  (* Note that we use a new builder. If OCaml supported SMP, functions
+     could even be built in parallel. *)
   let builder = Llvm.builder context in
   Llvm.position_at_end bb builder;
-  try 
-    let initial_varmaps = 
-      match param with 
-        | None -> (ContVarMap.empty, VarMap.empty)
-        | Some(k,x) -> (ContVarMap.singleton k Ret,
-                        VarMap.singleton x (Llvm.param the_function 0)) in
-
-    ignore(build_term cpsbody initial_varmaps builder);
+  try
+    ignore(build_term cpsbody initial_env builder);
     (* Prints the textual representation of the function to stderr. *)
     Llvm.dump_value the_function;
     (* Validate the code we just generated.  *)
     Llvm_analysis.assert_valid_function the_function;
     the_function
   (* Normally, no exception should be thrown, be we never know. *)
-  with e -> Llvm.delete_function the_function; raise e;;
+  with e -> Llvm.delete_function the_function; raise e
 
+(* A function takes parameters and returns a result. *)
+and build_function name contparam param cpsbody globalvarmap =
+  build_llvm_function name ~params:(Some(contparam,param)) cpsbody Halt_returns_value globalvarmap
+;;
 
+(* "nodef" is just a thunk that executes an expression when called.  *)
+let build_nodef cpsbody globalvarmap =
+  build_llvm_function "nodef" ~params:None cpsbody Halt_returns_void globalvarmap;;
+
+(* A definition is a global variable, plus a constructor function that
+   stores a value in it. The constructor is also a thunk, that stores a
+   result in the global variable when called.*)
+let build_def var cpsbody globalvarmap =
+  let varname = Cpsbase.Var.Var.to_string var in
+  let funname = ("construct_" ^ varname) in
+  let the_variable = Llvm.define_global varname undef_anystar the_module in
+  let the_function =
+    build_llvm_function funname ~params:None cpsbody (Halt_stores_results_in the_variable) globalvarmap in
+  (the_variable, the_function)
+;;
+
+(* Build a toplevel definition. *)
+let build_toplevel toplevel globalvarmap =
+  (* TODO: handle the case with several definitions. *)
+  let Top(defs) = toplevel in
+  let [(visib,Cpsbase.Dynamic_value(expr))] = defs in
+
+  match visib with
+    (* The result of the expression is meaningful, and bound to a variable.  *)
+    | Cpsbase.Public(var) | Cpsbase.Private(var) ->
+      let (the_variable, the_function) = build_def var expr globalvarmap in
+      let newmap = Cpsbase.Var.Var.Map.add var the_variable globalvarmap in
+      (the_function, newmap)
+    (* We do not care about the result of the expression. *)
+    | Cpsbase.Unused ->
+      let the_function = build_nodef expr globalvarmap in
+      (the_function, globalvarmap)
+;;

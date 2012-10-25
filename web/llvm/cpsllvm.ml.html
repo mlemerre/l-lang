@@ -50,11 +50,11 @@ TD P{margin:0px;}
 <H2 CLASS="section"><!--SEC ANCHOR -->Module Cpsllvm</H2><!--SEC END --><P>
 <B>1.</B>†
 <A NAME="src/llvm/cpsllvm.ml:0"></A><A NAME="src/llvm/cpsllvm.ml:76"></A>This module translates a term written in CPS representation to
-LLVM instructions in SSA form.</P><P>The CPS representations stems from the paper "Compiling with
+LLVM instructions in SSA form.</P><P>The CPS representation stems from the paper "Compiling with
 continuations, continued" by Andrew Kennedy. In particular this
 representation separates continuations from standard lambda
 functions, which allows calling and returning from functions using
-the normal stack.</P><P>This module assumes that functions have no free variables (or
+the normal stack, and allow close correspondance with the SSA form.</P><P>This module assumes that functions have no free variables (or
 continuation variables). Closure conversion removes free variables
 from functions. Free continuation variables should never happen
 when translating normal terms to CPS.</P><P>The module also assumes that the CPS values do not refer to
@@ -63,17 +63,19 @@ transform calls to primitive operations to <I>let</I> <I>x</I> =
 <I>primitive</I>(<I>args</I>); and &#X3B7;-expand primitive operations passed as
 functions (e.g. <I>let</I> <I>x</I> = <I>f</I>() must have been transformed).</P><P>To keep things simple in this first version, no external functions
 is called (only lambdas defined in the body of the expression, and
-primitive operations, can be called). </P><P>In addition, all data is boxed, allocated using malloc (and never
+primitive operations, can be called).</P><P>In addition, all data is boxed, allocated using malloc (and never
 freed; this could be improved by using libgc). Unboxed data would
 requires to carry typing information in the CPS terms. 
 <BR><B>2.</B>†
-<A NAME="src/llvm/cpsllvm.ml:1386"></A>To get an overview of the translation algorithm, the best is to
+<A NAME="src/llvm/cpsllvm.ml:1434"></A>To get an overview of the translation algorithm, the best is to
 understand how the CPS concepts are mapped to the SSA concepts. In
 the following, we denote by [<I>x</I>] the translation of <I>x</I>.</P><UL CLASS="itemize"><LI CLASS="li-itemize">Lambda are translated to LLVM functions with one argument and
 one return value.</LI><LI CLASS="li-itemize">Other values (i.e. int, floats, and tuples) are all translated
-boxed. Thus they all have a single llvm type, which is i8 *.</LI><LI CLASS="li-itemize">A CPS variable <I>x</I> is mapped to a SSA variables (of type
+boxed. Thus they all have a single llvm type, which is i8 *.</LI><LI CLASS="li-itemize">A local CPS variable <I>x</I> is mapped to a SSA variables (of type
 <code><span style="color: #228b22; ">Llvm</span>.llvalue</code>). CPS variables are introduced as arguments to lambda
-and continuations, and in the <I>let</I> <I>x</I> = ...  form.</LI><LI CLASS="li-itemize">A CPS continuation variable <I>k</I> introduced by &#X3BB; <I>k</I>. <I>x</I>. <I>t</I>
+and continuations, and in the <I>let</I> <I>x</I> = ...  form. CPS variables and
+SSA variables have the same name in their respective printed
+representation.</LI><LI CLASS="li-itemize">A CPS continuation variable <I>k</I> introduced by &#X3BB; <I>k</I>. <I>x</I>. <I>t</I>
 corresponds to the return from the lambda. A call <I>k</I>(<I>y</I>) to this
 continuation with a value <I>y</I> is translated to a "ret" instruction
 returning the translation of <I>y</I>.</LI><LI CLASS="li-itemize">A CPS continuation variable <I>k</I> introduced by <I>let</I> <I>k</I>(<I>x</I>) = <I>t</I><SUB>1</SUB>;
@@ -93,51 +95,59 @@ can optimize this if needed. Note: this allows tail call
 optimizations
 <A HREF="http://llvm.org/docs/CodeGenerator.html#tail-calls"><TT>http://llvm.org/docs/CodeGenerator.html#tail-calls</TT></A> to take
 place.</LI><LI CLASS="li-itemize">Primitive operations, such as <I>let</I> <I>x</I> = <I>primitive</I>(<I>args</I>)
-are translated to the corresponding LLVM operations.</LI></UL><P>Note that the SSA representation are well-formed only if "the
+are translated to the corresponding LLVM operations.</LI><LI CLASS="li-itemize">A global CPS variables <I>x</I> is mapped to a SSA variable, but
+may have additional indirection. If <I>x</I> is defined as a
+<code><span style="color: #228b22; ">Dynamic_value</span>(term)</code>, its size cannot be statically computed; so we
+allocate the space for a global variable <code>s</code> that contains one
+pointer, and compile <code>term</code> as a constructor that stores the
+dynamically allocated result of initialization, in <code>s</code>. Accesses to
+<code>x</code> are transformed to dereferences to <code>s</code>. A future
+"staticalization" transformation will try to maximize the amount of
+static values, to avoid this indirection.</LI></UL><P>Note that the SSA representation are well-formed only if "the
 definition of a variable <CODE>%x</CODE> does not dominate all of its uses"
 (<A HREF="http://llvm.org/docs/LangRef.html#introduction"><TT>http://llvm.org/docs/LangRef.html#introduction</TT></A>). The translation
 from a CPS term (without free variables) ensures that. 
 <BR><B>3.</B>†
-<A NAME="src/llvm/cpsllvm.ml:3726"></A>Here is a simplified example of how the translation from CPS to
+<A NAME="src/llvm/cpsllvm.ml:4442"></A>Here is a simplified example of how the translation from CPS to
 SSA works.</P><P>The CPS code:
 </P><PRE CLASS="verbatim">  let v = 3;
   let k(x) = k(2+x);
   k(11)  </PRE><P>Is translated to SSA (ignoring boxing):
-</P><PRE CLASS="verbatim">  entry: 
+</P><PRE CLASS="verbatim">  entry:
     v = 3
     n_ = 11
     jmp k
 
   k:
     x = phi (entry n_) (k o_)
-    m_ = 2 
+    m_ = 2
     o_ = m_ + x
     jmp k </PRE><P>This shows how <I>k</I> is translated to a separate basic block, and the
 argument <I>x</I> to a phi node connected to all the uses of <I>k</I>.</P><P><BR><B>4.</B>†
-<A NAME="src/llvm/cpsllvm.ml:4234"></A>If one encounters segmentation faults when changing the LLVM
+<A NAME="src/llvm/cpsllvm.ml:4946"></A>If one encounters segmentation faults when changing the LLVM
 related code, this may be caused by:</P><UL CLASS="itemize"><LI CLASS="li-itemize">Calling <code><span style="color: #228b22; ">Llvm</span>.build_call</code> on a value which does not have the
 function <code>lltype</code>, or <code><span style="color: #228b22; ">Llvm</span>.build_gep</code> with operations that do not
 correspond to the lltype of the value.</LI><LI CLASS="li-itemize">Calling <code>build_phi</code> with an empty list of "incoming".</LI><LI CLASS="li-itemize">Calling <code><span style="color: #228b22; ">ExecutionEngine</span>.create†the_module</code> before calling
 <code><span style="color: #228b22; ">Llvm_executionengine</span>.initialize_native_target()</code> can also segfault.</LI></UL><P>Using valgrind or gdb allows to quickly locate the problematic Ocaml
-Llvm binding.</P><P><BR><A NAME="src/llvm/cpsllvm.ml:4849"></A>
+Llvm binding.</P><P><BR><A NAME="src/llvm/cpsllvm.ml:5559"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†context†=†<span style="color: #228b22; ">Llvm.</span>global_context()</P><P><A NAME="src/llvm/cpsllvm.ml:4887"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†the_module†=†<span style="color: #228b22; ">Llvm.</span>create_module†context†<span style="color: #8b2252; ">"my†jitted†module"</span></P><P><A NAME="src/llvm/cpsllvm.ml:4953"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†void_type†=†<span style="color: #228b22; ">Llvm.</span>void_type†context</P><P><A NAME="src/llvm/cpsllvm.ml:4994"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†i32_type†=†<span style="color: #228b22; ">Llvm.</span>i32_type†context</P><P><A NAME="src/llvm/cpsllvm.ml:5033"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†i32star_type†=†<span style="color: #228b22; ">Llvm.</span>pointer_type†i32_type</P><P><A NAME="src/llvm/cpsllvm.ml:5081"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†anystar_type†=†<span style="color: #228b22; ">Llvm.</span>pointer_type†(<span style="color: #228b22; ">Llvm.</span>i8_type†context)</P><P><A NAME="src/llvm/cpsllvm.ml:5144"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†undef_anystar†=†<span style="color: #228b22; ">Llvm.</span>undef†anystar_type</P><P><A NAME="src/llvm/cpsllvm.ml:5190"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†null_anystar†=†<span style="color: #228b22; ">Llvm.</span>const_null†anystar_type</P><P><A NAME="src/llvm/cpsllvm.ml:5241"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†context†=†<span style="color: #228b22; ">Llvm.</span>global_context()</P><P><A NAME="src/llvm/cpsllvm.ml:5597"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†the_module†=†<span style="color: #228b22; ">Llvm.</span>create_module†context†<span style="color: #8b2252; ">"my†jitted†module"</span></P><P><A NAME="src/llvm/cpsllvm.ml:5663"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†void_type†=†<span style="color: #228b22; ">Llvm.</span>void_type†context</P><P><A NAME="src/llvm/cpsllvm.ml:5704"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†i32_type†=†<span style="color: #228b22; ">Llvm.</span>i32_type†context</P><P><A NAME="src/llvm/cpsllvm.ml:5743"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†i32star_type†=†<span style="color: #228b22; ">Llvm.</span>pointer_type†i32_type</P><P><A NAME="src/llvm/cpsllvm.ml:5791"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†anystar_type†=†<span style="color: #228b22; ">Llvm.</span>pointer_type†(<span style="color: #228b22; ">Llvm.</span>i8_type†context)</P><P><A NAME="src/llvm/cpsllvm.ml:5854"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†undef_anystar†=†<span style="color: #228b22; ">Llvm.</span>undef†anystar_type</P><P><A NAME="src/llvm/cpsllvm.ml:5900"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†null_anystar†=†<span style="color: #228b22; ">Llvm.</span>const_null†anystar_type</P><P><A NAME="src/llvm/cpsllvm.ml:5951"></A>
 <span style="color: #0000ff; font-weight: bold;">open</span>†<span style="color: #228b22; ">Cpsbase</span></P><P></code></div>
 </P><!--TOC subsection Creating and accessing memory objects-->
 <H3 CLASS="subsection"><!--SEC ANCHOR -->Creating and accessing memory objects</H3><!--SEC END --><P> 
 <BR><B>5.</B>†
-<A NAME="src/llvm/cpsllvm.ml:5319"></A>These helper functions create or read-from memory object.
+<A NAME="src/llvm/cpsllvm.ml:6029"></A>These helper functions create or read-from memory object.
 Currently LLVM compiles using a very simple strategy: every value is
 boxed (including integers and floats). This simplifies compilation a
 lot: every value we create has type void *, and we cast the type
@@ -150,193 +160,192 @@ unboxed by the compiler (and this would not be that inefficient).
 Additional performances could then be obtained by monomorphizing the
 code. 
 <BR><B>6.</B>†
-<A NAME="src/llvm/cpsllvm.ml:6125"></A>Store <code>llvalue</code> in heap-allocated memory. 
-<BR><A NAME="src/llvm/cpsllvm.ml:6172"></A>
+<A NAME="src/llvm/cpsllvm.ml:6835"></A>Store <code>llvalue</code> in heap-allocated memory. 
+<BR><A NAME="src/llvm/cpsllvm.ml:6882"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_box†llvalue†name†builder†=†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_box†name†llvalue†builder†=<BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†lltype†=†<span style="color: #228b22; ">Llvm.</span>type_of†llvalue†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†pointer†=†<span style="color: #228b22; ">Llvm.</span>build_malloc†lltype†name†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†pointer†=†<span style="color: #228b22; ">Llvm.</span>build_malloc†lltype†(name†^†<span style="color: #8b2252; ">"_uncasted"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 ignore(<span style="color: #228b22; ">Llvm.</span>build_store†llvalue†pointer†builder);<BR>††
-<span style="color: #228b22; ">Llvm.</span>build_bitcast†pointer†anystar_type†(name†^†<span style="color: #8b2252; ">"box"</span>)†builder<BR></code></div><B>7.</B>†
-<A NAME="src/llvm/cpsllvm.ml:6428"></A>Unbox a <code>llvalue</code> of type <code>lltype</code>. 
-<BR><A NAME="src/llvm/cpsllvm.ml:6470"></A>
+<span style="color: #228b22; ">Llvm.</span>build_bitcast†pointer†anystar_type†name†builder<BR></code></div><B>7.</B>†
+<A NAME="src/llvm/cpsllvm.ml:7143"></A>Unbox a <code>llvalue</code> of type <code>lltype</code>. 
+<BR><A NAME="src/llvm/cpsllvm.ml:7185"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_unbox†llvalue†lltype†name†builder†=†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_unbox†name†llvalue†lltype†builder†=<BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†typeptr†=†<span style="color: #228b22; ">Llvm.</span>pointer_type†lltype†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†castedptr†=†<span style="color: #228b22; ">Llvm.</span>build_bitcast†llvalue†typeptr†(name†^†<span style="color: #8b2252; ">"castedptr"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #228b22; ">Llvm.</span>build_load†castedptr†(name†^†<span style="color: #8b2252; ">"unbox"</span>)†builder<BR></code></div><B>8.</B>†
-<A NAME="src/llvm/cpsllvm.ml:6706"></A>A n-tuple is allocated as an array of n <code>anystar_type</code>. Each
+<span style="color: #0000ff; font-weight: bold;">let</span>†castedptr†=†<span style="color: #228b22; ">Llvm.</span>build_bitcast†llvalue†typeptr†(name†^†<span style="color: #8b2252; ">"_casted"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #228b22; ">Llvm.</span>build_load†castedptr†name†builder<BR></code></div><B>8.</B>†
+<A NAME="src/llvm/cpsllvm.ml:7404"></A>A n-tuple is allocated as an array of n <code>anystar_type</code>. Each
 element of the array contains the llvalue in l. 
-<BR><A NAME="src/llvm/cpsllvm.ml:6823"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:7521"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_tuple†l†builder†=†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_tuple†name†l†builder†=<BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†length†=†<span style="color: #228b22; ">List.</span>length†l†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†array_type†=†<span style="color: #228b22; ">Llvm.</span>array_type†anystar_type†length†<span style="color: #0000ff; font-weight: bold;">in</span>†<BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†pointer†=†<span style="color: #228b22; ">Llvm.</span>build_malloc†array_type†<span style="color: #8b2252; ">"tuple"</span>†builder†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:7008"></A>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†f†()†(<span style="color: #228b22; ">int</span>,elem)†=†<BR>††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†array_type†=†<span style="color: #228b22; ">Llvm.</span>array_type†anystar_type†length†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†pointer†=†<span style="color: #228b22; ">Llvm.</span>build_malloc†array_type†(name†^†<span style="color: #8b2252; ">"_tuple"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:7719"></A>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†f†()†(<span style="color: #228b22; ">int</span>,elem)†=<BR>††††
 <span style="color: #b22222">(&#X2217;  Note: the first 0 is because pointer is not the start of
 the array, but a pointer to the start of the array, that
 must thus be dereferenced.  &#X2217;)</span><BR>††††
 <span style="color: #0000ff; font-weight: bold;">let</span>†path†=†[|†(<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†0);†(<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†<span style="color: #228b22; ">int</span>)†|]†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†gep_ptr†=†<span style="color: #228b22; ">Llvm.</span>build_gep†pointer†path†<span style="color: #8b2252; ">"gep"</span>†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††
-ignore(<span style="color: #228b22; ">Llvm.</span>build_store†elem†gep_ptr†builder)†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:7398"></A>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†gep_ptr†=†<span style="color: #228b22; ">Llvm.</span>build_gep†pointer†path†(name†^†<span style="color: #8b2252; ">"_tuple_"</span>†^†(string_of_int†<span style="color: #228b22; ">int</span>))†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††
+ignore(<span style="color: #228b22; ">Llvm.</span>build_store†elem†gep_ptr†builder)†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:8143"></A>††
 <span style="color: #228b22; ">Utils.Int.</span>fold_with_list†f†()†(0,l);<BR>††
-<span style="color: #228b22; ">Llvm.</span>build_bitcast†pointer†anystar_type†(<span style="color: #8b2252; ">"tuplecast"</span>)†builder<BR></code></div><B>9.</B>†
-<A NAME="src/llvm/cpsllvm.ml:7506"></A>Retrieve an element from a tuple. 
-<BR><A NAME="src/llvm/cpsllvm.ml:7546"></A>
+<span style="color: #228b22; ">Llvm.</span>build_bitcast†pointer†anystar_type†name†builder<BR></code></div><B>9.</B>†
+<A NAME="src/llvm/cpsllvm.ml:8242"></A>Retrieve an element from a tuple. 
+<BR><A NAME="src/llvm/cpsllvm.ml:8282"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_letproj†pointer†i†builder†=†<BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†stringi†=†(string_of_int†i)†<span style="color: #0000ff; font-weight: bold;">in</span>†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_letproj†name†pointer†i†builder†=<BR>††
 <span style="color: #b22222">(&#X2217;  First we compute an acceptable LLvm type, and cast the pointer to
 that type (failure to do that makes <code><span style="color: #228b22; ">Llvm</span>.build_gep</code> segfault).
 As we try to access the ith element, we assume we are accessing
 an array of size i+1.  &#X2217;)</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†array_type†=†<span style="color: #228b22; ">Llvm.</span>array_type†anystar_type†(i+1)†<span style="color: #0000ff; font-weight: bold;">in</span>†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†array_type†=†<span style="color: #228b22; ">Llvm.</span>array_type†anystar_type†(i+1)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†arraystar_type†=†<span style="color: #228b22; ">Llvm.</span>pointer_type†array_type†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†cast_pointer†=†<span style="color: #228b22; ">Llvm.</span>build_bitcast†pointer†arraystar_type†(<span style="color: #8b2252; ">"castptr"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†cast_pointer†=†<span style="color: #228b22; ">Llvm.</span>build_bitcast†pointer†arraystar_type†(name†^†<span style="color: #8b2252; ">"_casted"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†gep_ptr†=†<span style="color: #228b22; ">Llvm.</span>build_gep†cast_pointer†[|†(<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†0);<BR>††††††††††††††††††††††††††††††††††††††††††††††††
-(<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†i)†|]†<BR>††††
-(<span style="color: #8b2252; ">"gep"</span>†^†stringi)†builder†<span style="color: #0000ff; font-weight: bold;">in</span>†<BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†result†=†<span style="color: #228b22; ">Llvm.</span>build_load†gep_ptr†(<span style="color: #8b2252; ">"builder"</span>†^†stringi)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+(<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†i)†|]<BR>††††
+(name†^†<span style="color: #8b2252; ">"_gep"</span>†^†(string_of_int†i))†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†result†=†<span style="color: #228b22; ">Llvm.</span>build_load†gep_ptr†name†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 result†<BR></code></div><B>10.</B>†
-<A NAME="src/llvm/cpsllvm.ml:8337"></A>Apply primitive operations. 
-<BR><A NAME="src/llvm/cpsllvm.ml:8371"></A>
+<A NAME="src/llvm/cpsllvm.ml:9044"></A>Apply primitive operations. 
+<BR><A NAME="src/llvm/cpsllvm.ml:9078"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_integer_binary_op†op†a†b†builder†=†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_integer_binary_op†name†op†a†b†builder†=<BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†build_fn†=†<span style="color: #a020f0; ">match</span>†op†<span style="color: #a020f0; ">with</span><BR>††††
 &#X2223;†<span style="color: #228b22; ">Constant.IAdd</span>†&#X2192;†<span style="color: #228b22; ">Llvm.</span>build_add<BR>††††
 &#X2223;†<span style="color: #228b22; ">Constant.ISub</span>†&#X2192;†<span style="color: #228b22; ">Llvm.</span>build_sub<BR>††††
 &#X2223;†<span style="color: #228b22; ">Constant.IMul</span>†&#X2192;†<span style="color: #228b22; ">Llvm.</span>build_mul<BR>††††
 &#X2223;†<span style="color: #228b22; ">Constant.IDiv</span>†&#X2192;†<span style="color: #228b22; ">Llvm.</span>build_udiv†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†a_unbox†=†(build_unbox†a†i32_type†<span style="color: #8b2252; ">"a"</span>†builder)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†b_unbox†=†(build_unbox†b†i32_type†<span style="color: #8b2252; ">"b"</span>†builder)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†res†=†build_fn†a_unbox†b_unbox†<span style="color: #8b2252; ">"bop"</span>†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-build_box†res†<span style="color: #8b2252; ">"res"</span>†builder<BR></code></div><B>11.</B>†
-<A NAME="src/llvm/cpsllvm.ml:8809"></A>Build a call instruction, casting <code>caller</code> to a function pointer. 
-<BR><A NAME="src/llvm/cpsllvm.ml:8880"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†a_unbox†=†(build_unbox†(name†^†<span style="color: #8b2252; ">"_a"</span>)†a†i32_type†builder)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†b_unbox†=†(build_unbox†(name†^†<span style="color: #8b2252; ">"_b"</span>)†b†i32_type†builder)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†res†=†build_fn†a_unbox†b_unbox†(name†^†<span style="color: #8b2252; ">"_bop"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+build_box†name†res†builder<BR></code></div><B>11.</B>†
+<A NAME="src/llvm/cpsllvm.ml:9547"></A>Build a call instruction, casting <code>caller</code> to a function pointer. 
+<BR><A NAME="src/llvm/cpsllvm.ml:9618"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_call†caller†callee†builder†=<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_call†name†caller†callee†builder†=<BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†function_type†=†<span style="color: #228b22; ">Llvm.</span>pointer_type†(<span style="color: #228b22; ">Llvm.</span>function_type†anystar_type†[|†anystar_type†|])†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†casted_caller†=†<span style="color: #228b22; ">Llvm.</span>build_bitcast†caller†function_type†<span style="color: #8b2252; ">"function"</span>†builder†<span style="color: #0000ff; font-weight: bold;">in</span>†<BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†retval†=†<span style="color: #228b22; ">Llvm.</span>build_call†casted_caller†[|†callee†|]†<span style="color: #8b2252; ">"retval"</span>†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†casted_caller†=†<span style="color: #228b22; ">Llvm.</span>build_bitcast†caller†function_type†(name†^†<span style="color: #8b2252; ">"_function"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†retval†=†<span style="color: #228b22; ">Llvm.</span>build_call†casted_caller†[|†callee†|]†(name†^<span style="color: #8b2252; ">"_result"</span>)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 retval</P><P></code></div>
 </P><!--TOC subsection Creating and accessing basic blocks-->
 <H3 CLASS="subsection"><!--SEC ANCHOR -->Creating and accessing basic blocks</H3><!--SEC END --><P> 
 <BR><B>12.</B>†
-<A NAME="src/llvm/cpsllvm.ml:9250"></A>This special value is used to ensure, via the type checker, that
+<A NAME="src/llvm/cpsllvm.ml:10011"></A>This special value is used to ensure, via the type checker, that
 compilation to LLVM never leaves a basic-block halfly built. LLVM
 basic blocks should all end with a terminator instruction; whenever
 one is inserted, the function should return <code><span style="color: #228b22; ">End_of_block</span></code>. When
 building non-terminator instructions, the code must continue
 building the basic block. 
-<BR><A NAME="src/llvm/cpsllvm.ml:9621"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:10382"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
 <span style="color: #0000ff; font-weight: bold;">type</span>†termination†=†<span style="color: #228b22; ">End_of_block</span><BR></code></div><B>13.</B>†
-<A NAME="src/llvm/cpsllvm.ml:9658"></A>This creates a new basic block in the current function.</P><P>Note that LLVM basic blocks are associated to a parent function,
+<A NAME="src/llvm/cpsllvm.ml:10419"></A>This creates a new basic block in the current function.</P><P>Note that LLVM basic blocks are associated to a parent function,
 that we need to retrieve to create a new basic block. 
-<BR><A NAME="src/llvm/cpsllvm.ml:9845"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:10606"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†new_block†builder†=†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†new_block†name†builder†=<BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†current_bb†=†<span style="color: #228b22; ">Llvm.</span>insertion_block†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†the_function†=†<span style="color: #228b22; ">Llvm.</span>block_parent†current_bb†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†new_bb†=†<span style="color: #228b22; ">Llvm.</span>append_block†context†<span style="color: #8b2252; ">"k"</span>†the_function†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†new_bb†=†<span style="color: #228b22; ">Llvm.</span>append_block†context†name†the_function†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 new_bb<BR></code></div><B>14.</B>†
-<A NAME="src/llvm/cpsllvm.ml:10049"></A>Returns <code><span style="color: #228b22; ">Some</span>(phi)</code> if the block already begins with a phi instruction,
+<A NAME="src/llvm/cpsllvm.ml:10815"></A>Returns <code><span style="color: #228b22; ">Some</span>(phi)</code> if the block already begins with a phi instruction,
 or <code><span style="color: #228b22; ">None</span></code> otherwise. 
-<BR><A NAME="src/llvm/cpsllvm.ml:10150"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:10916"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†begin_with_phi_node†basic_block†=†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†begin_with_phi_node†basic_block†=<BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†pos†=†<span style="color: #228b22; ">Llvm.</span>instr_begin†basic_block†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 <span style="color: #a020f0; ">match</span>†pos†<span style="color: #a020f0; ">with</span><BR>††††
 &#X2223;†<span style="color: #228b22; ">Llvm.At_end</span>(_)†&#X2192;†<span style="color: #228b22; ">None</span><BR>††††
-&#X2223;†<span style="color: #228b22; ">Llvm.Before</span>(inst)†&#X2192;†<BR>††††††
+&#X2223;†<span style="color: #228b22; ">Llvm.Before</span>(inst)†&#X2192;<BR>††††††
 (<span style="color: #a020f0; ">match</span>†<span style="color: #228b22; ">Llvm.</span>instr_opcode†inst†<span style="color: #a020f0; ">with</span><BR>††††††††
 &#X2223;†<span style="color: #228b22; ">Llvm.Opcode.PHI</span>†&#X2192;†<span style="color: #228b22; ">Some</span>(inst)<BR>††††††††
 &#X2223;†_†&#X2192;†<span style="color: #228b22; ">None</span>)<BR></code></div><B>15.</B>†
-<A NAME="src/llvm/cpsllvm.ml:10556"></A>This builds a jmp instruction to <code>destination_block</code>, also passing
+<A NAME="src/llvm/cpsllvm.ml:11320"></A>This builds a jmp instruction to <code>destination_block</code>, also passing
 the <code>v</code> value. This is achieved by setting <code>v</code> as an incoming value
 for the phi instruction that begins <code>destination_block</code>. If
 <code>destination_block</code> does not start with a phi node, then it is the
 first time that <code>destination_block</code> is called, and we create this
 phi node. 
-<BR><A NAME="src/llvm/cpsllvm.ml:10914"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:11678"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_jmp_to_and_add_incoming†destination_block†v†builder†=</P><P><A NAME="src/llvm/cpsllvm.ml:10979"></A>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†add_incoming_to_block†basic_block†(value,curblock)†=†<BR>††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_jmp_to_and_add_incoming†destination_block†v†builder†=</P><P><A NAME="src/llvm/cpsllvm.ml:11743"></A>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†add_incoming_to_block†basic_block†(value,curblock)†=<BR>††††
 <span style="color: #a020f0; ">match</span>†begin_with_phi_node†basic_block†<span style="color: #a020f0; ">with</span><BR>††††††
 &#X2223;†<span style="color: #228b22; ">Some</span>(phi)†&#X2192;†<span style="color: #228b22; ">Llvm.</span>add_incoming†(value,curblock)†phi<BR>††††††
-&#X2223;†<span style="color: #228b22; ">None</span>†&#X2192;†<BR>††††††††
+&#X2223;†<span style="color: #228b22; ">None</span>†&#X2192;<BR>††††††††
 <span style="color: #b22222">(&#X2217;  Temporarily create a builder to build the phi instruction.  &#X2217;)</span><BR>††††††††
 <span style="color: #0000ff; font-weight: bold;">let</span>†builder†=†<span style="color: #228b22; ">Llvm.</span>builder_at†context†(<span style="color: #228b22; ">Llvm.</span>instr_begin†basic_block)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††
-ignore(<span style="color: #228b22; ">Llvm.</span>build_phi†[value,curblock]†<span style="color: #8b2252; ">"phi"</span>†builder)†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:11382"></A>††
+ignore(<span style="color: #228b22; ">Llvm.</span>build_phi†[value,curblock]†<span style="color: #8b2252; ">"phi"</span>†builder)†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:12144"></A>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†current_basic_block†=†<span style="color: #228b22; ">Llvm.</span>insertion_block†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-add_incoming_to_block†destination_block†(v,†current_basic_block);</P><P><A NAME="src/llvm/cpsllvm.ml:11511"></A>††
+add_incoming_to_block†destination_block†(v,†current_basic_block);</P><P><A NAME="src/llvm/cpsllvm.ml:12273"></A>††
 ignore(<span style="color: #228b22; ">Llvm.</span>build_br†destination_block†builder);<BR>††
 <span style="color: #228b22; ">End_of_block</span><BR></code></div><B>16.</B>†
-<A NAME="src/llvm/cpsllvm.ml:11583"></A>We use the following sum type to establish a distinction between:
+<A NAME="src/llvm/cpsllvm.ml:12345"></A>We use the following sum type to establish a distinction between:
 </P><UL CLASS="itemize"><LI CLASS="li-itemize">continuation variables bound with lambda: calling them
 returns from the function, and the parameter <code>x</code> of the call <code>k(†x)</code>
 is returned;</LI><LI CLASS="li-itemize">and continuation variables bound with letcont: calling them
 jumps to the corresponding basic block, and the parameter <code>x</code> of
 the call <code>k(†x)</code> is passed to the phi node starting this basic
-block.</LI></UL><P> 
-The CPS&#X2192;LLVM translation maps continuation variables to <code>dest_type</code>s.</P><P><BR><A NAME="src/llvm/cpsllvm.ml:12137"></A>
+block.</LI></UL><P>
+The CPS&#X2192;LLVM translation maps continuation variables to <code>dest_type</code>s.</P><P><BR><A NAME="src/llvm/cpsllvm.ml:12898"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">type</span>†dest_type†=†<BR>††
-&#X2223;†<span style="color: #228b22; ">Ret</span>†<BR>††
+<span style="color: #0000ff; font-weight: bold;">type</span>†dest_type†=<BR>††
+&#X2223;†<span style="color: #228b22; ">Ret</span><BR>††
 &#X2223;†<span style="color: #228b22; ">Jmp_to</span>†<span style="color: #a52a2a; ">of</span>†<span style="color: #228b22; ">Llvm.</span>llbasicblock</P><P></code></div>
 Build a call to a continuation <code>k†x</code>. 
-<BR><A NAME="src/llvm/cpsllvm.ml:12242"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:13000"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_applycont†k†x†builder†=†<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_applycont†k†x†builder†=<BR>††
 <span style="color: #a020f0; ">match</span>†k†<span style="color: #a020f0; ">with</span><BR>††††
 &#X2223;†<span style="color: #228b22; ">Ret</span>†&#X2192;†ignore(<span style="color: #228b22; ">Llvm.</span>build_ret†x†builder);†<span style="color: #228b22; ">End_of_block</span><BR>††††
 &#X2223;†<span style="color: #228b22; ">Jmp_to</span>(destination)†&#X2192;†build_jmp_to_and_add_incoming†destination†x†builder</P><P></code></div>
@@ -344,14 +353,44 @@ Build a call to a continuation <code>k†x</code>.
 <H3 CLASS="subsection"><!--SEC ANCHOR -->Main CPS term translation</H3><!--SEC END --><P> 
 <BR>
 It is important for LLVM that function names are unique. 
-<BR><A NAME="src/llvm/cpsllvm.ml:12546"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:13303"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">module</span>†<span style="color: #228b22; ">UniqueFunctionId</span>†=†<span style="color: #228b22; ">Unique.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span>†<span style="color: #0000ff; font-weight: bold;">end</span>)<BR></code></div><B>17.</B>†
-<A NAME="src/llvm/cpsllvm.ml:12601"></A>This function builds the CPS term <code>cps</code>, in the current block
+<span style="color: #0000ff; font-weight: bold;">module</span>†<span style="color: #228b22; ">UniqueFunctionId</span>†=†<span style="color: #228b22; ">Unique.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span>†<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/llvm/cpsllvm.ml:13355"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†uniquify_name†name†=†name†^†<span style="color: #8b2252; ">"_uniq"</span>†^†(<span style="color: #228b22; ">UniqueFunctionId.</span>to_string†(<span style="color: #228b22; ">UniqueFunctionId.</span>fresh()))</P><P></code></div>
+The environment comprehends <code>contvarmap</code>, a mapping from local
+continuation variables to dest_type; <code>globalvarmap</code>, a mapping from
+the global variables to llvalues; <code>varmap</code>, containing a mapping
+from both the global and local variables to llvalues; and
+<code>handle_halt</code>, which explains how <code><span style="color: #228b22; ">Halt</span></code> is translated. 
+<BR><A NAME="src/llvm/cpsllvm.ml:13784"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+
+<span style="color: #0000ff; font-weight: bold;">type</span>†env†=†{†contvarmap:†dest_type†<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>t;<BR>††††††††††††††
+varmap:†<span style="color: #228b22; ">Llvm.</span>llvalue†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>t;<BR>††††††††††††††
+globalvarmap:†<span style="color: #228b22; ">Llvm.</span>llvalue†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>t;<BR>††††††††††††††
+handle_halt:†handle_halt<BR>††††††††††††
+}</P><P></code></div>
+This type states how a <code><span style="color: #228b22; ">Halt</span>(x)</code> CPS term must be translated:
+either we return <code>x</code>, or we ignore <code>x</code> return nothing, or <code>x</code> is
+stored in some memory region. 
+<BR><A NAME="src/llvm/cpsllvm.ml:14188"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>†handle_halt†=<BR>††
+&#X2223;†<span style="color: #228b22; ">Halt_returns_value</span><BR>††
+&#X2223;†<span style="color: #228b22; ">Halt_returns_void</span><BR>††
+&#X2223;†<span style="color: #228b22; ">Halt_stores_results_in</span>†<span style="color: #a52a2a; ">of</span>†<span style="color: #228b22; ">Llvm.</span>llvalue<BR></code></div><B>17.</B>†
+<A NAME="src/llvm/cpsllvm.ml:14298"></A>This function builds the CPS term <code>cps</code>, in the current block
 pointed to by <code>builder</code>. <code>varmap</code> maps CPS variables to LLVM
 llvalues. <code>contvarmap</code> maps CPS continuation variables to values of
 type <code>contvar_type</code>.</P><P>All the free variables or continuation variables in <code>cps</code> must be
@@ -360,91 +399,90 @@ must not contain any free variables or free continuation variables
 (even the one in <code>varmap</code> and <code>contvarmap</code>). Closure conversion
 deals with this. Note: previously-defined global variables are not
 considered free. 
-<BR><A NAME="src/llvm/cpsllvm.ml:13185"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:14882"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">let</span>†<span style="color: #0000ff; font-weight: bold;">rec</span>†build_term†cps†(contvarmap,†varmap)†builder†=<BR></code></div><B>18.</B>†
-<A NAME="src/llvm/cpsllvm.ml:13245"></A>Helper functions to retrieve/add values from/to maps. 
-<BR><A NAME="src/llvm/cpsllvm.ml:13305"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†<span style="color: #0000ff; font-weight: bold;">rec</span>†build_term†cps†env†builder†=<BR></code></div><B>18.</B>†
+<A NAME="src/llvm/cpsllvm.ml:14924"></A>These functions return a llvalue corresponding to the occurrence
+of a variable or continuation variable given as an argument. 
+<BR><A NAME="src/llvm/cpsllvm.ml:15059"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 ††
-<span style="color: #0000ff; font-weight: bold;">let</span>†lookup_free_var†x†=†<BR>††††
-<span style="color: #b22222">(&#X2217;  XXX: Now more than that. Depending on the binding site, we
-return different results. For now we differenciate only
-globals, but constants should also have a special treatment.</P><P> &#X2217;)</span><BR>††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†translate_occurrence†x†=<BR>††††
 <span style="color: #0000ff; font-weight: bold;">let</span>†bound_var†=†<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>binding_variable†x†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†llvalue†=†<BR>††††††
-<span style="color: #a020f0; ">try</span>†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>find†bound_var†varmap<BR>††††††
-<span style="color: #a020f0; ">with</span>†_†&#X2192;†<span style="color: #a020f0; ">failwith</span>†<span style="color: #8b2252; ">"in†lookup_var"</span>†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†llvalue†=<BR>††††††
+<span style="color: #a020f0; ">try</span>†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>find†bound_var†env.varmap<BR>††††††
+<span style="color: #a020f0; ">with</span>†_†&#X2192;†<span style="color: #a020f0; ">failwith</span>†<span style="color: #8b2252; ">"in†translate_var"</span>†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††
 <span style="color: #0000ff; font-weight: bold;">let</span>†bound_var_desc†=†(<span style="color: #228b22; ">Cpsbase.Var.Var.</span>description†bound_var)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††
 <span style="color: #a020f0; ">match</span>†bound_var_desc.Cpsbase.binding_site_var†<span style="color: #a020f0; ">with</span><BR>††††††
 <span style="color: #b22222">(&#X2217;  Global dynamic values are allocated with an extra level of
-indirection.  &#X2217;)</span><BR>††††††
-&#X2223;†<span style="color: #228b22; ">Cpsbase.Enclosing_definition</span>(_,<span style="color: #228b22; ">Dynamic_value</span>(_))†&#X2192;†<BR>††††††††
-build_unbox†llvalue†anystar_type†<span style="color: #8b2252; ">"loadglob"</span>†builder<BR>††††††
-<span style="color: #b22222">(&#X2217;  XXX: We could simplify the compilation of integer constants
-here: inserting constant values instead of the corresponding
-variable. Not worth it: llvm will deal with that. &#X2217;)</span><BR>††††††
+indirection, so we need to unbox them.  &#X2217;)</span><BR>††††††
+&#X2223;†<span style="color: #228b22; ">Cpsbase.Enclosing_definition</span>(_,<span style="color: #228b22; ">Dynamic_value</span>(_))†&#X2192;<BR>††††††††
+build_unbox†(<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>to_string†x)†llvalue†anystar_type†builder<BR>††††††
+<span style="color: #b22222">(&#X2217;  Note: we could directly return constant integer here. It
+seems not worth it, because LLVM should be able to deal
+with them itself.  &#X2217;)</span><BR>††††††
 &#X2223;†_†&#X2192;†llvalue<BR>††
-<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:14284"></A>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†lookup_contvar†k†=†<BR>††††
-<span style="color: #a020f0; ">try</span>†<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>find†(<span style="color: #228b22; ">Cpsbase.Cont_var.Occur.</span>binding_variable†k)†contvarmap†<BR>††††
-<span style="color: #a020f0; ">with</span>†_†&#X2192;†<span style="color: #a020f0; ">failwith</span>†<span style="color: #8b2252; ">"in†lookup_contvar"</span>†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:14451"></A>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†add_to_varmap†var†value†=†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>add†var†value†varmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†add_to_contvarmap†contvar†block†=†<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>add†contvar†(<span style="color: #228b22; ">Jmp_to</span>†block)†contvarmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR></code></div><B>19.</B>†
-<A NAME="src/llvm/cpsllvm.ml:14638"></A>Converting the term is done by inductive decomposition. There are
-three kind of cases: 
+<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:15842"></A>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†translate_cont_occurrence†k†=<BR>††††
+<span style="color: #a020f0; ">try</span>†<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>find†(<span style="color: #228b22; ">Cpsbase.Cont_var.Occur.</span>binding_variable†k)†env.contvarmap<BR>††††
+<span style="color: #a020f0; ">with</span>†_†&#X2192;†<span style="color: #a020f0; ">failwith</span>†<span style="color: #8b2252; ">"in†translate_cont_occurrence"</span>†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:16033"></A>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†add_to_varmap†var†value†=†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>add†var†value†env.varmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†add_to_contvarmap†contvar†block†=†<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>add†contvar†(<span style="color: #228b22; ">Jmp_to</span>†block)†env.contvarmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR></code></div><B>19.</B>†
+<A NAME="src/llvm/cpsllvm.ml:16228"></A>Converting the term is done by inductive decomposition. There are
+three kind of cases:
 </P><UL CLASS="itemize"><LI CLASS="li-itemize">
 those that only build new values (letvalue, letproj,
 letprimop...) in the current basic block
-</LI><LI CLASS="li-itemize">those that return a value and end a basic block 
+</LI><LI CLASS="li-itemize">those that return a value and end a basic block
 (apply, applycont, and halt)
 </LI><LI CLASS="li-itemize">the one that build a new basic blocks (letcont).
 </LI></UL><P>To keep the implementation simple, all values are boxed (i.e. put
 in the heap and accessed through a pointer), and of llvm type "i8
 *". Pointer conversions are done according to the use of the
 value. 
-<BR><A NAME="src/llvm/cpsllvm.ml:15249"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:16837"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 ††
 <span style="color: #a020f0; ">match</span>†cps.Cpsbase.term†<span style="color: #a020f0; ">with</span><BR></code></div><B>20.</B>†
-<A NAME="src/llvm/cpsllvm.ml:15287"></A>These cases build a new value, then continue building the
-basic block. 
-<BR><A NAME="src/llvm/cpsllvm.ml:15369"></A>
+<A NAME="src/llvm/cpsllvm.ml:16874"></A>For <code><span style="color: #228b22; ">Let_prim</span>(x,prim,body)</code> we just build the new llvalue
+corresponding to <code>prim</code>, map it to <code>x</code>, then continue building
+<code>body</code>. 
+<BR><A NAME="src/llvm/cpsllvm.ml:17020"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 ††††
-&#X2223;†<span style="color: #228b22; ">Let_prim</span>(x,†<span style="color: #228b22; ">Value</span>†value,†body)†&#X2192;†<BR>††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†newllvalue†=†<BR>††††††††
-(<span style="color: #a020f0; ">match</span>†value†<span style="color: #a020f0; ">with</span>†<BR>††††††††††
-&#X2223;†<span style="color: #228b22; ">Constant</span>(<span style="color: #228b22; ">Constant.Int</span>†i)†&#X2192;<BR>††††††††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†llvalue†=†<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†i†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††††
-build_box†llvalue†(<span style="color: #8b2252; ">"int"</span>†^†string_of_int†i)†builder</P><P></code></div>††††††††††
-Any value is a pointer, including void; so we compile
-void to (void * ) 0. 
-<BR><A NAME="src/llvm/cpsllvm.ml:15725"></A>
+&#X2223;†<span style="color: #228b22; ">Let_prim</span>(x,prim,body)†&#X2192;<BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†xname†=†(<span style="color: #228b22; ">Cpsbase.Var.Var.</span>to_string†x)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†result†=†(<span style="color: #a020f0; ">match</span>†prim†<span style="color: #a020f0; ">with</span><BR>††††††††
+&#X2223;†<span style="color: #228b22; ">Value</span>†(<span style="color: #228b22; ">Constant</span>(<span style="color: #228b22; ">Constant.Int</span>†i))†&#X2192;<BR>††††††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†llvalue†=†<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†i†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††
+build_box†(xname†^†<span style="color: #8b2252; ">"_is_const_"</span>†^†string_of_int†i)†llvalue†builder</P><P></code></div>††††††††
+For now, any value is a pointer, including void; so we
+compile void to (void * ) 0. 
+<BR><A NAME="src/llvm/cpsllvm.ml:17425"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
-††††††††††
-&#X2223;†<span style="color: #228b22; ">Constant</span>(<span style="color: #228b22; ">Constant.Void</span>)†&#X2192;<BR>††††††††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†zero†=†<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†0†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††††
-<span style="color: #228b22; ">Llvm.</span>const_pointercast†zero†anystar_type</P><P><A NAME="src/llvm/cpsllvm.ml:15885"></A>††††††††††
-&#X2223;†<span style="color: #228b22; ">Tuple</span>(l)†&#X2192;<BR>††††††††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†llvalues†=†<span style="color: #228b22; ">List.</span>map†lookup_free_var†l†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††††
-build_tuple†llvalues†builder</P><P></code></div>††††††††††
+††††††††
+&#X2223;†<span style="color: #228b22; ">Value</span>†(<span style="color: #228b22; ">Constant</span>(<span style="color: #228b22; ">Constant.Void</span>))†&#X2192;<BR>††††††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†zero†=†<span style="color: #228b22; ">Llvm.</span>const_int†i32_type†0†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††
+<span style="color: #228b22; ">Llvm.</span>const_pointercast†zero†anystar_type</P><P><A NAME="src/llvm/cpsllvm.ml:17572"></A>††††††††
+&#X2223;†<span style="color: #228b22; ">Value</span>†(<span style="color: #228b22; ">Tuple</span>(l))†&#X2192;<BR>††††††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†llvalues†=†<span style="color: #228b22; ">List.</span>map†translate_occurrence†l†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††
+build_tuple†xname†llvalues†builder</P><P></code></div>††††††††
 This build a new function, with private linkage (since
 that it can be used only by the current term), which
 allows llvm optimizations.</P><P>Note that <code>build_function</code> will use a new builder, so the
@@ -452,46 +490,45 @@ lambda can be built in parallel with the current
 function. Also it will use new variables and continuation
 variable maps (with only the x parameter), so the lambda
 expression must not contain any free variables. 
-<BR><A NAME="src/llvm/cpsllvm.ml:16521"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:18205"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
-††††††††††
-&#X2223;†<span style="color: #228b22; ">Lambda</span>(k,x,body)†&#X2192;†<BR>††††††††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†f†=†build_function†<span style="color: #8b2252; ">"lambda"</span>†k†x†body†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††††
-<span style="color: #228b22; ">Llvm.</span>set_linkage†<span style="color: #228b22; ">Llvm.Linkage.Private</span>†f;<BR>††††††††††††
-<span style="color: #228b22; ">Llvm.</span>build_bitcast†f†anystar_type†<span style="color: #8b2252; ">"lambdacast"</span>†builder</P><P></code></div>††††††††††
-Expressions such as <I>let</I> <I>x</I> = <I>primitive</I> should have
-been translated into something like <I>let</I> <I>x</I> =  (<I>a</I>,<I>b</I>) &#X2212;&gt;
-<I>primitiveop</I>( <I>a</I>,<I>b</I>)  in previous compilation stage, so
-should fail here. 
-<BR><A NAME="src/llvm/cpsllvm.ml:16975"></A>
+††††††††
+&#X2223;†<span style="color: #228b22; ">Value</span>†(<span style="color: #228b22; ">Lambda</span>(k,x,body))†&#X2192;<BR>††††††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†f†=†build_function†(<span style="color: #228b22; ">Cpsbase.Var.Var.</span>to_string†x)†k†x†body†env.globalvarmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††††††
+<span style="color: #228b22; ">Llvm.</span>set_linkage†<span style="color: #228b22; ">Llvm.Linkage.Private</span>†f;<BR>††††††††††
+<span style="color: #228b22; ">Llvm.</span>build_bitcast†f†anystar_type†xname†builder</P><P></code></div>††††††††
+Primitive ops are handled here. Notice that we handle the
+translation of a call to a primitive operation (e.g.
++(a,b)), and not the use of a primitive as a function (e.g.
+let a = +). 
+<BR><A NAME="src/llvm/cpsllvm.ml:18675"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
-††††††††††
-&#X2223;†<span style="color: #228b22; ">Constant</span>(c)†&#X2192;†print_endline†(<span style="color: #228b22; ">Constant.</span>to_string†c);<BR>††††††††††††
-<span style="color: #a020f0; ">assert</span>(†<span style="color: #228b22; ">Constant.</span>is_function†c);<BR>††††††††††††
-<span style="color: #a020f0; ">failwith</span>†<span style="color: #8b2252; ">"ICE:†primitive†operations†as†value†in†LLVM†translation."</span><BR>††††††††
+††††††††
+&#X2223;†<span style="color: #228b22; ">Integer_binary_op</span>(op,xa,xb)†&#X2192;<BR>††††††††††
+build_integer_binary_op†xname†op†(translate_occurrence†xa)†(translate_occurrence†xb)†builder<BR>††††††††
+&#X2223;†<span style="color: #228b22; ">Projection</span>(x,i)†&#X2192;†build_letproj†xname†(translate_occurrence†x)†i†builder</P><P></code></div>††††††††
+Expressions such as <I>let</I> <I>x</I> = <I>primitive</I> should have been
+eta-expanded into something like <I>let</I> <I>x</I> =  (<I>a</I>,<I>b</I>) &#X2212;&gt;
+<I>primitiveop</I>( <I>a</I>,<I>b</I>)  in previous compilation stage, and
+fail here. 
+<BR><A NAME="src/llvm/cpsllvm.ml:19128"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+††††††††
+&#X2223;†<span style="color: #228b22; ">Value</span>†(<span style="color: #228b22; ">Constant</span>(c))†&#X2192;†print_endline†(<span style="color: #228b22; ">Constant.</span>to_string†c);<BR>††††††††††
+<span style="color: #a020f0; ">assert</span>(†<span style="color: #228b22; ">Constant.</span>is_function†c);<BR>††††††††††
+<span style="color: #a020f0; ">failwith</span>†<span style="color: #8b2252; ">"ICE:†primitive†operations†as†value†in†LLVM†translation."</span></P><P><A NAME="src/llvm/cpsllvm.ml:19320"></A>††††††
 )<BR>††††††
-<span style="color: #0000ff; font-weight: bold;">in</span>†build_term†body†(contvarmap,†(add_to_varmap†x†newllvalue))†builder</P><P></code></div>††††
-Primitive operations are similar to letvalue. 
-<BR><A NAME="src/llvm/cpsllvm.ml:17308"></A>
-<div style="border: solid 1px gray; background:#eeeeee;
-            margin: 0.5em 1em 0.5em 1em;
-            padding: 0.5em 1em 0.5em 1em;
-            font-family:mono"><code>
-††††
-&#X2223;†<span style="color: #228b22; ">Let_prim</span>(x,prim,body)†&#X2192;†<BR>††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†result†=†(<span style="color: #a020f0; ">match</span>†prim†<span style="color: #a020f0; ">with</span>†<BR>††††††††
-&#X2223;†<span style="color: #228b22; ">Integer_binary_op</span>(op,xa,xb)†&#X2192;†<BR>††††††††††
-build_integer_binary_op†op†(lookup_free_var†xa)†(lookup_free_var†xb)†builder<BR>††††††††
-&#X2223;†<span style="color: #228b22; ">Projection</span>(x,i)†&#X2192;†build_letproj†(lookup_free_var†x)†i†builder<BR>††††††
-)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
-build_term†body†(contvarmap,†(add_to_varmap†x†result))†builder<BR></code></div><B>21.</B>†
-<A NAME="src/llvm/cpsllvm.ml:17918"></A>Building new basic blocks. The algorithm first creates an
+<span style="color: #0000ff; font-weight: bold;">in</span>†build_term†body†{env†<span style="color: #a020f0; ">with</span>†varmap=(add_to_varmap†x†result)}†builder<BR></code></div><B>21.</B>†
+<A NAME="src/llvm/cpsllvm.ml:19411"></A>Building new basic blocks. The algorithm first creates an
 empty basic block, bound to <code>k</code>, then build <code>body</code>, then build
 <code>term</code> (if <code>k</code> is really called), binding <code>x</code> to the phi node.</P><P>The tricky part is that the llvm bindings do not allow to create
 an "empty" phi node (even if it would, in future implementations
@@ -501,163 +538,173 @@ we have processed the jumps to that node). So it is the calls to
 k that create or change the phi node; no phi node means <code>k</code> is
 never called.</P><P>Doing the operations in this order ensures that calls to <code>k</code> are
 processed before <code>k</code> is built. 
-<BR><A NAME="src/llvm/cpsllvm.ml:18671"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:20164"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 ††††
-&#X2223;†<span style="color: #228b22; ">Let_cont</span>(k,x,term,body)†&#X2192;†<BR>††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†new_bb†=†new_block†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
+&#X2223;†<span style="color: #228b22; ">Let_cont</span>(k,x,term,body)†&#X2192;<BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†new_bb†=†new_block†(<span style="color: #228b22; ">Cpsbase.Cont_var.Var.</span>to_string†k)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
 <span style="color: #0000ff; font-weight: bold;">let</span>†newcvm†=†add_to_contvarmap†k†new_bb†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†<span style="color: #228b22; ">End_of_block</span>†=†build_term†body†(newcvm,†varmap)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†<span style="color: #228b22; ">End_of_block</span>†=†build_term†body†{env†<span style="color: #a020f0; ">with</span>†contvarmap=newcvm}†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
 <span style="color: #228b22; ">Llvm.</span>position_at_end†new_bb†builder;<BR>††††††
 (<span style="color: #a020f0; ">match</span>†begin_with_phi_node†new_bb†<span style="color: #a020f0; ">with</span><BR>††††††††
 &#X2223;†<span style="color: #228b22; ">None</span>†&#X2192;†<span style="color: #228b22; ">End_of_block</span><BR>††††††††
-&#X2223;†<span style="color: #228b22; ">Some</span>(phi)†&#X2192;†build_term†term†(newcvm,†(add_to_varmap†x†phi))†builder)<BR></code></div><B>22.</B>†
-<A NAME="src/llvm/cpsllvm.ml:19069"></A>Cases that change or create basic blocks. 
+&#X2223;†<span style="color: #228b22; ">Some</span>(phi)†&#X2192;†build_term†term†{env†<span style="color: #a020f0; ">with</span>†contvarmap=newcvm;†varmap=add_to_varmap†x†phi}†builder)<BR></code></div><B>22.</B>†
+<A NAME="src/llvm/cpsllvm.ml:20633"></A>Cases that change or create basic blocks. 
 <BR>††††
 Depending on k, applycont either returns or jumps to k. 
-<BR><A NAME="src/llvm/cpsllvm.ml:19183"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:20747"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 ††††
-&#X2223;†<span style="color: #228b22; ">Apply_cont</span>(k,x)†&#X2192;†<BR>††††††
-build_applycont†(lookup_contvar†k)†(lookup_free_var†x)†builder</P><P></code></div>††††
+&#X2223;†<span style="color: #228b22; ">Apply_cont</span>(k,x)†&#X2192;<BR>††††††
+build_applycont†(translate_cont_occurrence†k)†(translate_occurrence†x)†builder</P><P></code></div>††††
 The CPS semantics state that caller should return to k, but
 LLVM SSA does not require that calls end basic blocks. So we
 just build a call instruction, and then a call to <code>k</code>. LLVM
 optimizations will eliminate the superfluous jump if needed. 
-<BR><A NAME="src/llvm/cpsllvm.ml:19552"></A>
+<BR><A NAME="src/llvm/cpsllvm.ml:21131"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 ††††
-&#X2223;†<span style="color: #228b22; ">Apply</span>(caller,k,callee)†&#X2192;†<BR>††††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†retval†=†build_call†(lookup_free_var†caller)†(lookup_free_var†callee)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
-build_applycont†(lookup_contvar†k)†retval†builder</P><P><A NAME="src/llvm/cpsllvm.ml:19733"></A>††††
-&#X2223;†<span style="color: #228b22; ">Halt</span>(x)†&#X2192;†ignore(<span style="color: #228b22; ">Llvm.</span>build_ret†(lookup_free_var†x)†builder);†<span style="color: #228b22; ">End_of_block</span></P><P></code></div>
-Expression built out of a definition are put in a "void -&gt; void" function. 
-The globalvarmap argument is a map of global CPS variables to llvalues. 
-<BR><A NAME="src/llvm/cpsllvm.ml:19975"></A>
+&#X2223;†<span style="color: #228b22; ">Apply</span>(func,k,arg)†&#X2192;<BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†retval†=†build_call†(<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>to_string†func)†(translate_occurrence†func)†(translate_occurrence†arg)†builder†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
+build_applycont†(translate_cont_occurrence†k)†retval†builder</P><P><A NAME="src/llvm/cpsllvm.ml:21357"></A>††††
+&#X2223;†<span style="color: #228b22; ">Halt</span>(x)†&#X2192;†(<span style="color: #a020f0; ">match</span>†env.handle_halt†<span style="color: #a020f0; ">with</span><BR>††††††††
+&#X2223;†<span style="color: #228b22; ">Halt_returns_void</span>†&#X2192;†ignore(<span style="color: #228b22; ">Llvm.</span>build_ret_void†builder)<BR>††††††††
+&#X2223;†<span style="color: #228b22; ">Halt_returns_value</span>†&#X2192;†ignore(<span style="color: #228b22; ">Llvm.</span>build_ret†(translate_occurrence†x)†builder)<BR>††††††††
+&#X2223;†<span style="color: #228b22; ">Halt_stores_results_in</span>(llvalue)†&#X2192;<BR>††††††††††
+<span style="color: #228b22; ">Llvm.</span>build_store†(translate_occurrence†x)†llvalue†builder;<BR>††††††††††
+ignore(<span style="color: #228b22; ">Llvm.</span>build_ret_void†builder)<BR>††††
+);†<span style="color: #228b22; ">End_of_block</span><BR></code></div><B>23.</B>†
+<A NAME="src/llvm/cpsllvm.ml:21740"></A>The following function factorizes the creation of a function with
+LLVM. It takes the following arguments:</P><UL CLASS="itemize"><LI CLASS="li-itemize"><code>name</code>, a string <code>name</code> does not need to be unique, just
+informative.</LI><LI CLASS="li-itemize"><code>params</code> is <code><span style="color: #228b22; ">Some</span>(cont_var,var)</code> if the LLvm function takes
+arguments, or None otherwise.</LI><LI CLASS="li-itemize"><code>cpsbody</code> is the CPS term representing the body of the
+function to be translated.</LI><LI CLASS="li-itemize"><code>handle_halt</code> states how <code><span style="color: #228b22; ">Halt</span>(x)</code> CPS terms must be
+translated.</LI><LI CLASS="li-itemize"><code>globalvarmap</code> is the mapping from global CPS variables to
+llvalues.</LI></UL><P><BR><A NAME="src/llvm/cpsllvm.ml:22320"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
 
-<span style="color: #0000ff; font-weight: bold;">and</span>†build_nodef†name†cpsbody†globalvarmap†=†<BR>††
-prepare_build†name†cpsbody†<span style="color: #228b22; ">None</span>†globalvarmap</P><P><A NAME="src/llvm/cpsllvm.ml:20068"></A>
-<span style="color: #0000ff; font-weight: bold;">and</span>†build_function†name†contparam†param†cpsbody†=<BR>
-<span style="color: #b22222">(&#X2217;  XXX: pass globalvarmap to functions too  &#X2217;)</span><BR>††
-prepare_build†name†cpsbody†(<span style="color: #228b22; ">Some</span>†(contparam,param))†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>empty</P><P></code></div>
-Build the function around the main term cpsbody, possibly taking
-some parameters k and x. 
-<BR><A NAME="src/llvm/cpsllvm.ml:20344"></A>
-<div style="border: solid 1px gray; background:#eeeeee;
-            margin: 0.5em 1em 0.5em 1em;
-            padding: 0.5em 1em 0.5em 1em;
-            font-family:mono"><code>
-
-<span style="color: #0000ff; font-weight: bold;">and</span>†prepare_build†name†cpsbody†param†globalvarmap†=†<BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†params_type†=†<span style="color: #a020f0; ">match</span>†param†<span style="color: #a020f0; ">with</span>†<span style="color: #228b22; ">None</span>†&#X2192;†[|†|]†&#X2223;†_†&#X2192;†[|†anystar_type†|]†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†function_type†=†<span style="color: #228b22; ">Llvm.</span>function_type†anystar_type†params_type†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">and</span>†build_llvm_function†name†~params†cpsbody†handle_halt†globalvarmap†=<BR>††
 <span style="color: #b22222">(&#X2217;  Note: it is important for LLVM that function names are unique.  &#X2217;)</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†funname†=†name†^†<span style="color: #8b2252; ">"#"</span>†^†(<span style="color: #228b22; ">UniqueFunctionId.</span>to_string†(<span style="color: #228b22; ">UniqueFunctionId.</span>fresh()))†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†the_function†=†<span style="color: #228b22; ">Llvm.</span>declare_function†funname†function_type†the_module†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†funname†=†uniquify_name†name†<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>††
+Compute <code>function_type</code>. 
+<BR><A NAME="src/llvm/cpsllvm.ml:22536"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+††
+<span style="color: #0000ff; font-weight: bold;">let</span>†args_type†=†<span style="color: #a020f0; ">match</span>†params†<span style="color: #a020f0; ">with</span><BR>††††
+&#X2223;†<span style="color: #228b22; ">Some</span>(_)†&#X2192;†[|†anystar_type†|]<BR>††††
+&#X2223;†<span style="color: #228b22; ">None</span>†&#X2192;†[|†|]†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†ret_type†=†<span style="color: #a020f0; ">match</span>†handle_halt†<span style="color: #a020f0; ">with</span><BR>††††
+&#X2223;†<span style="color: #228b22; ">Halt_returns_value</span>†&#X2192;†anystar_type<BR>††††
+&#X2223;†<span style="color: #228b22; ">Halt_stores_results_in</span>†_†&#X2223;†<span style="color: #228b22; ">Halt_returns_void</span>†&#X2192;†void_type†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†function_type†=†<span style="color: #228b22; ">Llvm.</span>function_type†ret_type†args_type†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:22843"></A>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†the_function†=†<span style="color: #228b22; ">Llvm.</span>declare_function†funname†function_type†the_module†<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>††
+Compute the initial environment; this requires that <code>the_function</code> is created. 
+<BR><A NAME="src/llvm/cpsllvm.ml:23010"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+††
+<span style="color: #0000ff; font-weight: bold;">let</span>†(initial_contvarmap,†initial_varmap)†=†<span style="color: #a020f0; ">match</span>†params†<span style="color: #a020f0; ">with</span><BR>††††
+&#X2223;†<span style="color: #228b22; ">Some</span>(k,x)†&#X2192;†(<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>singleton†k†<span style="color: #228b22; ">Ret</span>,<BR>††††††††††††††††††††
+<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>add†x†(<span style="color: #228b22; ">Llvm.</span>param†the_function†0)†globalvarmap)<BR>††††
+&#X2223;†<span style="color: #228b22; ">None</span>†&#X2192;†(<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>empty,†globalvarmap)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†initial_env†=†{†contvarmap†=†initial_contvarmap;<BR>††††††††††††††††††††††
+varmap†=†initial_varmap;<BR>††††††††††††††††††††††
+globalvarmap†=†globalvarmap;<BR>††††††††††††††††††††††
+handle_halt†=†handle_halt<BR>††††††††††††††††††††
+}†<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>††
+Build the function. 
+<BR><A NAME="src/llvm/cpsllvm.ml:23542"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+††
 <span style="color: #0000ff; font-weight: bold;">let</span>†bb†=†<span style="color: #228b22; ">Llvm.</span>append_block†context†<span style="color: #8b2252; ">"entry"</span>†the_function†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #b22222">(&#X2217;  Note that we use a new builder. We could even build the functions in parallel.  &#X2217;)</span><BR>††
+<span style="color: #b22222">(&#X2217;  Note that we use a new builder. If OCaml supported SMP, functions
+could even be built in parallel.  &#X2217;)</span><BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†builder†=†<span style="color: #228b22; ">Llvm.</span>builder†context†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 <span style="color: #228b22; ">Llvm.</span>position_at_end†bb†builder;<BR>††
-<span style="color: #a020f0; ">try</span>†<BR>††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†initial_varmaps†=†<BR>††††††
-<span style="color: #a020f0; ">match</span>†param†<span style="color: #a020f0; ">with</span>†<BR>††††††††
-&#X2223;†<span style="color: #228b22; ">None</span>†&#X2192;†(<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>empty,†globalvarmap)<BR>††††††††
-&#X2223;†<span style="color: #228b22; ">Some</span>(k,x)†&#X2192;†(<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>singleton†k†<span style="color: #228b22; ">Ret</span>,<BR>††††††††††††††††††††††††
-<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>add†x†(<span style="color: #228b22; ">Llvm.</span>param†the_function†0)†globalvarmap)†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:21293"></A>††††
-ignore(build_term†cpsbody†initial_varmaps†builder);<BR>††††
+<span style="color: #a020f0; ">try</span><BR>††††
+ignore(build_term†cpsbody†initial_env†builder);<BR>††††
 <span style="color: #b22222">(&#X2217;  Prints the textual representation of the function to stderr.  &#X2217;)</span><BR>††††
 <span style="color: #228b22; ">Llvm.</span>dump_value†the_function;<BR>††††
 <span style="color: #b22222">(&#X2217;  Validate the code we just generated.  &#X2217;)</span><BR>††††
 <span style="color: #228b22; ">Llvm_analysis.</span>assert_valid_function†the_function;<BR>††††
 the_function<BR>††
 <span style="color: #b22222">(&#X2217;  Normally, no exception should be thrown, be we never know.  &#X2217;)</span><BR>††
-<span style="color: #a020f0; ">with</span>†e†&#X2192;†<span style="color: #228b22; ">Llvm.</span>delete_function†the_function;†raise†e</P><P><A NAME="src/llvm/cpsllvm.ml:21698"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>†build_toplevel†toplevel†globalvarmap†=†<BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†<span style="color: #228b22; ">Top</span>(defs)†=†toplevel†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†[(var,<span style="color: #228b22; ">Cpsbase.Dynamic_value</span>(expr))]†=†defs†<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>††
-The thunk is a function that returns the result. 
-<BR><A NAME="src/llvm/cpsllvm.ml:21882"></A>
+<span style="color: #a020f0; ">with</span>†e†&#X2192;†<span style="color: #228b22; ">Llvm.</span>delete_function†the_function;†raise†e</P><P></code></div>
+A function takes parameters and returns a result. 
+<BR><A NAME="src/llvm/cpsllvm.ml:24251"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
-††
-<span style="color: #0000ff; font-weight: bold;">let</span>†thunk†=†build_nodef†<span style="color: #8b2252; ">"nodef"</span>†expr†globalvarmap†<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>††
-We build an enclosing function that calls thunk and store its result. 
-<BR>††
-XXX: This is copy and paste from prepare_build, and should be factorized. 
-<BR><A NAME="src/llvm/cpsllvm.ml:22098"></A>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>†build_function†name†contparam†param†cpsbody†globalvarmap†=<BR>††
+build_llvm_function†name†~params:(<span style="color: #228b22; ">Some</span>(contparam,param))†cpsbody†<span style="color: #228b22; ">Halt_returns_value</span>†globalvarmap<BR></P><P></code></div>
+"nodef" is just a thunk that executes an expression when called. 
+<BR><A NAME="src/llvm/cpsllvm.ml:24489"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
-††
-<span style="color: #0000ff; font-weight: bold;">let</span>†function_type†=†<span style="color: #228b22; ">Llvm.</span>function_type†anystar_type†[|†|]†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†funname†=†<span style="color: #8b2252; ">"global"</span>†^†<span style="color: #8b2252; ">"#"</span>†^†(<span style="color: #228b22; ">UniqueFunctionId.</span>to_string†(<span style="color: #228b22; ">UniqueFunctionId.</span>fresh()))†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†the_function†=†<span style="color: #228b22; ">Llvm.</span>declare_function†funname†function_type†the_module†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†bb†=†<span style="color: #228b22; ">Llvm.</span>append_block†context†<span style="color: #8b2252; ">"entry"</span>†the_function†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†builder†=†<span style="color: #228b22; ">Llvm.</span>builder†context†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #228b22; ">Llvm.</span>position_at_end†bb†builder;</P><P><A NAME="src/llvm/cpsllvm.ml:22469"></A>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†initial_varmaps†=†(<span style="color: #228b22; ">Cpsbase.Cont_var.Var.Map.</span>empty,†globalvarmap)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†result†=†<span style="color: #228b22; ">Llvm.</span>build_call†thunk†[||]†<span style="color: #8b2252; ">"thunkresult"</span>†builder†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:22611"></A>††
-<span style="color: #0000ff; font-weight: bold;">let</span>†varname†=†<span style="color: #8b2252; ">"var"</span>†^†<span style="color: #8b2252; ">"#"</span>†^†(<span style="color: #228b22; ">UniqueFunctionId.</span>to_string†(<span style="color: #228b22; ">UniqueFunctionId.</span>fresh()))†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_nodef†cpsbody†globalvarmap†=<BR>††
+build_llvm_function†<span style="color: #8b2252; ">"nodef"</span>†~params:<span style="color: #228b22; ">None</span>†cpsbody†<span style="color: #228b22; ">Halt_returns_void</span>†globalvarmap</P><P></code></div>
+A definition is a global variable, plus a constructor function that
+stores a value in it. The constructor is also a thunk, that stores a
+result in the global variable when called.
+<BR><A NAME="src/llvm/cpsllvm.ml:24804"></A>
+<div style="border: solid 1px gray; background:#eeeeee;
+            margin: 0.5em 1em 0.5em 1em;
+            padding: 0.5em 1em 0.5em 1em;
+            font-family:mono"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_def†var†cpsbody†globalvarmap†=<BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†varname†=†<span style="color: #228b22; ">Cpsbase.Var.Var.</span>to_string†var†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†funname†=†(<span style="color: #8b2252; ">"construct_"</span>†^†varname)†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
 <span style="color: #0000ff; font-weight: bold;">let</span>†the_variable†=†<span style="color: #228b22; ">Llvm.</span>define_global†varname†undef_anystar†the_module†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
-<span style="color: #228b22; ">Llvm.</span>build_store†result†the_variable†builder;<BR>††
-<span style="color: #228b22; ">Llvm.</span>build_ret†null_anystar†builder;</P><P></code></div>††††
-XXX: Probleme. Avec LLVM, les variables globales sont toujours
-des pointeurs. Et je ne connais pas la taille du resultat de la
-fonction. Donc si la valeur de retour du constructeur est de
-type C value *, la variable globale contiendra value * (et sera
-de type value ** ). Les acc√®s √† cette variable devront se faire
-par des loads, contrairement aux variables locales.</P><P>Solution: les CPS vars devraient avoir un attribut, qui dirait
-si ce sont des variables locales ou globales. 
-<BR>††††
-XXX: llvm a un define_global initializer. Peut-etre qu&#X2019;on devrait utiliser cela? Comment ca s&#X2019;utilise 
-<BR>††††
-Prints the textual representation of the function to stderr. 
-<BR><A NAME="src/llvm/cpsllvm.ml:23589"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>†the_function†=<BR>††††
+build_llvm_function†funname†~params:<span style="color: #228b22; ">None</span>†cpsbody†(<span style="color: #228b22; ">Halt_stores_results_in</span>†the_variable)†globalvarmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+(the_variable,†the_function)<BR></P><P></code></div>
+Build a toplevel definition. 
+<BR><A NAME="src/llvm/cpsllvm.ml:25212"></A>
 <div style="border: solid 1px gray; background:#eeeeee;
             margin: 0.5em 1em 0.5em 1em;
             padding: 0.5em 1em 0.5em 1em;
             font-family:mono"><code>
-††††
-<span style="color: #228b22; ">Llvm.</span>dump_value†the_function;<BR>††††
-<span style="color: #228b22; ">Llvm.</span>dump_value†the_variable;<BR>††††
-<span style="color: #b22222">(&#X2217;  Validate the code we just generated.  &#X2217;)</span><BR>††††
-<span style="color: #228b22; ">Llvm_analysis.</span>assert_valid_function†the_function;</P><P><A NAME="src/llvm/cpsllvm.ml:23760"></A>††††
-<span style="color: #0000ff; font-weight: bold;">let</span>†newmap†=†<span style="color: #a020f0; ">match</span>†var†<span style="color: #a020f0; ">with</span><BR>††††††
-&#X2223;†<span style="color: #228b22; ">Cpsbase.Public</span>(var)†&#X2223;†<span style="color: #228b22; ">Cpsbase.Private</span>(var)†&#X2192;†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>add†var†the_variable†globalvarmap<BR>††††††
-&#X2223;†<span style="color: #228b22; ">Cpsbase.Unused</span>†&#X2192;†globalvarmap<BR>††††
-<span style="color: #0000ff; font-weight: bold;">in</span>†(the_function,†newmap)</P><P></code></div>
-We build two functions; not ideal. The problem is that we would
-like to do something else at the "halt" point. So: </P><P>XXX: Solution: halt should not write build_ret, but return the
-builder and the value returned. In the end there should be only one
-value returned by halt. We should be able to keep the
-"End_of_block" thing, by just adding an alternative, which is
-"halt". "halt" is not encountered when building lambdas or
-functions, only when building nodefs.</P><P>- either we configure (maybe using "dynamic binding", or passing an
-argument; or by just returning the builder at the right position
-when "halt" is encountered, together with the returned value)
-"halt" in build_term to be configurable</P><P>- Or we manage, in the CPS transformation, to have several
-terminators (not just halt): Retvoid, Ret, or Writeglobal. Less
-satisfactorily.</P><P><BR>††
-let (constructor,newcpsllvalues) = 
-<BR>††
-Cpsllvm.build_toplevel toplevel envs.cpsllvalues in 
-<BR></P><!--CUT END -->
+
+<span style="color: #0000ff; font-weight: bold;">let</span>†build_toplevel†toplevel†globalvarmap†=<BR>††
+<span style="color: #b22222">(&#X2217;  TODO: handle the case with several definitions.  &#X2217;)</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†<span style="color: #228b22; ">Top</span>(defs)†=†toplevel†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††
+<span style="color: #0000ff; font-weight: bold;">let</span>†[(visib,<span style="color: #228b22; ">Cpsbase.Dynamic_value</span>(expr))]†=†defs†<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/llvm/cpsllvm.ml:25396"></A>††
+<span style="color: #a020f0; ">match</span>†visib†<span style="color: #a020f0; ">with</span><BR>††††
+<span style="color: #b22222">(&#X2217;  The result of the expression is meaningful, and bound to a variable.  &#X2217;)</span><BR>††††
+&#X2223;†<span style="color: #228b22; ">Cpsbase.Public</span>(var)†&#X2223;†<span style="color: #228b22; ">Cpsbase.Private</span>(var)†&#X2192;<BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†(the_variable,†the_function)†=†build_def†var†expr†globalvarmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†newmap†=†<span style="color: #228b22; ">Cpsbase.Var.Var.Map.</span>add†var†the_variable†globalvarmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
+(the_function,†newmap)<BR>††††
+<span style="color: #b22222">(&#X2217;  We do not care about the result of the expression.  &#X2217;)</span><BR>††††
+&#X2223;†<span style="color: #228b22; ">Cpsbase.Unused</span>†&#X2192;<BR>††††††
+<span style="color: #0000ff; font-weight: bold;">let</span>†the_function†=†build_nodef†expr†globalvarmap†<span style="color: #0000ff; font-weight: bold;">in</span><BR>††††††
+(the_function,†globalvarmap)<BR><BR></code></div></P><!--CUT END -->
 <!--HTMLFOOT-->
 <!--ENDHTML-->
 <!--FOOTER-->
