@@ -62,8 +62,10 @@ end
 
 module Make(Desc:DESCRIPTION) = struct
 
-  type var = (Desc.variable_description, Desc.occurrence_description) variable
-  type occur = (Desc.variable_description, Desc.occurrence_description) occurrence
+  type var_desc = Desc.variable_description
+  type occur_desc = Desc.occurrence_description
+  type var = (var_desc, occur_desc) variable
+  type occur = (var_desc, occur_desc) occurrence
 
   (*s Occurrences contain a link variable, used by the union-find
     functor. The description of a partition of an occurrence [occur]
@@ -175,15 +177,13 @@ module Make(Desc:DESCRIPTION) = struct
       [description].*)
     let to_string bv = Desc.var_prefix ^ (UniqueId.to_string bv.var_id);;
 
-    module Map = Map.Make(struct
+    module Ord = struct
       type t = var
       let compare a b = compare a.var_id b.var_id
-    end)
+    end
 
-    module Set = Set.Make(struct
-      type t = var
-      let compare a b = compare a.var_id b.var_id
-    end)
+    module Map = Map.Make(Ord);;
+    module Set = Set.Make(Ord);;
 
   end;;
 
@@ -246,6 +246,60 @@ module Make(Desc:DESCRIPTION) = struct
     let to_string occur = 
       let bv = binding_variable occur in
       (Var.to_string bv) ^ "_" ^ (string_of_int occur.occur_id);;
+
+     (* We compare occurrences by lexical order of (var_id, occur_id).
+        We must not use the generic "compare" function, because
+        Variables and Occurrences can be part of a circular chain of
+        pointers, and "compare" could loop indefinitely  *)
+     module Ord = struct
+      type t = occur
+      let compare a b =
+        let unique_id o =
+          let x = binding_variable o in
+          (x.var_id, o.occur_id) in
+        compare (unique_id a) (unique_id b);;
+    end
+
+    module Map = Map.Make(Ord);;
+    module Set = Set.Make(Ord);;
   end
 
 end
+
+(*i*)
+(* The module type has already been described in the interface. *)
+module type S = sig
+  type var_desc
+  type occur_desc
+  type var = (var_desc, occur_desc) variable
+  type occur = (var_desc, occur_desc) occurrence
+
+  module Var :
+  sig
+    val make : unit -> var
+    type occurrence_number = 
+      | No_occurrence
+      | One_occurrence of occur
+      | Several_occurrences
+    val occurrence_number: var -> occurrence_number
+    val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
+    val replace_with: var -> var -> unit
+    val description : var -> var_desc
+    val set_description : var -> var_desc -> unit
+    val to_string : var -> string
+    module Map : Map.S with type key = var
+    module Set : Set.S with type elt = var
+  end
+
+  module Occur :
+  sig
+    val make : var -> occur
+    val binding_variable : occur -> var
+    val description: occur -> occur_desc
+    val set_description: occur -> occur_desc -> unit
+    val to_string : occur -> string
+    module Map : Map.S with type key = occur
+    module Set : Set.S with type elt = occur
+  end
+end
+(*i*)

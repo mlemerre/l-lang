@@ -31,10 +31,12 @@ module type DESCRIPTION = sig
   type occurrence_description
   val var_prefix:string
 end
-module Make (Desc : DESCRIPTION) :
-sig
-  type var = (Desc.variable_description, Desc.occurrence_description) variable
-  type occur = (Desc.variable_description, Desc.occurrence_description) occurrence
+
+module type S = sig
+  type var_desc
+  type occur_desc
+  type var = (var_desc, occur_desc) variable
+  type occur = (var_desc, occur_desc) occurrence
 
   module Var :
   sig
@@ -61,8 +63,8 @@ sig
        call [old] is a variable with no occurrence. *)
     val replace_with: var -> var -> unit
 
-    val description : var -> Desc.variable_description
-    val set_description : var -> Desc.variable_description -> unit
+    val description : var -> var_desc
+    val set_description : var -> var_desc -> unit
     val to_string : var -> string
 
     module Map : Map.S with type key = var
@@ -80,8 +82,15 @@ sig
        occurrence of [var]. *)
     val binding_variable : occur -> var
 
-    val description: occur -> Desc.occurrence_description
-    val set_description: occur -> Desc.occurrence_description -> unit
+    val description: occur -> occur_desc
+    val set_description: occur -> occur_desc -> unit
     val to_string : occur -> string
+
+    module Map : Map.S with type key = occur
+    module Set : Set.S with type elt = occur
   end
 end
+
+module Make (Desc : DESCRIPTION) : S
+  with type var_desc = Desc.variable_description
+  and type occur_desc =  Desc.occurrence_description;;
