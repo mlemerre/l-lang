@@ -77,6 +77,9 @@ module type S = sig
     (* [make var] creates a new occurrence of [var]. *)
     val make : var -> occur
 
+    (* [delete occur] deletes an occurrence of a variable *)
+    val delete: occur -> unit
+
     (* [binding_variable occur] returns the binding variable of
        [occur], i.e. the variable [var] such that [occur] is an
        occurrence of [var]. *)

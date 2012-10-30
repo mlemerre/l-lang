@@ -232,6 +232,29 @@ module Make(Desc:DESCRIPTION) = struct
       let part = Var_union_find.find ufds occur in
       Var_union_find.description ufds part;;
 
+    (* Delete [occur] from the doubly-linked list of occurrences.
+       Following Andrew Kennedy, the union-find data structure is not
+       changed. *)
+    let delete occur =
+      let next = occur.next_occurrence in
+      let prev = occur.previous_occurrence in
+      let var = binding_variable occur in
+      if (occur == next)
+      (* One-variable case. *)
+      then begin
+        assert (occur == prev);
+        assert( match var.occurrences with Some(a) when a == occur -> true | _ -> false);
+        var.occurrences <- None;
+      end
+      else begin
+        assert (occur != prev);
+        prev.next_occurrence <- next;
+        next.previous_occurrence <- prev;
+        (match var.occurrences with
+        | Some(a) when a == occur -> var.occurrences <- Some(prev)
+        | _ -> ())
+      end;;
+
     (* Similarly to [Var], description can be get and set only once.  *)
     let description b = match b.occur_desc with
       | Initialized_to(d) -> d
@@ -294,6 +317,7 @@ module type S = sig
   module Occur :
   sig
     val make : var -> occur
+    val delete: occur -> unit
     val binding_variable : occur -> var
     val description: occur -> occur_desc
     val set_description: occur -> occur_desc -> unit
