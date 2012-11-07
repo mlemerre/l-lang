@@ -1,4 +1,5 @@
 (* Copyright 2012 Matthieu Lemerre.  *)
+(* Cpsdef: definitions of data types for CPS representation. *)
 
 (*s These definitions originates from the "compiling with
   continuations, continued" paper, by Andrew Kennedy (we currently
