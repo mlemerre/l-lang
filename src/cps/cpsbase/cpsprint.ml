@@ -29,10 +29,10 @@ and term ppf t = match t.Cpsdef.term with
       fprintf ppf "%a( %a)"
         cont_occur k occur v
   | Let_cont(k,v,loccont,incont) ->
-      fprintf ppf "%a where\n%a %a:{\n%a}"
+      fprintf ppf "do@\n{ @[<v>%a@]@\n} where %a( %a) =@\n{ @[<v>%a@]}@]"
         term incont cont_var k var v term loccont
   | Let_prim(v,p,body) ->
-      fprintf ppf "let %a = %a in\n%a"
+      fprintf ppf "@[<v>let %a = %a in@ %a@]"
         var v prim p term body
 
 and prim ppf = function
@@ -53,5 +53,12 @@ and value ppf = function
       fprintf ppf "( %a)"
         (fun ppf -> Utils.print_list_ppf ppf ", " occur) l
   | Lambda(k,v,term_) ->
-      fprintf ppf "\n{ %a -> %a ->\n%a}"
+      fprintf ppf "@,@[<v>{ @[<v>%a -> %a ->@\n@[<v>%a@]@]@\n}@]"
         cont_var k var v term term_
+
+
+let debug_term t =
+  Format.eprintf "----------------------------------------\n";
+  Format.eprintf "%a\n" term t;
+  Format.eprintf "----------------------------------------\n@?";;
+
