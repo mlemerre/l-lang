@@ -1,47 +1,5 @@
 (* Copyright 2012 Matthieu Lemerre *)
 
-(*s This file performs some sanity checks on the CPS data structures;
-  it checks that code transformation functions do not mess (too much)
-  with the data structures.
-
-  The checks that it performs are:
-  \begin{description}
-
-  \item[uplink]: Checks that each entity contains the correct uplink.
-  There are currently uplinks from subterms to their enclosing
-  [Let_prim] or [Let_cont] term, and from binding variables to the
-  "binding site" (the term where the variable is bound); the check
-  must be completed when more the CPS structure contains more
-  uplinks.
-
-  \item[occurrences]: Checks that the doubly linked list of
-  occurrences in [Cpsvar], maintained for each variable, is accurate;
-  i.e. that all variables in CPS terms are in the doubly linked lists,
-  and that all terms in the doubly linked list are in a CPS term. The
-  latter can happen, for instance, if one forget to call the
-  [Var.Occur.delete] function.
-
-  \end{description}
-
-  There are further checks that could be done; for instance:
-
-  \begin{itemize}
-  
-  \item That all variables are bound (i.e. no variable is used before
-  it is bound, also stated as "a variable always dominates its
-  uses"). Normal use of the [Cpsbuild] function should already
-  prevent that.
-
-  \item That all occurrences of a continuation variable is always
-  bound in the same [Lambda]; that all occurrences of a variable is
-  always bound in the same [Lambda] once closure conversion was
-  performed.
-
-  \end{itemize}
-
-  Also the module should be extended to handle not only terms, but
-  whole definitions. *)
-
 open Cpsdef;;
 
 (* For each kind of check, we provide a function to check an entire
@@ -54,7 +12,7 @@ end
   term, and for each term [t] we find, we examine its elements
   (variables, occurrences, subterms...). If the element has an uplink,
   it must point to [t]. *)
-module Uplinks:S = struct
+module Uplinks = struct
 
   (* The following function is necessary (rather than just comparing 2
      enclosings with [=]) because comparison of uplinks is done with
@@ -76,16 +34,15 @@ module Uplinks:S = struct
              assert false)
   ;;
 
-  (* The main function recursively traverse the term, performing all
-     the checks. *)
-  let rec term t = 
-
+  (* Checks that all the components in a term (subterms, variables,
+  occurrences...) have their uplink correctly set to [t]. *)
+  let check_enclosings_in_term t =
     (* Each of the following helper function performs a complete check
        on the corresponding element (e.g. [var] checks variables,
        [occ] occurences etc. In addition [body] recurses. *)
-    let body t' = check_enclosing_equal_to_term t'.enclosing t; term t' in
+    let body t' = check_enclosing_equal_to_term (Term.enclosing t') t in
     let var var =
-      let enclosing = (Var.Var.description var).binding_site_var in
+      let enclosing = Var.Var.binding_site var in
       check_enclosing_equal_to_term enclosing t in
 
     (* Note that [cont_var], [occ] and [cont_occ] do not yet have uplinks. *)
@@ -103,13 +60,16 @@ module Uplinks:S = struct
       | Projection(_,t) -> occ t
       | Integer_binary_op(_,a,b) -> occ a; occ b in
 
-    match t.term with
+    match Term.get t with
     | Let_prim(x, p, b) -> var x; prim p; body b
     | Let_cont(k,x,bc,b) -> cont_var k; var x; body bc; body b
     | Apply(f,k,x) -> occ f; cont_occ k; occ x
     | Apply_cont(k,x) -> cont_occ k; occ x
-    | Halt(x) -> occ x
-  ;;
+    | Halt(x) -> occ x;;
+
+  let term t = Cpstraverse.iter_on_terms
+    ~enter_lambdas:true t check_enclosings_in_term;;
+
 end
 
 
@@ -122,7 +82,7 @@ end
 module Occurrences:S = struct
 
   (* This functor factorizes the code common to [Var] and [Cont_var]. *)
-  module Make(Var:Cpsvar.S) = struct
+  module Make(Var:Cpsdef.VAR) = struct
 
     (* For each variable [x] in a term [t], we build a map mapping [x]
        to the set of occurrences of [x] we found in [t]. This map is
@@ -227,7 +187,38 @@ module Occurrences:S = struct
       MakeContVar.compare_sets x (Cont_var.Var.Map.find x contmap);
       (map,contmap) in
     let init = (Var.Var.Map.empty, Cont_var.Var.Map.empty) in
-    ignore(Cpsterm.fold_on_variables_and_occurrences t init
+    ignore(Cpstraverse.fold_on_variables_and_occurrences t init
              beforevar focc aftervar
              beforecontvar fcontocc aftercontvar);;
 end;;
+
+module Contains = struct
+ let var t_ v = match t_ with
+   | Let_prim(x,_,_) when x == v -> true
+   | Let_cont(_,x,_,_) when x == v -> true
+   | Let_prim(_,Value(Lambda(_,x,_)),_) when x == v -> true
+   | _ -> false;;
+
+ let cont_var t_ cv = match t_ with
+   | Let_cont(k,_,_,_) when k == cv -> true
+   | Let_prim(_,Value(Lambda(k,_,_)),_) when k == cv -> true
+   | _ -> false;;
+
+ let subterm term_ the_subterm = match term_ with
+  | Let_cont(_,_,t1,t2) when the_subterm == t1 || the_subterm == t2 -> true
+  | Let_prim(_,_,t) when the_subterm == t -> true
+  | Let_prim(_,Value(Lambda(_,_,t)),_) when the_subterm == t -> true
+  | _ -> false;;
+end
+
+
+module And_set = struct
+  let enclosing t e = (match e with
+    | Enclosing_term(superterm) ->
+      assert( Contains.subterm (Term.get superterm) t));
+    Term.set_enclosing t e;;
+
+  let term t t_ =
+    Term.set t t_;
+    Uplinks.check_enclosings_in_term t;;
+end
