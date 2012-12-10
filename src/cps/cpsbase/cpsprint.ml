@@ -19,7 +19,7 @@ and occur ppf v = fprintf ppf "%s" (Var.Occur.to_string v)
 and cont_var ppf v = fprintf ppf "%s" (Cont_var.Var.to_string v)
 and cont_occur ppf v = fprintf ppf "%s" (Cont_var.Occur.to_string v)
 
-and term ppf t = match t.Cpsdef.term with
+and term ppf t = match Term.get t with
   | Halt v ->
       fprintf ppf "halt %a" occur v
   | Apply(callerv,k,calleev) ->
