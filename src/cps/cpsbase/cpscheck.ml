@@ -188,8 +188,8 @@ module Occurrences:S = struct
       (map,contmap) in
     let init = (Var.Var.Map.empty, Cont_var.Var.Map.empty) in
     ignore(Cpstraverse.fold_on_variables_and_occurrences t init
-             beforevar focc aftervar
-             beforecontvar fcontocc aftercontvar);;
+             ~before_var:beforevar ~occ:focc ~after_var:aftervar
+             ~before_cont_var:beforecontvar ~cont_occ:fcontocc ~after_cont_var:aftercontvar);;
 end;;
 
 module Contains = struct
