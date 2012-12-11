@@ -54,8 +54,13 @@
   [And_set] module allows to perform some local checks together with
   changing a term. *)
 
-(* This module performs a complete check of uplinks. *)
 module Uplinks: sig
+  (* [one_term t] checks that the elements in the [term_] of [t] point
+     to [t]. *)
+  val one_term: Cpsdef.term -> unit
+
+  (* This function recursively performs a complete check of
+     uplinks. *)
   val term: Cpsdef.term -> unit
 end;;
 
@@ -77,7 +82,8 @@ end
    [Cpsdef.Term.set_enclosing], that checks that the uplinks
    invariants are fulfilled by the modification. They should be
    preferred over their unchecked counterparts. *)
-module And_set: sig
-  val term: Cpsdef.term -> Cpsdef.term_ -> unit
-  val enclosing: Cpsdef.term -> Cpsdef.enclosing -> unit
+module And: sig
+  val fill: Cpsdef.Empty.t -> Cpsdef.term_ -> Cpsdef.term
+  val set_term: Cpsdef.term -> Cpsdef.term_ -> unit
+  val set_enclosing: Cpsdef.term -> Cpsdef.enclosing -> unit
 end;;

@@ -99,7 +99,7 @@ let with_cont_var = With_cont_var.with_var;;
 let with_subterm fresh f =
   let t = f fresh in
   assert (Cpscheck.Contains.subterm (Term.get t) fresh);
-  Cpscheck.And_set.enclosing fresh (Enclosing_term t);
+  Cpscheck.And.set_enclosing fresh (Enclosing_term t);
   t;;
 
 (*s The term building functions are straightforward. Note that we do

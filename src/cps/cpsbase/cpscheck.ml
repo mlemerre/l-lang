@@ -36,7 +36,7 @@ module Uplinks = struct
 
   (* Checks that all the components in a term (subterms, variables,
   occurrences...) have their uplink correctly set to [t]. *)
-  let check_enclosings_in_term t =
+  let one_term t =
     (* Each of the following helper function performs a complete check
        on the corresponding element (e.g. [var] checks variables,
        [occ] occurences etc. In addition [body] recurses. *)
@@ -68,7 +68,7 @@ module Uplinks = struct
     | Halt(x) -> occ x;;
 
   let term t = Cpstraverse.iter_on_terms
-    ~enter_lambdas:true t check_enclosings_in_term;;
+    ~enter_lambdas:true t one_term;;
 
 end
 
@@ -212,13 +212,19 @@ module Contains = struct
 end
 
 
-module And_set = struct
-  let enclosing t e = (match e with
+module And = struct
+  let set_enclosing t e = (match e with
     | Enclosing_term(superterm) ->
       assert( Contains.subterm (Term.get superterm) t));
     Term.set_enclosing t e;;
 
-  let term t t_ =
+  let set_term t t_ =
     Term.set t t_;
-    Uplinks.check_enclosings_in_term t;;
+    Uplinks.one_term t;;
+
+  let fill e t_ =
+    let t = Empty.fill e t_ in
+    Uplinks.one_term t;
+    t;;
+
 end
