@@ -126,6 +126,15 @@ val let_binary_op :
   ?var:var ->
   Constant.integer_binary_op -> var -> var -> (var -> Fresh.t) -> Fresh.t
 
+(* Usage: [let_integer_comparison predicate a b (fun var -> ...)] corresponds to
+   [let var = predicate(a, b) in ...] *)
+val let_integer_comparison :
+  ?reconnect:Empty.t ->
+  ?var:var ->
+  Constant.Icmp.predicate -> var -> var -> (var -> Fresh.t) -> Fresh.t
+
+
+
 (* Usage: [let_lambda (fun (k,x) -> ...) (fun var -> ... )] corresponds to
    [let var = { (k,x) -> ... } in ...] *)
 val let_lambda :

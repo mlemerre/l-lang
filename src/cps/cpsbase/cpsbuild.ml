@@ -160,6 +160,11 @@ let let_binary_op ?reconnect ?var op a b fterm =
   let (oa, ob) = (Var.Occur.make a, Var.Occur.make b) in
   let_prim ?reconnect ?var (Integer_binary_op(op,oa,ob)) fterm
 
+let let_integer_comparison ?reconnect ?var op a b fterm =
+  let (oa, ob) = (Var.Occur.make a, Var.Occur.make b) in
+  let_prim ?reconnect ?var (Integer_comparison(op,oa,ob)) fterm
+
+
 let let_lambda ?reconnect ?lambda_var ?param_var ftermlambda ftermparam =
   with_cont_var ( fun cv ->
     with_var ?var:lambda_var ( fun lambdav ->

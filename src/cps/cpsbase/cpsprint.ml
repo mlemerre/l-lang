@@ -43,6 +43,9 @@ and prim ppf = function
   | Integer_binary_op(op,v1,v2) ->
       fprintf ppf "%s( %a, %a)"
         (Constant.integer_binary_op_to_string op) occur v1 occur v2
+  | Integer_comparison(pred,v1,v2) -> 
+      fprintf ppf "%s( %a, %a)"
+        (Constant.integer_comparison_predicate_to_string pred) occur v1 occur v2
 
 and value ppf = function
   | Void ->

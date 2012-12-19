@@ -96,6 +96,7 @@ and primitive =
   | Value of value
   | Projection of occur * int
   | Integer_binary_op of Constant.integer_binary_op * occur * occur
+  | Integer_comparison of Constant.Icmp.predicate * occur * occur
 
 (*s Values are primitive objects, held in normal variables.
 

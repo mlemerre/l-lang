@@ -154,6 +154,10 @@ let replace_some_occurrences_in_one_term t f_ =
           (match (f a,f b) with
           | (None,None) -> None
           | (newa,newb) -> Some (Integer_binary_op(op,choose a newa, choose b newb)))
+	| Integer_comparison(pred,a,b) ->
+          (match (f a,f b) with
+          | (None,None) -> None
+          | (newa,newb) -> Some (Integer_comparison(pred,choose a newa, choose b newb)))
         | Projection(occ, i) ->
           (match f occ with
           | None -> None

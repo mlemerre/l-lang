@@ -227,7 +227,24 @@ let build_integer_binary_op name op a b builder =
   let res = build_fn a_unbox b_unbox (name ^ "_bop") builder in
   build_box name res builder;;
 
-
+let build_integer_comparison name op a b builder =
+  let llvm_pred = match op with
+    | Constant.Icmp.Eq -> Llvm.Icmp.Eq
+    | Constant.Icmp.Ne -> Llvm.Icmp.Ne
+    | Constant.Icmp.Ugt -> Llvm.Icmp.Ugt
+    | Constant.Icmp.Uge -> Llvm.Icmp.Uge
+    | Constant.Icmp.Ult -> Llvm.Icmp.Ult
+    | Constant.Icmp.Ule -> Llvm.Icmp.Ule
+    | Constant.Icmp.Sgt -> Llvm.Icmp.Sgt
+    | Constant.Icmp.Sge -> Llvm.Icmp.Sge
+    | Constant.Icmp.Slt -> Llvm.Icmp.Slt
+    | Constant.Icmp.Sle -> Llvm.Icmp.Sle in
+  let a_unbox = (build_unbox (name ^ "_a") a i32_type builder) in
+  let b_unbox = (build_unbox (name ^ "_b") b i32_type builder) in
+  let res = Llvm.build_icmp llvm_pred a_unbox b_unbox (name ^ "_icmp") builder in
+  (* We store boolean values as 32 bits integers. *)
+  let ext_res = Llvm.build_zext_or_bitcast res i32_type (name ^ "_icmp_ext") builder in
+  build_box name ext_res builder;;
 
 (*s Build a call instruction, casting [caller] to a function pointer. *)
 let build_call name caller callee builder =
@@ -439,6 +456,8 @@ let rec build_term cps env builder =
            let a = +). *)
         | Integer_binary_op(op,xa,xb) ->
           build_integer_binary_op xname op (translate_occurrence xa) (translate_occurrence xb) builder
+        | Integer_comparison(pred,xa,xb) ->
+          build_integer_comparison xname pred (translate_occurrence xa) (translate_occurrence xb) builder
         | Projection(x,i) -> build_letproj xname (translate_occurrence x) i builder
 
         (* Expressions such as $let x = primitive$ should have been
