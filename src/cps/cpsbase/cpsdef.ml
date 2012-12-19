@@ -18,7 +18,7 @@
   continations from respectively normal functions, normal function
   calls, and normal variables. This distinction allows to compile the
   CPS program using a stack (see the [Cpsllvm] module for an
-  implementation of that). 
+  implementation of that).
 
   The representation also forces all values (including constants such
   as integers) to be held in variables, which simplify later
@@ -28,12 +28,12 @@
   that use and bind a variable, and between a term and its enclosing
   parent. This allows efficient transformation of CPS terms.*)
 
-(* \subsection*{Term representation} 
+(* \subsection*{Term representation}
 
    First we present the logical structure of terms. *)
 (*s Following module [Cpsvar], we have different structures for
   variables (to used where the variable is bound) from occurrence of a
-  variable (to use where a variable is used). 
+  variable (to use where a variable is used).
 
   Note that this module makes variables and continuation variables
   unique, and thus avoid any need for alpha conversion. *)
@@ -65,7 +65,7 @@ and cont_occur =  (cont_var_desc,cont_occur_desc) Cpsvar.occurrence
   \item $halt(x)$ is used only as a base case, to stop induction. Its
   semantics is that it returns the value [x], which is the result of
   the computation, to the caller. \end{itemize} *)
-and term_ = 
+and term_ =
   | Let_prim of var * primitive *  term
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
@@ -155,7 +155,7 @@ and visibility = Public of var | Private of var | Unused
    statically computed and allocated values (put in .data section), or
    dynamic values, computed at initialization time and compiled into
    constructors calls (.ctors and .bss). *)
-and definition_type = 
+and definition_type =
   | Function of var list * term
   | Static_value of value
   | Dynamic_value of term
