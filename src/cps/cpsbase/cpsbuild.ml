@@ -156,7 +156,7 @@ let match_tuple ?reconnect n x fterm =
 let let_constant ?reconnect ?var c fterm =
   let_value ?reconnect ?var (Constant c) fterm
 
-let let_binary_op ?reconnect ?var op a b fterm =
+let let_integer_binary_op ?reconnect ?var op a b fterm =
   let (oa, ob) = (Var.Occur.make a, Var.Occur.make b) in
   let_prim ?reconnect ?var (Integer_binary_op(op,oa,ob)) fterm
 

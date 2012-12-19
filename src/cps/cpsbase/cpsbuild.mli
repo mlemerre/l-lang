@@ -119,9 +119,9 @@ val match_tuple :
   ?reconnect:Empty.t ->
   int -> var -> (var list -> Fresh.t) -> Fresh.t
 
-(* Usage: [let_binary_op op a b (fun var -> ...)] corresponds to
+(* Usage: [let_integer_binary_op op a b (fun var -> ...)] corresponds to
    [let var = a op b in ...] *)
-val let_binary_op :
+val let_integer_binary_op :
   ?reconnect:Empty.t ->
   ?var:var ->
   Constant.integer_binary_op -> var -> var -> (var -> Fresh.t) -> Fresh.t
