@@ -171,6 +171,7 @@ let replace_some_occurrences_in_one_term t f_ =
       | None -> ()
       | Some(np) -> Cpscheck.And.set_term t (Let_prim(x,np,body)))
     end
+    | Let_cont(k,x,term,body) -> ()
 ;;
 
 let replace_some_occurrences term f =
