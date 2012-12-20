@@ -1,7 +1,28 @@
 (* Copyright 2012 Matthieu Lemerre. *)
 
-(* This file presents the terms, i.e. the abstract syntax, of the CPS
-   intermediate language. *)
+(*s This file presents the terms, i.e. the abstract syntax, of the CPS
+  intermediate language. These definitions originates from the
+  "compiling with continuations, continued" paper, by Andrew Kennedy.
+
+  CPS (for continuation passing style) puts constraints on functional
+  programs so that a function $f$ never returns; instead it is passed
+  a continuation $k$, which is a function that represents what is
+  executed on $f$ has finished its execution. So instead of returning
+  a value $x$, $f$ "returns" by calling $k(x)$. CPS style makes
+  returning from functions, and more generally control flow,
+  explicit, at the expense of more verbosity.
+
+  This file presents a particular representation of CPS terms that
+  separates continuations, calling a continuations, variables holding
+  continations from (respectively) normal functions, normal function
+  calls, and normal variables. This distinction allows to compile the
+  CPS program using a stack (see the [Cpsllvm] module for an
+  implementation of that).
+
+  The representation also forces all values (including constants such
+  as integers) to be held in variables, which simplify later
+  transformation algorithms. *)
+
 module type S = sig
 
 
