@@ -207,3 +207,9 @@ let with_var_in_def f =
   let d = f v in
   Cpsdef.Var.Var.init v (Cpsdef.Enclosing_definition d);
   d;;
+
+
+(*s The definition building functions are also straightforward. *)
+let def_constant c =
+  with_var_in_def (fun v ->
+    (Public v, Static_value(Constant c)))

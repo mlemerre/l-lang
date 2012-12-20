@@ -165,3 +165,6 @@ val apply_cont :
 val halt :
   ?reconnect:Empty.t ->
   var -> Fresh.t
+
+(*s Functions used to build definitions. *)
+val def_constant: Constant.t -> definition
