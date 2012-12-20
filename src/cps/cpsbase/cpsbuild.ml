@@ -68,24 +68,16 @@ module Make(M:VAR_PARAM) = struct
      term, and [with_var] creates an uplink from the new var to that
      term. The [?var] optional argument allows to reuse an existing
      variable, instead of creating a new one; this variable must not
-     be bound elsewhere (and has been created using another call to
-     [with_var]). *)
-  let with_var ?var f =  match var with
-
-    (* We create the variable, then update it so that it is bound to
-       the term used to created it. *)
-    | None ->
-      let v = M.Var.Var.make() in
-      let t = f v in
-      assert( M.var_in_term v t);
-      M.set_uplink v t;
-      t
-
-    (* If a var argument was given, then the argument was created
-       using an explicit [with_var]. So there is no need to set the
-       uplink; that call [with_var] will do it. *)
-    | Some(x) -> let t = f x in
-                 assert( M.var_in_term x t); t
+     be bound elsewhere (and has been created using a call to the
+     user-accessible functions [with_var_in_*]). *)
+  let with_var ?var f =
+    let v = match var with
+      | None -> M.Var.Var.make()
+      | Some(v) ->v in
+    let t = f v in
+    assert( M.var_in_term v t);
+    M.set_uplink v t;
+    t
 end
 
 module With_var = Make(Var_param)
