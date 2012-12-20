@@ -29,7 +29,7 @@ open Cpsdef;;
    explicitely created using [with_var] and [with_cont_var]. Thus the
    above exemple can be rewritten as:
 
-   [ with_var (fun x ->
+   [ with_var_in_term (fun x ->
    Build.let_constant ~var:x (Constant.Int 11) (fun x' ->
    Build.halt x)) ]
 
@@ -61,10 +61,12 @@ open Cpsdef;;
    delete the occurrence and let [Build] re-create it instead. *)
 
 
-(* The functions used to explicitely create new variables. *)
+(*s Functions used to explicitely create new variables. *)
 val with_var_in_term : (var -> Fresh.t) -> Fresh.t
 val with_cont_var_in_term : (cont_var -> Fresh.t) -> Fresh.t
 val with_var_in_def : (var -> Cpsdef.definition) -> Cpsdef.definition
+
+(*s Functions used to build terms. *)
 
 (* Usage: [let_constant c (fun var -> ...)] corresponds to
    [let var = c in ...] *)
