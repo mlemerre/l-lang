@@ -150,7 +150,8 @@ let anystar_type = Llvm.pointer_type (Llvm.i8_type context);;
 let undef_anystar = Llvm.undef anystar_type;;
 let null_anystar = Llvm.const_null anystar_type;;
 
-open Cpsdef;;
+(* Note: Base will be (in the future) Cps.Base. *)
+open Base;;
 
 (* \subsection*{Creating and accessing memory objects}  *)
 
@@ -346,9 +347,9 @@ let uniquify_name name = name ^ "_uniq" ^ (UniqueFunctionId.to_string (UniqueFun
    the global variables to llvalues; [varmap], containing a mapping
    from both the global and local variables to llvalues; and
    [handle_halt], which explains how [Halt] is translated. *)
-type env = { contvarmap: dest_type Cpsdef.Cont_var.Var.Map.t;
-             varmap: Llvm.llvalue Cpsdef.Var.Var.Map.t;
-             globalvarmap: Llvm.llvalue Cpsdef.Var.Var.Map.t;
+type env = { contvarmap: dest_type Base.Cont_var.Var.Map.t;
+             varmap: Llvm.llvalue Base.Var.Var.Map.t;
+             globalvarmap: Llvm.llvalue Base.Var.Var.Map.t;
              handle_halt: handle_halt
            }
 
@@ -377,16 +378,15 @@ let rec build_term cps env builder =
   (*s These functions return a llvalue corresponding to the occurrence
     of a variable or continuation variable given as an argument. *)
   let translate_occurrence x =
-    let bound_var = Cpsdef.Var.Occur.binding_variable x in
+    let bound_var = Base.Var.Occur.binding_variable x in
     let llvalue =
-      try Cpsdef.Var.Var.Map.find bound_var env.varmap
+      try Base.Var.Var.Map.find bound_var env.varmap
       with _ -> failwith "in translate_var" in
-    let bound_var_desc = (Cpsdef.Var.Var.description bound_var) in
-    match bound_var_desc.Cpsdef.binding_site_var with
+    match Base.Var.Var.binding_site bound_var with
       (* Global dynamic values are allocated with an extra level of
          indirection, so we need to unbox them. *)
-      | Cpsdef.Enclosing_definition(_,Dynamic_value(_)) ->
-        build_unbox (Cpsdef.Var.Occur.to_string x) llvalue anystar_type builder
+      | Base.Enclosing_definition(_,Dynamic_value(_)) ->
+        build_unbox (Base.Var.Occur.to_string x) llvalue anystar_type builder
       (* Note: we could directly return constant integer here. It
          seems not worth it, because LLVM should be able to deal
          with them itself. *)
@@ -394,11 +394,11 @@ let rec build_term cps env builder =
   in
 
   let translate_cont_occurrence k =
-    try Cpsdef.Cont_var.Var.Map.find (Cpsdef.Cont_var.Occur.binding_variable k) env.contvarmap
+    try Base.Cont_var.Var.Map.find (Base.Cont_var.Occur.binding_variable k) env.contvarmap
     with _ -> failwith "in translate_cont_occurrence" in
 
-  let add_to_varmap var value = Cpsdef.Var.Var.Map.add var value env.varmap in
-  let add_to_contvarmap contvar block = Cpsdef.Cont_var.Var.Map.add contvar (Jmp_to block) env.contvarmap in
+  let add_to_varmap var value = Base.Var.Var.Map.add var value env.varmap in
+  let add_to_contvarmap contvar block = Base.Cont_var.Var.Map.add contvar (Jmp_to block) env.contvarmap in
 
   (*s Converting the term is done by inductive decomposition. There are
     three kind of cases:
@@ -414,13 +414,13 @@ let rec build_term cps env builder =
     in the heap and accessed through a pointer), and of llvm type "i8
     *". Pointer conversions are done according to the use of the
     value. *)
-  match cps.Cpsdef.term with
+  match Term.get cps with
 
     (*s For [Let_prim(x,prim,body)] we just build the new llvalue
       corresponding to [prim], map it to [x], then continue building
       [body]. *)
     | Let_prim(x,prim,body) ->
-      let xname = (Cpsdef.Var.Var.to_string x) in
+      let xname = (Base.Var.Var.to_string x) in
       let result = (match prim with
         | Value (Constant(Constant.Int i)) ->
           let llvalue = Llvm.const_int i32_type i in
@@ -446,7 +446,7 @@ let rec build_term cps env builder =
            variable maps (with only the x parameter), so the lambda
            expression must not contain any free variables. *)
         | Value (Lambda(k,x,body)) ->
-          let f = build_function (Cpsdef.Var.Var.to_string x) k x body env.globalvarmap in
+          let f = build_function (Base.Var.Var.to_string x) k x body env.globalvarmap in
           Llvm.set_linkage Llvm.Linkage.Private f;
           Llvm.build_bitcast f anystar_type xname builder
 
@@ -486,7 +486,7 @@ let rec build_term cps env builder =
       Doing the operations in this order ensures that calls to [k] are
       processed before [k] is built. *)
     | Let_cont(k,x,term,body) ->
-      let new_bb = new_block (Cpsdef.Cont_var.Var.to_string k) builder in
+      let new_bb = new_block (Base.Cont_var.Var.to_string k) builder in
       let newcvm = add_to_contvarmap k new_bb in
       let End_of_block = build_term body {env with contvarmap=newcvm} builder in
       Llvm.position_at_end new_bb builder;
@@ -504,7 +504,7 @@ let rec build_term cps env builder =
        just build a call instruction, and then a call to [k]. LLVM
        optimizations will eliminate the superfluous jump if needed. *)
     | Apply(func,k,arg) ->
-      let retval = build_call (Cpsdef.Var.Occur.to_string func) (translate_occurrence func) (translate_occurrence arg) builder in
+      let retval = build_call (Base.Var.Occur.to_string func) (translate_occurrence func) (translate_occurrence arg) builder in
       build_applycont (translate_cont_occurrence k) retval builder
 
     | Halt(x) -> (match env.handle_halt with
@@ -554,9 +554,9 @@ and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
 
   (* Compute the initial environment; this requires that [the_function] is created. *)
   let (initial_contvarmap, initial_varmap) = match params with
-    | Some(k,x) -> (Cpsdef.Cont_var.Var.Map.singleton k Ret,
-                    Cpsdef.Var.Var.Map.add x (Llvm.param the_function 0) globalvarmap)
-    | None -> (Cpsdef.Cont_var.Var.Map.empty, globalvarmap) in
+    | Some(k,x) -> (Base.Cont_var.Var.Map.singleton k Ret,
+                    Base.Var.Var.Map.add x (Llvm.param the_function 0) globalvarmap)
+    | None -> (Base.Cont_var.Var.Map.empty, globalvarmap) in
   let initial_env = { contvarmap = initial_contvarmap;
                       varmap = initial_varmap;
                       globalvarmap = globalvarmap;
@@ -592,7 +592,7 @@ let build_nodef cpsbody globalvarmap =
    stores a value in it. The constructor is also a thunk, that stores a
    result in the global variable when called.*)
 let build_def var cpsbody globalvarmap =
-  let varname = Cpsdef.Var.Var.to_string var in
+  let varname = Base.Var.Var.to_string var in
   let funname = ("construct_" ^ varname) in
   let the_variable = Llvm.define_global varname undef_anystar the_module in
   let the_function =
@@ -604,16 +604,16 @@ let build_def var cpsbody globalvarmap =
 let build_toplevel toplevel globalvarmap =
   (* TODO: handle the case with several definitions. *)
   let Top(defs) = toplevel in
-  let [(visib,Cpsdef.Dynamic_value(expr))] = defs in
+  let [(visib,Base.Dynamic_value(expr))] = defs in
 
   match visib with
     (* The result of the expression is meaningful, and bound to a variable.  *)
-    | Cpsdef.Public(var) | Cpsdef.Private(var) ->
+    | Base.Public(var) | Base.Private(var) ->
       let (the_variable, the_function) = build_def var expr globalvarmap in
-      let newmap = Cpsdef.Var.Var.Map.add var the_variable globalvarmap in
+      let newmap = Base.Var.Var.Map.add var the_variable globalvarmap in
       (the_function, newmap)
     (* We do not care about the result of the expression. *)
-    | Cpsdef.Unused ->
+    | Base.Unused ->
       let the_function = build_nodef expr globalvarmap in
       (the_function, globalvarmap)
 ;;
