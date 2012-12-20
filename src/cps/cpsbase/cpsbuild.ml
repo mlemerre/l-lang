@@ -197,10 +197,30 @@ let apply_cont ?reconnect k x =
 let halt ?reconnect x =
   Term.make ?reconnect (Halt (Var.Occur.make x));;
 
-(*s Functions outside of [Build] do not need the [?var] optional
-  argument, so we hide it. *)
-let with_var_in_term f = with_var f;;
-let with_cont_var_in_term f = with_cont_var f;;
+(*s The user-accessible [with_var_in*] Functions differ from
+  [with_var], in that:
+
+  \begin{enumerate}
+
+  \item They do not need the [?var] optional argument;
+
+  \item As the uplink is already set with the final [with_var], there
+  is no need to set it again here. We just check that the var has been
+  used in f.
+
+  \end{enumerate} *)
+let with_var_in_term f =
+  let v = Var.Var.make() in
+  let t = f v in
+  (* If the variable has no binding site (e.g. it has not been given
+  as an argument to with_var), it will raise an exception. *)
+  assert ( try ( Var.Var.binding_site v); true with Assert_failure _ -> false);
+  t;;
+
+let with_cont_var_in_term f =
+  let v = Cont_var.Var.make() in
+  let t = f v in
+  t;;
 
 let with_var_in_def f =
   let v = Cpsdef.Var.Var.make() in
