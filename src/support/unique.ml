@@ -1,12 +1,7 @@
 (* Copyright 2011-2012 Matthieu Lemerre. *)
 module type Nothing = sig end;;
 
-module Make(S:Nothing):
-sig
-  type t
-  val fresh: unit -> t
-  val to_string: t -> string
-end =
+module Make(S:Nothing) =
 struct
   type t = int;;
   type t_ = t;;
@@ -20,6 +15,8 @@ struct
   module Set = Set.Make(Ordered);;
 
   let to_string i = string_of_int i;;
+
+  let compare = compare;;
 
   (*c Create a fresh identifier. If this overflows, switch to bigger
     int such as [Int64]. *)
