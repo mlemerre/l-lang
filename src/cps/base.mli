@@ -15,6 +15,8 @@
   the [with] constraints allow the types of [Cps.Base] and [Cpsdef] to
   be compatible. Still, [Cpsdef] should not be used directly outide of
   the implementation of [Cps.Base]. *)
+open Basepack
+
 include Cpsast.S with type term = Cpsdef.term
                  and type term_ = Cpsdef.term_
                  and type primitive = Cpsdef.primitive

@@ -1,10 +1,10 @@
-include Cpsdef;;
+include Basepack.Cpsdef;;
 
-module Print = Cpsprint;;
-module Change = Cpschange;;
-module Build = Cpsbuild;;
-module Check = Cpscheck;;
-module Traverse = Cpstraverse;;
+module Print = Basepack.Cpsprint;;
+module Change = Basepack.Cpschange;;
+module Build = Basepack.Cpsbuild;;
+module Check = Basepack.Cpscheck;;
+module Traverse = Basepack.Cpstraverse;;
 
 module type VAR = sig
   type var
