@@ -1,7 +1,5 @@
 (* Copyright 2012 Matthieu Lemerre *)
 
-(* XXX: Pret; il faut changer cpschange.ml pour committer. *)
-
 (* The [Change] module provide high-level functions to perform
    (in-place) changes to terms and definitions. It should be used by
    any CPS transformation pass.
