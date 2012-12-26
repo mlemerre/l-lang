@@ -41,7 +41,7 @@ open Cpsdef;;
   (and not by the subterms of [t]). [var_in_term] allows to check
   that. *)
 module type VAR_PARAM = sig
-  module Var : Cpsdef.VAR
+  module Var : Cpsdef.VAR_RW
   val var_in_term: Var.var -> Cpsdef.term -> bool
   val set_uplink: Var.var -> Cpsdef.term -> unit
 end
@@ -91,6 +91,7 @@ let with_cont_var = With_cont_var.with_var;;
 let with_subterm fresh f =
   let t = f fresh in
   assert (Cpscheck.Contains.subterm (Term.get t) fresh);
+  assert( Fresh.is_fresh fresh);
   Cpscheck.And.set_enclosing fresh (Enclosing_term t);
   t;;
 

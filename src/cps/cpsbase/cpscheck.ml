@@ -82,7 +82,7 @@ end
 module Occurrences:S = struct
 
   (* This functor factorizes the code common to [Var] and [Cont_var]. *)
-  module Make(Var:Cpsdef.VAR) = struct
+  module Make(Var:Cpsdef.VAR_RW) = struct
 
     (* For each variable [x] in a term [t], we build a map mapping [x]
        to the set of occurrences of [x] we found in [t]. This map is
