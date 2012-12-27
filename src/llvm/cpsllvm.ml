@@ -391,7 +391,7 @@ let rec build_term cps env builder =
     match Var.Var.binding_site bound_var with
       (* Global dynamic values are allocated with an extra level of
          indirection, so we need to unbox them. *)
-      | Enclosing_definition(Definition(_,Dynamic_value(_))) ->
+      | Enclosing_definition(Definition(_,(External_value|(Dynamic_value(_))))) ->
         build_unbox (Var.Occur.to_string x) llvalue anystar_type builder
       (* Note: we could directly return constant integer here. It
          seems not worth it, because LLVM should be able to deal
