@@ -604,7 +604,7 @@ let build_def var cpsbody globalvarmap =
 let build_toplevel toplevel globalvarmap =
   (* TODO: handle the case with several definitions. *)
   let Top(defs) = toplevel in
-  let [(visib,Base.Dynamic_value(expr))] = defs in
+  let [Definition(visib,Base.Dynamic_value(expr))] = defs in
 
   match visib with
     (* The result of the expression is meaningful, and bound to a variable.  *)

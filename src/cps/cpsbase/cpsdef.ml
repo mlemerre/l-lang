@@ -57,7 +57,7 @@ and value =
    disappear in favor of an extended notion of "top-level term". i*)
 and modul = Module of toplevel list
 and toplevel = Top of definition list
-and definition = visibility * definition_type
+and definition = Definition of visibility * definition_type
 and visibility = Public of var | Private of var | Unused
 and definition_type =
   | Function of var list * term

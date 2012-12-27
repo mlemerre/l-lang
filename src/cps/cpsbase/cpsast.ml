@@ -130,7 +130,7 @@ module type S = sig
     Private ones can be used by other definitions of the module. Unused
     ones cannot be used by any code, they are used to represent
     computations used only for their side effects. *)
-  and definition = visibility * definition_type
+  and definition = Definition of visibility * definition_type
   and visibility = Public of var | Private of var | Unused
 
   (* Variables can be bound either to functions (compiled to code in

@@ -28,6 +28,8 @@
   module provide the [~reconnect] argument. *)
 open Cpsdef;;
 
+type fresh = term;;
+
 (*s We create a [Make] functor factorizes the code for variables and
   continuation variables. It provides a function, [with_var], that
   allows creating new variables; [with_var] is used by the [Build]
@@ -225,4 +227,4 @@ let with_var_in_def f =
 (*s The definition building functions are also straightforward. *)
 let def_constant c =
   with_var_in_def (fun v ->
-    (Public v, Static_value(Constant c)))
+    Definition(Public v, Static_value(Constant c)))
