@@ -140,7 +140,10 @@
 *)
 
 let context = Llvm.global_context();;
-let the_module = Llvm.create_module context "my jitted module";;
+
+(* We extend the existing, "environment" module. This allows access to
+   existing variables. *)
+let the_module = Llvmenv.the_module;;
 
 let void_type = Llvm.void_type context;;
 let i32_type = Llvm.i32_type context;;
