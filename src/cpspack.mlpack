@@ -1,0 +1,8 @@
+cps/Newcpsconversion
+cps/Base
+cps/Cpsfree
+# Note: Cpsfree is not part of the mlpack, but there are
+# circular dependencies issues if not added. See
+# http://www.mentby.com/Group/caml-list/ocamlbuild-circular-dependencies.html
+# https://groups.google.com/forum/?fromgroups=#!topic/fa.caml/lLSS3PUdupg
+
