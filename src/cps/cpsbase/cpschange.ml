@@ -2,6 +2,8 @@
 
 open Cpsdef;;
 
+type fresh = Fresh.t
+
 (*s Replace the uplinks in the elements in [term.term], to point to
   [term].
 

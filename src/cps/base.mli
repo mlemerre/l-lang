@@ -30,7 +30,8 @@ include Cpsast.S with type term = Cpsdef.term
                  and type var = Cpsdef.var
                  and type occur = Cpsdef.occur
                  and type cont_var = Cpsdef.cont_var
-                 and type cont_occur = Cpsdef.cont_occur;;
+                 and type cont_occur = Cpsdef.cont_occur
+;;
 
 (*s In addition to the base abstract syntax tree, the representation
   of CPS terms provide additional "links" between entities: it is
@@ -106,7 +107,7 @@ module Cont_var:VAR with type var = cont_var and type occur = cont_occur;;
 (* These modules keep the same interface; see their respective
    interface files for their documentation. *)
 module Print:module type of Cpsprint;;
-module Change:module type of Cpschange;;
+module Change:module type of Cpschange with type fresh = term;;
 module Build:module type of Cpsbuild with type fresh = term;;
 module Traverse:module type of Cpstraverse;;
 module Check:module type of Cpscheck;;

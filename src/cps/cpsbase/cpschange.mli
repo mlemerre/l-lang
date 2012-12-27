@@ -50,11 +50,12 @@
 
 open Cpsdef;;
 
+type fresh = Fresh.t;;
 
 (* [disconnect t] removes the link between a term [t] and its
    [term_], i.e. 1. makes [t] empty, and 2. creates a fresh term
    that contains the [term_]. *)
-val disconnect : term -> Empty.t * Fresh.t
+val disconnect : term -> Empty.t * fresh
 
 (* The following functions allows to delete a part of the term. The
    behavior is different for interior and leaf terms:
