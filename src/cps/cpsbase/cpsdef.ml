@@ -188,7 +188,7 @@ module Common = struct
 
   let enclosing t = t.enclosing;;
   let set_enclosing t e = t.enclosing <- e;;
-  let delete_enclosing t e = t.enclosing <- Enclosing_uninitialized;;
+  let delete_enclosing t = t.enclosing <- Enclosing_uninitialized;;
   let is_fresh t = t.enclosing == Enclosing_uninitialized;;
 end;;
 
