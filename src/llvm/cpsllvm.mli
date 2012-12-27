@@ -23,12 +23,12 @@ val the_module : Llvm.llmodule
    that is not part of a function, (for instance if it was typed in the
    interactive prompt). It is translated to a Llvm function that take
    no argument, named [name]. *)
-val build_nodef : Base.term -> Llvm.llvalue Base.Var.Var.Map.t -> Llvm.llvalue
+val build_nodef : Cps.term -> Llvm.llvalue Cps.Var_Map.t -> Llvm.llvalue
 
-val build_toplevel: Base.toplevel -> Llvm.llvalue Base.Var.Var.Map.t -> (Llvm.llvalue * Llvm.llvalue Base.Var.Var.Map.t)
+val build_toplevel: Cps.toplevel -> Llvm.llvalue Cps.Var_Map.t -> (Llvm.llvalue * Llvm.llvalue Cps.Var_Map.t)
 
 (*i val build_function :
   string ->
-  Base.ContVarMap.key ->
-  Base.VarMap.key -> (int, int) Base.term -> Llvm.llvalue i*)
+  Cps.ContVarMap.key ->
+  Cps.VarMap.key -> (int, int) Cps.term -> Llvm.llvalue i*)
 
