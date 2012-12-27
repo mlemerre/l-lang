@@ -107,6 +107,6 @@ module Cont_var:VAR with type var = cont_var and type occur = cont_occur;;
    interface files for their documentation. *)
 module Print:module type of Cpsprint;;
 module Change:module type of Cpschange;;
-module Build:module type of Cpsbuild;;
+module Build:module type of Cpsbuild with type fresh = term;;
 module Traverse:module type of Cpstraverse;;
 module Check:module type of Cpscheck;;

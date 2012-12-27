@@ -61,9 +61,11 @@ open Cpsdef;;
    delete the occurrence and let [Build] re-create it instead. *)
 
 
+type fresh = Fresh.t
+
 (*s Functions used to explicitely create new variables. *)
-val with_var_in_term : (var -> Fresh.t) -> Fresh.t
-val with_cont_var_in_term : (cont_var -> Fresh.t) -> Fresh.t
+val with_var_in_term : (var -> fresh) -> fresh
+val with_cont_var_in_term : (cont_var -> fresh) -> fresh
 val with_var_in_def : (var -> Cpsdef.definition) -> Cpsdef.definition
 
 (*s Functions used to build terms. *)
@@ -73,20 +75,20 @@ val with_var_in_def : (var -> Cpsdef.definition) -> Cpsdef.definition
 val let_constant :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.t -> (var -> Fresh.t) -> Fresh.t
+  Constant.t -> (var -> fresh) -> fresh
 
 (* Usage: [let_void (fun var -> ...)] corresponds to
    [let var = void in ...] *)
 val let_void :
   ?reconnect:Empty.t ->
-  ?var:var -> (var -> Fresh.t) -> Fresh.t
+  ?var:var -> (var -> fresh) -> fresh
 
 (* Usage: [let_proj tuple i (fun var -> ...) corresponds to
    [let var = #i(tuple) in ... ] *)
 val let_proj :
   ?reconnect:Empty.t ->
   ?var:var ->
-  var -> int -> (var -> Fresh.t) -> Fresh.t
+  var -> int -> (var -> fresh) -> fresh
 
 (* Usage: [match_pair pair (fun (var0,var1) -> ...)] corresponds to
    [let (var0,var1) = pair in ...], i.e. to
@@ -96,14 +98,14 @@ val match_pair :
   ?reconnect:Empty.t ->
   ?var0:var ->
   ?var1:var ->
-  var -> (var * var -> Fresh.t) -> Fresh.t
+  var -> (var * var -> fresh) -> fresh
 
 (* Usage: [let_pair (var0,var1) (fun var -> ...)] corresponds to
    [let var = (var0,var1) in ...] *)
 val let_pair :
   ?reconnect:Empty.t ->
   ?var:var ->
-  var * var -> (var -> Fresh.t) -> Fresh.t
+  var * var -> (var -> fresh) -> fresh
 
 (* Usage: [let_tuple [var0;var1;...] (fun var -> ...)] corresponds to
    [let var = (var0,var1,...) in ...]. Note that 0- and 1-tuples are
@@ -111,7 +113,7 @@ val let_pair :
 val let_tuple :
   ?reconnect:Empty.t ->
   ?var:var ->
-  var list -> (var -> Fresh.t) -> Fresh.t
+  var list -> (var -> fresh) -> fresh
 
 (* Usage: [match_tuple t (fun vars -> ...)] corresponds to
    [let [var0;var1;...] = t in ...], i.e. to
@@ -119,21 +121,21 @@ val let_tuple :
     let var1 = #1(t) in ... ] *)
 val match_tuple :
   ?reconnect:Empty.t ->
-  int -> var -> (var list -> Fresh.t) -> Fresh.t
+  int -> var -> (var list -> fresh) -> fresh
 
 (* Usage: [let_integer_binary_op op a b (fun var -> ...)] corresponds to
    [let var = a op b in ...] *)
 val let_integer_binary_op :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.integer_binary_op -> var -> var -> (var -> Fresh.t) -> Fresh.t
+  Constant.integer_binary_op -> var -> var -> (var -> fresh) -> fresh
 
 (* Usage: [let_integer_comparison predicate a b (fun var -> ...)] corresponds to
    [let var = predicate(a, b) in ...] *)
 val let_integer_comparison :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.Icmp.predicate -> var -> var -> (var -> Fresh.t) -> Fresh.t
+  Constant.Icmp.predicate -> var -> var -> (var -> fresh) -> fresh
 
 
 
@@ -143,12 +145,12 @@ val let_lambda :
   ?reconnect:Empty.t ->
   ?lambda_var:var ->
   ?param_var:var ->
-  (cont_var * var -> Fresh.t) -> (var -> Fresh.t) -> Fresh.t
+  (cont_var * var -> fresh) -> (var -> fresh) -> fresh
 
 (* Usage: [apply f k x] corresponds to f(k,x) *)
 val apply :
   ?reconnect:Empty.t ->
-  var -> cont_var -> var -> Fresh.t
+  var -> cont_var -> var -> fresh
 
 (* Usage: [let_cont (fun x -> ...) (fun k -> ...)] corresponds to
    [do ... where k(x) = ...]
@@ -156,17 +158,17 @@ val apply :
    as to allow loops. *)
 val let_cont :
   ?reconnect:Empty.t ->
-  (var -> Fresh.t) -> (cont_var -> Fresh.t) -> Fresh.t
+  (var -> fresh) -> (cont_var -> fresh) -> fresh
 
 (* Usage: [apply_cont k x] corresponds to k(x) *)
 val apply_cont :
   ?reconnect:Empty.t ->
-  cont_var -> var -> Fresh.t
+  cont_var -> var -> fresh
 
 (* Usage: [halt x] corresponds to [halt x]. *)
 val halt :
   ?reconnect:Empty.t ->
-  var -> Fresh.t
+  var -> fresh
 
 (*s Functions used to build definitions. *)
 val def_constant: Constant.t -> definition
