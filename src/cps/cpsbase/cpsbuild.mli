@@ -66,7 +66,7 @@ type fresh = Fresh.t
 (*s Functions used to explicitely create new variables. *)
 val with_var_in_term : (var -> fresh) -> fresh
 val with_cont_var_in_term : (cont_var -> fresh) -> fresh
-val with_var_in_def : (var -> Cpsdef.definition) -> Cpsdef.definition
+val with_var_in_def : (var -> definition) -> definition
 
 (*s Functions used to build terms. *)
 
