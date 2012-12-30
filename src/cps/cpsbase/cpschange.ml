@@ -169,10 +169,11 @@ let replace_some_occurrences_in_one_term t f_ =
           | Void | Constant(_) -> None
           | Lambda(_,_,_) -> None
           | Tuple(l) ->
-            let newl = List.map f l  in
-            if List.memq None newl
-            then Some( Value (Tuple (List.map2 choose l newl)))
-            else None)) in
+            let newl = List.map f l in
+            if List.for_all (fun x -> x == None) newl
+            then None
+            else Some( Value (Tuple (List.map2 choose l newl)))
+          )) in
       (match newp with
       | None -> ()
       | Some(np) -> Cpscheck.And.set_term t (Let_prim(x,np,body)))
