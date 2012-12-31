@@ -85,6 +85,17 @@ end
 module With_var = Make(Var_param)
 let with_var = With_var.with_var;;
 
+let with_n_vars ?vars n f =
+  match vars with
+  | Some(l) -> assert(List.length l == n); f l
+  | None ->
+    let rec loop i accu =
+      if i == 0
+      then f accu
+      else with_var (fun var ->
+        loop (i-1) (var::accu))
+  in loop n [];;
+
 module With_cont_var = Make(Cont_var_param)
 let with_cont_var = With_cont_var.with_var;;
 
@@ -168,14 +179,29 @@ let let_lambda ?reconnect ?lambda_var ?param_var ftermlambda ftermparam =
           with_subterm (ftermlambda (cv,paramv)) (fun body_lambda ->
             Term.make ?reconnect
               (Let_prim(lambdav,
-                        Value (Lambda(cv,paramv, body_lambda)),
+                        Value (Lambda(Closure,cv,[paramv], body_lambda)),
                         body_param)))))));;
 
-let apply ?reconnect f k x =
+let let_function ?reconnect ?fun_var ?cont_arg ?args nb_args fterm_fun ftermparam =
+    with_var ?var:fun_var ( fun funv ->
+      with_cont_var ?var:cont_arg ( fun cv ->
+        with_n_vars ?vars:args nb_args (fun params ->
+          with_subterm (ftermparam funv) (fun body_param ->
+            with_subterm (fterm_fun (cv,params)) (fun body_fun ->
+              Term.make ?reconnect
+                (Let_prim(funv,
+                          Value (Lambda(No_environment,cv,params, body_fun)),
+                          body_param)))))));;
+
+let apply ?reconnect ft f k xl =
   Term.make ?reconnect
-    (Apply ((Var.Occur.make f),
+    (Apply (ft,
+            (Var.Occur.make f),
             (Cont_var.Occur.make k),
-            (Var.Occur.make x)));;
+            List.map Var.Occur.make xl));;
+
+let apply_closure ?reconnect f k xl = apply Closure ?reconnect f k xl
+let apply_function ?reconnect f k xl = apply No_environment ?reconnect f k xl
 
 let let_cont ?reconnect fterm1 fterm2 =
   with_cont_var ( fun cv ->

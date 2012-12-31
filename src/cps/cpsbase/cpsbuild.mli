@@ -147,10 +147,35 @@ val let_lambda :
   ?param_var:var ->
   (cont_var * var -> fresh) -> (var -> fresh) -> fresh
 
-(* Usage: [apply f k x] corresponds to f(k,x) *)
-val apply :
+(* Usage: [let_function (fun nb_args (k,[x1,x2,...xn]) -> ...)
+   (fun var -> ... )] corresponds to
+   [let var = { (k,x1,x2,...,xn) -> ... } in ...] *)
+val let_function :
   ?reconnect:Empty.t ->
-  var -> cont_var -> var -> fresh
+  ?fun_var:var ->
+  ?cont_arg: cont_var ->
+  ?args: var list ->
+  int ->
+  (cont_var * var list -> fresh) -> (var -> fresh) -> fresh
+
+
+(* Usage: [apply_closure f ft k [x1,...,xn]] corresponds to
+   f(k,(x1,...xn)). ft designates the function type: Function or
+   Closure. *)
+val apply :
+  ?reconnect:Empty.t -> function_type ->
+  var -> cont_var -> var list -> fresh
+
+(* Same as apply Closure. *)
+val apply_closure :
+  ?reconnect:Empty.t ->
+  var -> cont_var -> var list -> fresh
+
+(* Same as apply Function. *)
+val apply_function :
+  ?reconnect:Empty.t ->
+  var -> cont_var -> var list -> fresh
+
 
 (* Usage: [let_cont (fun x -> ...) (fun k -> ...)] corresponds to
    [do ... where k(x) = ...]

@@ -254,10 +254,10 @@ let build_integer_comparison name op a b builder =
   build_box name ext_res builder;;
 
 (*s Build a call instruction, casting [caller] to a function pointer. *)
-let build_call name caller callee builder =
-  let function_type = Llvm.pointer_type (Llvm.function_type anystar_type [| anystar_type |]) in
+let build_call name caller callees builder =
+  let function_type = Llvm.pointer_type (Llvm.function_type anystar_type [| anystar_type; anystar_type |]) in
   let casted_caller = Llvm.build_bitcast caller function_type (name ^ "_function") builder in
-  let retval = Llvm.build_call casted_caller [| callee |] (name ^"_result") builder in
+  let retval = Llvm.build_call casted_caller (Array.of_list callees) (name ^"_result") builder in
   retval;;
 
 (* \subsection*{Creating and accessing basic blocks}  *)
@@ -432,11 +432,13 @@ let rec build_term cps env builder =
           let llvalue = Llvm.const_int i32_type i in
           build_box (xname ^ "_is_const_" ^ string_of_int i) llvalue  builder
 
-        (* For now, any value is a pointer, including void; so we
-           compile void to (void * ) 0. *)
-        | Value (Constant(Constant.Void)) ->
-          let zero = Llvm.const_int i32_type 0 in
-          Llvm.const_pointercast zero anystar_type
+        (* For now, any value is a pointer, so we compile void to
+           pointers; but void values should not be dereferenced, so we
+           can just use undef as a pointer. *)
+        (* TODO: There are too many representations of void; it
+           should just be 0-length tuples. *)
+        | Value (Constant(Constant.Void)) | Value Void | Value (Tuple []) ->
+          Llvm.undef anystar_type
 
         | Value (Tuple(l)) ->
           let llvalues = List.map translate_occurrence l in
@@ -451,8 +453,8 @@ let rec build_term cps env builder =
            function. Also it will use new variables and continuation
            variable maps (with only the x parameter), so the lambda
            expression must not contain any free variables. *)
-        | Value (Lambda(k,x,body)) ->
-          let f = build_function (Var.Var.to_string x) k x body env.globalvarmap in
+        | Value (Lambda(ft,k,vl,body)) -> assert(ft == No_environment);
+          let f = build_function (Cont_var.Var.to_string k) k vl body env.globalvarmap in
           Llvm.set_linkage Llvm.Linkage.Private f;
           Llvm.build_bitcast f anystar_type xname builder
 
@@ -509,8 +511,11 @@ let rec build_term cps env builder =
        LLVM SSA does not require that calls end basic blocks. So we
        just build a call instruction, and then a call to [k]. LLVM
        optimizations will eliminate the superfluous jump if needed. *)
-    | Apply(func,k,arg) ->
-      let retval = build_call (Var.Occur.to_string func) (translate_occurrence func) (translate_occurrence arg) builder in
+    | Apply(ft,func,k,args) -> assert(ft == No_environment);
+      let retval = build_call
+        (Var.Occur.to_string func)
+        (translate_occurrence func)
+        (List.map translate_occurrence args) builder in
       build_applycont (translate_cont_occurrence k) retval builder
 
     | Halt(x) -> (match env.handle_halt with
@@ -549,7 +554,7 @@ and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
 
   (* Compute [function_type]. *)
   let args_type = match params with
-    | Some(_) -> [| anystar_type |]
+    | Some(_,l) -> Array.make (List.length l) anystar_type
     | None -> [| |] in
   let ret_type = match handle_halt with
     | Halt_returns_value -> anystar_type
@@ -560,8 +565,10 @@ and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
 
   (* Compute the initial environment; this requires that [the_function] is created. *)
   let (initial_contvarmap, initial_varmap) = match params with
-    | Some(k,x) -> (Cont_var_Map.singleton k Ret,
-                    Var_Map.add x (Llvm.param the_function 0) globalvarmap)
+    | Some(k,l) -> (Cont_var_Map.singleton k Ret,
+                    Utils.Int.fold_with_list (fun map (i,x) ->
+                      Var_Map.add x (Llvm.param the_function i) map)
+                      globalvarmap (0,l))
     | None -> (Cont_var_Map.empty, globalvarmap) in
   let initial_env = { contvarmap = initial_contvarmap;
                       varmap = initial_varmap;
@@ -586,8 +593,8 @@ and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
   with e -> Llvm.delete_function the_function; raise e
 
 (* A function takes parameters and returns a result. *)
-and build_function name contparam param cpsbody globalvarmap =
-  build_llvm_function name ~params:(Some(contparam,param)) cpsbody Halt_returns_value globalvarmap
+and build_function name contparam params cpsbody globalvarmap =
+  build_llvm_function name ~params:(Some(contparam,params)) cpsbody Halt_returns_value globalvarmap
 ;;
 
 (* "nodef" is just a thunk that executes an expression when called.  *)

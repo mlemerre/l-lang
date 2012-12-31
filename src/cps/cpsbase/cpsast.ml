@@ -69,7 +69,7 @@ module type S = sig
   | Let_prim of var * primitive *  term
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
-  | Apply of occur * cont_occur * occur
+  | Apply of function_type * occur * cont_occur * occur list
   | Halt of occur
 
   (* Primitive are values, or operations that return a value. The
@@ -110,7 +110,16 @@ module type S = sig
   | Void
   | Constant of Constant.t
   | Tuple of occur list
-  | Lambda of cont_var * var *  term
+  | Lambda of function_type * cont_var * var list *  term
+
+
+  (* We distinguish closures, that may contain free variables which
+     constitutes an environment that need to be stored, from
+     functions, who may not. *)
+  and function_type =
+  | Closure
+  | No_environment
+
 
   (*s We now present the logical structure of toplevel definitions.
     The main difference with terms is that definitions bind terms

@@ -21,6 +21,7 @@ include Cpsast.S with type term = Cpsdef.term
                  and type term_ = Cpsdef.term_
                  and type primitive = Cpsdef.primitive
                  and type value = Cpsdef.value
+                 and type function_type = Cpsdef.function_type
                  and type toplevel = Cpsdef.toplevel
                  and type modul = Cpsdef.modul
                  and type visibility = Cpsdef.visibility

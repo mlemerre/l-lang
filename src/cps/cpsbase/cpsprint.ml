@@ -19,12 +19,15 @@ and occur ppf v = fprintf ppf "%s" (Var.Occur.to_string v)
 and cont_var ppf v = fprintf ppf "%s" (Cont_var.Var.to_string v)
 and cont_occur ppf v = fprintf ppf "%s" (Cont_var.Occur.to_string v)
 
+and var_list ppf vl = Utils.print_list_ppf ppf ", " var vl
+and occur_list ppf ol = Utils.print_list_ppf ppf ", " occur ol
+
 and term ppf t = match Term.get t with
   | Halt v ->
       fprintf ppf "halt %a" occur v
-  | Apply(callerv,k,calleev) ->
+  | Apply(_,callerv,k,callees) ->
       fprintf ppf "%a( %a, %a)"
-        occur callerv cont_occur k occur calleev
+        occur callerv cont_occur k occur_list callees
   | Apply_cont(k,v) ->
       fprintf ppf "%a( %a)"
         cont_occur k occur v
@@ -55,9 +58,9 @@ and value ppf = function
   | Tuple(l) ->
       fprintf ppf "( %a)"
         (fun ppf -> Utils.print_list_ppf ppf ", " occur) l
-  | Lambda(k,v,term_) ->
-      fprintf ppf "@,@[<v>{ @[<v>%a -> %a ->@\n@[<v>%a@]@]@\n}@]"
-        cont_var k var v term term_
+  | Lambda(_,k,vl,term_) ->
+      fprintf ppf "@,@[<v>{ @[<v>%a -> (%a) ->@\n@[<v>%a@]@]@\n}@]"
+        cont_var k var_list vl term term_
 
 
 let debug_term t =

@@ -18,14 +18,14 @@ let update_uplinks term =
   (* Change uplinks of subterms and variables to term. *)
   let new_enclosing = Enclosing_term term in
   (match Term.get term with
-  | Apply(_,_,_) | Apply_cont(_,_) | Halt(_) -> ()
+  | Apply(_,_,_,_) | Apply_cont(_,_) | Halt(_) -> ()
   | Let_prim(x,p,body) ->
     Cpscheck.And.set_enclosing body new_enclosing;
     Var.Var.set_binding_site x new_enclosing;
     (match p with
-    | Value(Lambda(k,x,body)) ->
+    | Value(Lambda(_,k,vl,body)) ->
       Cpscheck.And.set_enclosing body new_enclosing;
-      Var.Var.set_binding_site x new_enclosing
+      List.iter (fun x -> Var.Var.set_binding_site x new_enclosing) vl
     | _ -> ())
   | Let_cont(k,x,t,body) ->
     Cpscheck.And.set_enclosing body new_enclosing;
@@ -49,10 +49,10 @@ let disconnect term =
 
 let delete_apply term =
   match Term.get term with
-  | Apply(f,k,x) ->
+  | Apply(_,f,k,ol) ->
     Var.Occur.delete f;
     Cont_var.Occur.delete k;
-    Var.Occur.delete x;
+    List.iter Var.Occur.delete ol;
     Empty.empty term
   | _ -> assert false
 ;;

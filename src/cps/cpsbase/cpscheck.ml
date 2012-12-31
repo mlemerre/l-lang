@@ -44,16 +44,18 @@ module Uplinks = struct
     let var var =
       let enclosing = Var.Var.binding_site var in
       check_enclosing_equal_to_term enclosing t in
+    let var_list vl = List.iter var vl in
 
     (* Note that [cont_var], [occ] and [cont_occ] do not yet have uplinks. *)
     let cont_var cont_var = () in
     let occ occ = () in
+    let occ_list ol = List.iter occ ol in
     let cont_occ cont_occ = () in
 
     let value = function
       | Void | Constant(_) -> ()
       | Tuple(l) -> List.iter occ l
-      | Lambda(k,x,b) -> cont_var k; var x; body b in
+      | Lambda(_,k,vl,b) -> cont_var k; var_list vl; body b in
     
     let prim = function 
       | Value v -> value v
@@ -63,7 +65,7 @@ module Uplinks = struct
     match Term.get t with
     | Let_prim(x, p, b) -> var x; prim p; body b
     | Let_cont(k,x,bc,b) -> cont_var k; var x; body bc; body b
-    | Apply(f,k,x) -> occ f; cont_occ k; occ x
+    | Apply(_,f,k,xl) -> occ f; cont_occ k; occ_list xl
     | Apply_cont(k,x) -> cont_occ k; occ x
     | Halt(x) -> occ x;;
 
@@ -196,18 +198,18 @@ module Contains = struct
  let var t_ v = match t_ with
    | Let_prim(x,_,_) when x == v -> true
    | Let_cont(_,x,_,_) when x == v -> true
-   | Let_prim(_,Value(Lambda(_,x,_)),_) when x == v -> true
+   | Let_prim(_,Value(Lambda(_,_,xl,_)),_) when List.memq v xl -> true
    | _ -> false;;
 
  let cont_var t_ cv = match t_ with
    | Let_cont(k,_,_,_) when k == cv -> true
-   | Let_prim(_,Value(Lambda(k,_,_)),_) when k == cv -> true
+   | Let_prim(_,Value(Lambda(_,k,_,_)),_) when k == cv -> true
    | _ -> false;;
 
  let subterm term_ the_subterm = match term_ with
   | Let_cont(_,_,t1,t2) when the_subterm == t1 || the_subterm == t2 -> true
   | Let_prim(_,_,t) when the_subterm == t -> true
-  | Let_prim(_,Value(Lambda(_,_,t)),_) when the_subterm == t -> true
+  | Let_prim(_,Value(Lambda(_,_,_,t)),_) when the_subterm == t -> true
   | _ -> false;;
 end
 

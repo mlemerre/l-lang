@@ -19,7 +19,7 @@ and term_ =
   | Let_prim of var * primitive *  term
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
-  | Apply of occur * cont_occur * occur
+  | Apply of function_type * occur * cont_occur * occur list
   | Halt of occur
 
 and primitive =
@@ -43,7 +43,12 @@ and value =
   | Void
   | Constant of Constant.t
   | Tuple of occur list
-  | Lambda of cont_var * var *  term
+  | Lambda of function_type * cont_var * var list *  term
+
+and function_type =
+| Closure
+| No_environment
+
 
 (* \subsection*{Definitions representation} *)
 

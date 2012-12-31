@@ -11,7 +11,7 @@ let iter_on_terms ~enter_lambdas t f =
   if enter_lambdas then
     let rec loop t = (match Term.get t with
       | Let_cont(_,_,term,body) -> loop term; loop body
-      | Let_prim(_,Value(Lambda(_,_,body_lambda)),body) -> loop body_lambda; loop body
+      | Let_prim(_,Value(Lambda(_,_,_,body_lambda)),body) -> loop body_lambda; loop body
       | Let_prim(_,_,body) -> loop body
       | _ -> ()); f t
     in loop t
@@ -41,11 +41,11 @@ let fold_on_variables_and_occurrences t init
         | Value v -> (match v with
           | Void | Constant(_) -> acc
           | Tuple(l) -> List.fold_left occ acc l
-          | Lambda(k,a,body) -> 
+          | Lambda(_,k,xl,body) ->
             let acc = before_cont_var acc k in
-            let acc = before_var acc a in 
+            let acc = List.fold_left before_var acc xl in
             let acc = loop acc body in
-            let acc = after_var acc a in
+            let acc = List.fold_left after_var acc xl in
             let acc = after_cont_var acc k in
             acc
         )) in
@@ -60,10 +60,10 @@ let fold_on_variables_and_occurrences t init
       let acc = after_var acc x in 
       let acc = after_cont_var acc k in
       acc
-    | Apply(f,k,x) -> 
+    | Apply(_,f,k,xl) ->
       let acc = occ acc f in
       let acc = cont_occ acc k in
-      let acc = occ acc x in
+      let acc = List.fold_left occ acc xl in
       acc
     | Apply_cont(k,x) -> 
       let acc = cont_occ acc k in
