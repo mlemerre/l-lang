@@ -222,6 +222,50 @@ let build_letproj name pointer i builder =
   let result = Llvm.build_load gep_ptr name builder in
   result ;;
 
+
+(*s Create variants and retrieve elements from a variant. *)
+module Variant:sig
+  open Llvm
+  val build:string -> llvalue -> llvalue -> llbuilder -> llvalue
+  val bind: string -> llvalue -> llbuilder -> (llvalue * llvalue)
+end = struct
+  let variant_type = Llvm.struct_type context [| i32_type; anystar_type |];;
+  let variant_star_type = Llvm.pointer_type variant_type;;
+
+  let get_variant_ptrs name ptr builder =
+    let cast_pointer = Llvm.build_bitcast ptr variant_star_type (name ^ "_casted") builder in
+    let ptr_to_tag = Llvm.build_gep cast_pointer [| (Llvm.const_int i32_type 0);
+                                                    (Llvm.const_int i32_type 0) |]
+      (name ^ "_tag_ptr") builder in
+    let tag = Llvm.build_load ptr_to_tag (name ^ "_tag") builder in
+    let ptr_to_value = Llvm.build_gep cast_pointer [| (Llvm.const_int i32_type 0);
+                                                    (Llvm.const_int i32_type 1) |]
+      (name ^ "_value_ptr") builder in
+    (ptr_to_tag,ptr_to_value);;
+
+  (*c Note: tag is a i32bit unboxed llvalue. value is a anystar_type llvalue. *)
+  let build name tag value builder =
+    let ptr = Llvm.build_malloc variant_type (name ^ "_variant") builder in
+    let (ptr_to_tag, ptr_to_value) = get_variant_ptrs name ptr builder in
+    ignore(Llvm.build_store tag ptr_to_tag builder);
+    ignore(Llvm.build_store value ptr_to_value builder);
+    Llvm.build_bitcast ptr anystar_type name builder;;
+
+  let bind name ptr builder =
+    let (ptr_to_tag, ptr_to_value) = get_variant_ptrs name ptr builder in
+    let tag = Llvm.build_load ptr_to_tag (name ^ "_tag") builder in
+    let value = Llvm.build_load ptr_to_value (name ^ "_value") builder in
+    (tag,value) ;;
+
+end;;
+
+(*s Create a boolean. For now, boolean are stored as regular variants;
+  as they have no associated information beside the tag, the
+  associated value is just undef. *)
+let build_boolean name value builder =
+  let ext_value = Llvm.build_zext_or_bitcast value i32_type (name ^ "_icmp_ext") builder in
+  Variant.build name ext_value undef_anystar builder;;
+
 (*s Apply primitive operations.  *)
 let build_integer_binary_op name op a b builder =
   let build_fn = match op with
@@ -249,9 +293,7 @@ let build_integer_comparison name op a b builder =
   let a_unbox = (build_unbox (name ^ "_a") a i32_type builder) in
   let b_unbox = (build_unbox (name ^ "_b") b i32_type builder) in
   let res = Llvm.build_icmp llvm_pred a_unbox b_unbox (name ^ "_icmp") builder in
-  (* We store boolean values as 32 bits integers. *)
-  let ext_res = Llvm.build_zext_or_bitcast res i32_type (name ^ "_icmp_ext") builder in
-  build_box name ext_res builder;;
+  build_boolean (name ^ "_boolean") res builder;;
 
 (*s Build a call instruction, casting [caller] to a function pointer. *)
 let build_call name caller callees builder =
@@ -291,15 +333,30 @@ let begin_with_phi_node basic_block =
         | Llvm.Opcode.PHI -> Some(inst)
         | _ -> None);;
 
+(*s Create a new block with instructions set by f() in this new block,
+  and return it; then one can continue building instruction at the
+  current place. *)
+let with_new_block name builder f =
+  let current_bb = Llvm.insertion_block builder in
+  let new_bb = new_block name builder in
+  Llvm.position_at_end new_bb builder;
+  f();
+  Llvm.position_at_end current_bb builder;
+  new_bb
+
+(* Create a new, unreachable block, and return it. *)
+let new_unreachable_block builder =
+  with_new_block "unreachable" builder (fun () -> Llvm.build_unreachable builder);;
+
 (*i   XXX: To handle conditional branch in the following, we will use a "condition"
    parameter? But this won't end the block anymore.  i*)
 
 (*s This builds a jmp instruction to [destination_block], also passing
-   the [v] value. This is achieved by setting [v] as an incoming value
-   for the phi instruction that begins [destination_block]. If
-   [destination_block] does not start with a phi node, then it is the
-   first time that [destination_block] is called, and we create this
-   phi node. *)
+  the [v] value. This is achieved by setting [v] as an incoming value
+  for the phi instruction that begins [destination_block]. If
+  [destination_block] does not start with a phi node, then it is the
+  first time that [destination_block] is called, and we create this
+  phi node. *)
 let build_jmp_to_and_add_incoming destination_block v builder =
 
   let add_incoming_to_block basic_block (value,curblock) =
@@ -316,7 +373,6 @@ let build_jmp_to_and_add_incoming destination_block v builder =
   ignore(Llvm.build_br destination_block builder);
   End_of_block;;
 
-
 (*s We use the following sum type to establish a distinction between:
    \begin{itemize}
 
@@ -329,18 +385,38 @@ let build_jmp_to_and_add_incoming destination_block v builder =
    the call [k( x)] is passed to the phi node starting this basic
    block.
 
-   \end{itemize}
-  The CPS$\to{}$LLVM translation maps continuation variables to [dest_type]s.
-*)
-type dest_type =
-  | Ret
-  | Jmp_to of Llvm.llbasicblock
+  \end{itemize}
 
-(* Build a call to a continuation [k x]. *)
+  The CPS$\to{}$LLVM translation maps continuation variables to
+  [dest_type]s. *)
+type dest_type =
+| Ret
+| Jmp_to of Llvm.llbasicblock
+
+(* Corresponds to building a call to a continuation [k x], but [k]
+  and [x] are already translated to their corresponding [dest_type]
+  and [llvalue]. *)
 let build_applycont k x builder =
   match k with
-    | Ret -> ignore(Llvm.build_ret x builder); End_of_block
-    | Jmp_to(destination) -> build_jmp_to_and_add_incoming destination x builder;;
+  | Ret -> ignore(Llvm.build_ret x builder); End_of_block
+  | Jmp_to(destination) -> build_jmp_to_and_add_incoming destination x builder;;
+
+(* Some LLVM instructions, such as br and switch, takes a label
+   argument, while the corresponding CPS construct takes a continuation
+   [k]. Even if continuations are translated to a code label, calling a
+   continuation also requires to pass an argument [x]. This function
+   creates a small basic block that just calls the [k] with the
+   argument [x], to be used by such LLVM instructions. *)
+(*i Note: If [k] is [Ret], we need to create this block (or reuse it if
+   it exists already). But if it is a [Jmp_to], we could just return
+   the basic block, and add an incoming to the phi node corresponding
+   to the value of [x].
+
+   But it is simpler (and thus done now) to always create the new
+   block. i*)
+let basic_block_that_calls name k x builder =
+  with_new_block name builder (fun () ->
+    build_applycont k x builder);;
 
 (* \subsection*{Main CPS term translation} *)
 
@@ -435,9 +511,7 @@ let rec build_term cps env builder =
         (* For now, any value is a pointer, so we compile void to
            pointers; but void values should not be dereferenced, so we
            can just use undef as a pointer. *)
-        (* TODO: There are too many representations of void; it
-           should just be 0-length tuples. *)
-        | Value (Constant(Constant.Void)) | Value Void | Value (Tuple []) ->
+        | Value (Tuple []) ->
           Llvm.undef anystar_type
 
         | Value (Tuple(l)) ->
@@ -466,7 +540,7 @@ let rec build_term cps env builder =
           build_integer_binary_op xname op (translate_occurrence xa) (translate_occurrence xb) builder
         | Integer_comparison(pred,xa,xb) ->
           build_integer_comparison xname pred (translate_occurrence xa) (translate_occurrence xb) builder
-        | Projection(x,i) -> build_letproj xname (translate_occurrence x) i builder
+        | Projection(i,x) -> build_letproj xname (translate_occurrence x) i builder
 
         (* Expressions such as $let x = primitive$ should have been
            eta-expanded into something like $let x = { (a,b) ->
@@ -475,7 +549,6 @@ let rec build_term cps env builder =
         | Value (Constant(c)) -> print_endline (Constant.to_string c);
           assert( Constant.is_function c);
           failwith "ICE: primitive operations as value in LLVM translation."
-
       )
       in build_term body {env with varmap=(add_to_varmap x result)} builder
 
@@ -489,7 +562,7 @@ let rec build_term cps env builder =
       llvm type of the phi node, and that llvm type is not known until
       we have processed the jumps to that node). So it is the calls to
       k that create or change the phi node; no phi node means [k] is
-      never called.
+      never called (so we do not bother building it).
 
       Doing the operations in this order ensures that calls to [k] are
       processed before [k] is built. *)
@@ -517,6 +590,27 @@ let rec build_term cps env builder =
         (translate_occurrence func)
         (List.map translate_occurrence args) builder in
       build_applycont (translate_cont_occurrence k) retval builder
+
+    | Case(x,cases,default) ->
+      begin
+      let cases_nb = List.length cases in
+      let default_bb = (match default with
+        | None -> new_unreachable_block builder
+        (* Note: Default != None: if it was Some(k), it would be a
+           simple (basic_block_that_calls ...) *)
+        | _ -> failwith "Case with default != None not yet implemented") in
+
+      let xval = translate_occurrence x in
+      let (tag,value) = Variant.bind (Var.Occur.to_string x) xval builder in
+      let switch = Llvm.build_switch tag default_bb cases_nb builder in
+      List.iter (fun (i,k) ->
+        Llvm.add_case switch (Llvm.const_int i32_type i)
+          (basic_block_that_calls
+             ("bb_" ^ (Cont_var.Occur.to_string k))
+             (translate_cont_occurrence k) value builder))
+        cases;
+      End_of_block
+      end
 
     | Halt(x) -> (match env.handle_halt with
         | Halt_returns_void -> ignore(Llvm.build_ret_void builder)

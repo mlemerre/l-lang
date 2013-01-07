@@ -83,6 +83,17 @@ val delete_apply: term -> Empty.t
 val delete_apply_cont: term -> Empty.t
 val delete_halt: term -> Empty.t
 
+(* [update_function_type_and_arguments t ft l], when t = "[let x =
+   Lambda(old_ft,k,old_l,body)]" replaces [old_ft] and [old_l] with
+   [ft] and [l], without changing the other arguments. (If [body] must
+   be changed, one just need to call [disconnect body]).
+
+   Arguments in [old_l] and not in [l] must not have any remaining
+   occurrences. Arguments in [l] and not in [old_l] must be fresh (no
+   enclosing set yet), and will have their enclosing properly set. *)
+val update_function_type_and_arguments: term -> function_type -> var list -> unit
+
+
 (* [replace_all_occurrences v_old v_new] makes all occurrences of
    [v_old] become occurrences of [v_new]. Takes amortized
    quasi-constant time. *)

@@ -32,15 +32,27 @@ and term ppf t = match Term.get t with
       fprintf ppf "%a( %a)"
         cont_occur k occur v
   | Let_cont(k,v,loccont,incont) ->
-      fprintf ppf "do@\n{ @[<v>%a@]@\n} where %a( %a) =@\n{ @[<v>%a@]}@]"
+      (* fprintf ppf "do@\n{ @[<v>%a@]@\n} where %a( %a) =@\n{
+         @[<v>%a@]}@]" *)
+      fprintf ppf "let %a@\n@[<v>%a@]@\n@\n%a( %a) = {@\n  @[<v>%a@]@\n}@]" cont_var k
         term incont cont_var k var v term loccont
   | Let_prim(v,p,body) ->
       fprintf ppf "@[<v>let %a = %a in@ %a@]"
         var v prim p term body
+  | Case(v,l,d) ->
+    let case ppf (i,k) = fprintf ppf "%d -> %a" i cont_occur k in
+    let case_list ppf l = Utils.iter_with_sep
+      (fun x -> case ppf x)
+      (fun () -> fprintf ppf "@\n") l in
+    let default ppf d =
+      (match d with
+      | None -> ()
+      | Some(t) -> fprintf ppf "@\ndefault -> %a" term t) in
+    fprintf ppf "case(%a)@\n{ @[<v>%a%a@]@\n}" occur v case_list l default d
 
 and prim ppf = function
   | Value v -> value ppf v
-  | Projection(x,i) ->
+  | Projection(i,x) ->
       fprintf ppf "#%d( %a)"
         i occur x
   | Integer_binary_op(op,v1,v2) ->
@@ -51,13 +63,12 @@ and prim ppf = function
         (Constant.integer_comparison_predicate_to_string pred) occur v1 occur v2
 
 and value ppf = function
-  | Void ->
-      fprintf ppf "void"
   | Constant(c) ->
       fprintf ppf "%s" (Constant.to_string c)
   | Tuple(l) ->
       fprintf ppf "( %a)"
         (fun ppf -> Utils.print_list_ppf ppf ", " occur) l
+  | Injection(i,j,x) -> fprintf ppf "inj_{%d/%d}( %a)" i j occur x
   | Lambda(_,k,vl,term_) ->
       fprintf ppf "@,@[<v>{ @[<v>%a -> (%a) ->@\n@[<v>%a@]@]@\n}@]"
         cont_var k var_list vl term term_

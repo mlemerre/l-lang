@@ -107,6 +107,30 @@ let delete_let_cont term =
   | _ -> assert false
 ;;
 
+(* TODO: Change [function_type] and arguments separately?  *)
+let update_function_type_and_arguments term ft new_args =
+  match Term.get term with
+  | Let_prim(x,Value(Lambda(_,k,old_args,lambda_body)),body) ->
+    let old_set = List.fold_left (fun set elt -> Var.Var.Set.add elt set) Var.Var.Set.empty old_args in
+    let new_set = List.fold_left (fun set elt -> Var.Var.Set.add elt set) Var.Var.Set.empty new_args in
+    let removed = Var.Var.Set.diff old_set new_set in
+    let created = Var.Var.Set.diff new_set old_set in
+
+    let enclosing = Enclosing_term term in
+
+    (* Sets the enclosing of created variables. The variables must be fresh,
+    created with a [with_var_in_term] (this is checked by init, that
+    throws an exception if the variable is not fresh). *)
+    Var.Var.Set.iter (fun v -> Var.Var.init v enclosing) created;
+
+    (* Checks that removed variables have no occurrences left. *)
+    Var.Var.Set.iter
+      (fun v -> assert ((Var.Var.occurrence_number v) == Var.Var.No_occurrence)) removed;
+
+    Cpscheck.And.set_term term
+      (Let_prim(x,Value(Lambda(ft,k,new_args,lambda_body)),body))
+  | _ -> assert(false)
+
 (****************************************************************)
 (*s Occurrence-replacement functions.  *)
 
@@ -139,10 +163,17 @@ let replace_some_occurrences_in_one_term t f_ =
   (* We keep the [term], and replace only the [term_] (if needed), to
      preserve uplinks. *)
   match Term.get t with
-    | Apply(func,k,arg) ->
-      (match (f func, f arg) with
-      | (None,None) -> ()
-      | (newfunc, newarg) -> Cpscheck.And.set_term t (Apply(choose func newfunc, k, choose arg newarg)))
+    | Apply(ft,func,k,args) ->
+      let (all_none,fargs) = List.fold_right
+        (fun x (curc,curl) ->
+          let res = f x in
+          match res with
+          | None -> (curc,res::curl)
+          | _ -> (false, res::curl)) args (true,[]) in
+      let newfunc = f func in
+      if (newfunc == None && all_none)
+      then ()
+      else Cpscheck.And.set_term t (Apply(ft,choose func newfunc, k, List.map2 choose args fargs))
     | Apply_cont(k,arg) ->
       (match f arg with
       | None -> ()
@@ -160,25 +191,34 @@ let replace_some_occurrences_in_one_term t f_ =
           (match (f a,f b) with
           | (None,None) -> None
           | (newa,newb) -> Some (Integer_comparison(pred,choose a newa, choose b newb)))
-        | Projection(occ, i) ->
+        | Projection(i, occ) ->
           (match f occ with
           | None -> None
-          | newocc -> Some (Projection(choose occ newocc,i)))
+          | newocc -> Some (Projection(i, choose occ newocc)))
         | Value v ->
           (match v with
-          | Void | Constant(_) -> None
-          | Lambda(_,_,_) -> None
+          | Constant(_) -> None
+          | Lambda(_,_,_,_) -> None
           | Tuple(l) ->
             let newl = List.map f l in
             if List.for_all (fun x -> x == None) newl
             then None
             else Some( Value (Tuple (List.map2 choose l newl)))
+          | Injection(i,j, occ) ->
+            (match f occ with
+            | None -> None
+            | newocc -> Some ( Value (Injection(i, j, choose occ newocc))))
           )) in
       (match newp with
       | None -> ()
       | Some(np) -> Cpscheck.And.set_term t (Let_prim(x,np,body)))
     end
     | Let_cont(k,x,term,body) -> ()
+    | Case(occ,cases,default) ->
+      (match f occ with
+      | None -> ()
+      | newocc -> Cpscheck.And.set_term t (Case(choose occ newocc, cases, default)))
+
 ;;
 
 let replace_some_occurrences term f =

@@ -20,11 +20,12 @@ and term_ =
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
   | Apply of function_type * occur * cont_occur * occur list
+  | Case of occur * (int * cont_occur) list * term option
   | Halt of occur
 
 and primitive =
   | Value of value
-  | Projection of occur * int
+  | Projection of int * occur
   | Integer_binary_op of Constant.integer_binary_op * occur * occur
   | Integer_comparison of Constant.Icmp.predicate * occur * occur
 
@@ -34,15 +35,10 @@ and primitive =
   advantage of the definition of "value", i.e. values need no further
   computations; but this is not truly the case for tuples and
   lambdas, which may require dynamic allocation. i*)
-(*i TODO: We should have separate "Lambda" and "Function" primitives
-  (that may not be in values, but directly in primitives). The goal
-  of lambda-lifting would be to remove all lambda primitives, while
-  still allowing to obtain Functions directly from the source code,
-  e.g. when interfacing with C code. i*)
 and value =
-  | Void
   | Constant of Constant.t
   | Tuple of occur list
+  | Injection of int * int * occur
   | Lambda of function_type * cont_var * var list *  term
 
 and function_type =

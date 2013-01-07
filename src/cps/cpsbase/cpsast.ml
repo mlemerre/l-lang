@@ -56,9 +56,10 @@ module type S = sig
     \item $k(x)$ calls the \emph{continuation} $k$ with $x$. It can be
     seen as a "jump with argument $x$"
 
-    \item $v(k,x)$ calls the \emph{function} $v$, $k$ being the return
-    continuation, and $x$ a parameter. $v$ does not return; instead it
-    will call $k$ with the "return value" as a parameter.
+    \item $v(k,xl)$ calls the \emph{function} $v$, $k$ being the
+    return continuation, and $xl$ a list of parameters. $v$ does not
+    return; instead it will call $k$ with the "return values" as
+    parameters.
 
     \item $halt(x)$ is used only as a base case, to stop induction. Its
     semantics is that it returns the value [x], which is the result of
@@ -70,6 +71,20 @@ module type S = sig
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
   | Apply of function_type * occur * cont_occur * occur list
+
+  (*i TODO: It makes no sense to compile the default case differently
+    than the other cases (e.g. when the default is shared with some
+    options), so default should be represented by a continuation
+    option (instead of a term). This makes [Case] a "terminator
+    instruction".
+
+    Provided that the argument to case is passed to the default
+    continuation, [Apply_cont] becomes a special case of Case, and
+    could be removed.
+
+    This design decision should be stated when we compile pattern
+    matching; for now we just do not use the last argument to case. i*)
+  | Case of occur * (int * cont_occur) list * term option
   | Halt of occur
 
   (* Primitive are values, or operations that return a value. The
@@ -85,7 +100,7 @@ module type S = sig
      \item $x[i]$ get the $i$th element out of $x$. $x$ is a variable
      bound to a tuple.
 
-     \item $x_1 op x_2$ applies binary op to two arguments.
+     \item $x_1 op x_2$ applies a binary operation to two arguments.
 
      \item $x_i pred x_2$ applies a binary predicate to two arguments.
 
@@ -96,26 +111,48 @@ module type S = sig
      variables that directly share the same value. *)
   and primitive =
   | Value of value
-  | Projection of occur * int
+  | Projection of int * occur
   | Integer_binary_op of Constant.integer_binary_op * occur * occur
   | Integer_comparison of Constant.Icmp.predicate * occur * occur
 
-  (* Values are primitive objects, held in normal variables.
+  (* Values are completely evaluated objects. They are separated from
+     primitives only because they can be evaluated statically and put
+     in a read-only data section.
 
-     Note that contrary to the source language, we can have Tuple objets
-     with lists of 0 or 1 element; they correspond to void * pointer and
-     simple pointers. [Void] is different from [Tuple []], and [x] is
-     different from [Tuple [x]]. *)
+     \begin{itemize}
+
+     \item [Constant] is self-explinatory;
+
+     \item $t = (x_0,...,x_{n-1})$ corresponds to a contiguous zone of
+     memory; each field $i$ is accessible using $t[i]$ ([Proj]). The
+     reason why we prefer [Tuple] over using chains of [Pair], is
+     [Pair] cannot be compiled to a contiguous zone of memory (without
+     indirection), without prior transformation to [Tuple].
+
+     \item $inj_{i/j}(x)$ creates a variant value, with tag number $i$
+     (starting from 0) over $j$ possible tags.
+
+     \item $\{ k \to (x_0,...,x_{n-1}) \to body\}$ build a function.
+     Functions can have several arguments, because this simplifies
+     closure conversion, and allows to express some transformations
+     such as arity-raising.
+
+     \end{itemize}
+     Note that contrary to the source language, we can have Tuple
+     objets with 1 element; they correspond to pointers to an object.
+     [x] is different from [Tuple( [x])]. *)
   and value =
-  | Void
   | Constant of Constant.t
   | Tuple of occur list
+  | Injection of int * int * occur
   | Lambda of function_type * cont_var * var list *  term
 
 
   (* We distinguish closures, that may contain free variables which
      constitutes an environment that need to be stored, from
-     functions, who may not. *)
+     functions, who may not. We distinguish them only as an argument
+     to [Apply] and [Lambda], because most of the code that access
+     them does not depend on this distinction.  *)
   and function_type =
   | Closure
   | No_environment

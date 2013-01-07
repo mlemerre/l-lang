@@ -83,12 +83,20 @@ val let_void :
   ?reconnect:Empty.t ->
   ?var:var -> (var -> fresh) -> fresh
 
-(* Usage: [let_proj tuple i (fun var -> ...) corresponds to
+(* Usage: [let_proj i tuple (fun var -> ...) corresponds to
    [let var = #i(tuple) in ... ] *)
 val let_proj :
   ?reconnect:Empty.t ->
   ?var:var ->
-  var -> int -> (var -> fresh) -> fresh
+  int -> var -> (var -> fresh) -> fresh
+
+(* Usage: [let_inj i j occ (fun var -> ...) corresponds to
+   [let var = #i(tuple) in ... ] *)
+val let_inj :
+  ?reconnect:Empty.t ->
+  ?var:var ->
+  int -> int -> var -> (var -> fresh) -> fresh
+
 
 (* Usage: [match_pair pair (fun (var0,var1) -> ...)] corresponds to
    [let (var0,var1) = pair in ...], i.e. to
@@ -189,6 +197,14 @@ val let_cont :
 val apply_cont :
   ?reconnect:Empty.t ->
   cont_var -> var -> fresh
+
+(* Usage: [case v [(i1,k1);...;(in,kn)]; d] corresponds to
+   [case(v) { i1 -> k1 ... in -> kn default -> d }] *)
+val case:
+  ?reconnect:Empty.t ->
+  ?default:fresh ->
+  var -> (int * cont_var) list -> fresh
+
 
 (* Usage: [halt x] corresponds to [halt x]. *)
 val halt :

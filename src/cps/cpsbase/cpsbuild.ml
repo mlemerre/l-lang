@@ -122,8 +122,12 @@ let let_prim ?reconnect ?var prim fterm =
 let let_value ?reconnect ?var value fterm =
   let_prim ?reconnect ?var (Value value) fterm
 
-let let_proj ?reconnect ?var to_proj i fterm =
-  let_prim ?reconnect ?var (Projection(Var.Occur.make to_proj, i)) fterm
+let let_proj ?reconnect ?var i to_proj fterm =
+  let_prim ?reconnect ?var (Projection(i, Var.Occur.make to_proj)) fterm
+
+let let_inj ?reconnect ?var i j  to_inj fterm =
+  let_prim ?reconnect ?var (Value (Injection(i,j,Var.Occur.make to_inj))) fterm
+
 
 let let_pair ?reconnect ?var (x0,x1) fterm =
   let (o0,o1) = (Var.Occur.make x0, Var.Occur.make x1) in
@@ -138,17 +142,17 @@ let let_tuple ?reconnect ?var l_vars fterm =
   let_value ?reconnect ?var (Tuple l_occurs) fterm;;
 
 let let_void ?reconnect ?var fterm =
-  let_value ?reconnect ?var Void fterm
+  let_value ?reconnect ?var (Tuple []) fterm
 
 let match_pair ?reconnect ?var0 ?var1 x fterm =
-  let_proj ?reconnect ?var:var0 x 0 (fun v0 ->
-    let_proj ?var:var1 x 1 (fun v1 ->
+  let_proj ?reconnect ?var:var0 0 x (fun v0 ->
+    let_proj ?var:var1 1 x (fun v1 ->
       fterm (v0, v1)))
 
 let match_tuple ?reconnect n x fterm =
   let rec f k vars =
     if k == n then (fterm vars)
-    else let_proj x (n-1-k) ( fun var ->
+    else let_proj (n-1-k) x  ( fun var ->
       f (k+1) (var::vars) )
   in
 
@@ -214,6 +218,16 @@ let apply_cont ?reconnect k x =
   Term.make ?reconnect
     (Apply_cont ((Cont_var.Occur.make k),
                  (Var.Occur.make x)));;
+
+let case ?reconnect ?default x l =
+  let f t = Term.make ?reconnect
+    (Case ((Var.Occur.make x),
+           (List.map (fun (i,k) -> (i,Cont_var.Occur.make k)) l),
+           t)) in
+  match default with
+  | None -> f default
+  | Some(t) -> with_subterm t (fun _ -> f default)
+;;
 
 let halt ?reconnect x =
   Term.make ?reconnect (Halt (Var.Occur.make x));;

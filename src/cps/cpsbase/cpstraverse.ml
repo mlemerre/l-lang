@@ -36,11 +36,12 @@ let fold_on_variables_and_occurrences t init
       let acc = before_var acc x in
       let acc = 
         (match p with
-        | Projection(o,_) -> occ acc o
+        | Projection(_,o) -> occ acc o
         | Integer_binary_op(_,a,b) -> occ (occ acc a) b
         | Value v -> (match v with
-          | Void | Constant(_) -> acc
+          | Constant(_) -> acc
           | Tuple(l) -> List.fold_left occ acc l
+          | Injection(_,_,o) -> occ acc o
           | Lambda(_,k,xl,body) ->
             let acc = before_cont_var acc k in
             let acc = List.fold_left before_var acc xl in
@@ -69,6 +70,13 @@ let fold_on_variables_and_occurrences t init
       let acc = cont_occ acc k in
       let acc = occ acc x in
       acc
+    | Case(o,l,d) ->
+      let acc = occ acc o in
+      let cont_vars = snd (List.split l) in
+      let acc = List.fold_left cont_occ acc cont_vars in
+      (match d with
+      | None -> acc
+      | Some(t) -> loop acc t)
     | Halt(x) -> occ acc x
   in loop init t
 ;;

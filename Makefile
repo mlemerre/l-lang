@@ -12,9 +12,14 @@ unit_tests: test_union_find
 # Documentation.
 
 # Note: the order of the doc is important.
-doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsvar.mli cps/cpsbase/cpsvar.ml \
+# Note: it should be top-down: more important things first, details
+# second. This presumes that what does a lower-level module is
+# understandable just by looking at the code that use it.
+doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml cps/base.mli cps/base.ml \
+	cps/cpsbase/cpsvar.mli cps/cpsbase/cpsvar.ml cps/cpsbase/cpsdef.mli \
 	cps/cpsbase/cpsdef.ml cps/cpsbase/cpsprint.ml cps/cpsbase/cpscheck.ml \
-	llvm/cpsllvm.mli llvm/cpsllvm.ml
+	llvm/cpsllvm.mli llvm/cpsllvm.ml \
+	support/unique.mli support/unique.ml
 
 doc: $(addsuffix .html,$(addprefix web/,$(doc-files))) check_doc
 
