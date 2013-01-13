@@ -34,7 +34,7 @@ and term ppf t = match Term.get t with
   | Let_cont(k,v,loccont,incont) ->
       (* fprintf ppf "do@\n{ @[<v>%a@]@\n} where %a( %a) =@\n{
          @[<v>%a@]}@]" *)
-      fprintf ppf "let %a@\n@[<v>%a@]@\n@\n%a( %a) = {@\n  @[<v>%a@]@\n}@]" cont_var k
+      fprintf ppf "decl %a@\n@[<v>%a@]@\n@\n%a( %a) = {@\n  @[<v>%a@]@\n}@]" cont_var k
         term incont cont_var k var v term loccont
   | Let_prim(v,p,body) ->
       fprintf ppf "@[<v>let %a = %a in@ %a@]"
