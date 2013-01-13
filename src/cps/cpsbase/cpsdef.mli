@@ -83,9 +83,17 @@ end;;
 (* Module type for variables and continuation variables. This is an
    expanded version of [Cps.Base.VAR], which includes the write
    operations. *)
+type occur_type = Cpsvar.occur_type = Recursive | Non_recursive
 module type VAR_RW = sig
+
+  (* Note: the reason for these types is that they can easily changed
+     using "[with]" declarations, contrary to the types inside the
+     submodules [Var] and [Occur]. So they can be used as "gateways" to
+     specify the types in these submodules. *)
   type var
+  type occur_maker
   type occur
+
   module Var: sig
 
     (* As variables have uplinks to their enclosing sites, the CPS
@@ -96,11 +104,11 @@ module type VAR_RW = sig
     val make : unit -> var
     val init: var -> enclosing -> unit
 
-    type occurrence_number =
+    type number_of_occurrences =
     | No_occurrence
     | One_occurrence of occur
     | Several_occurrences
-    val occurrence_number: var -> occurrence_number
+    val number_of_occurrences: var -> number_of_occurrences
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
 
     (* [replace_with v1 v2] makes all occurrences of [v1] become
@@ -120,8 +128,15 @@ module type VAR_RW = sig
 
   module Occur: sig
 
-    (* Create a new occurrence for a variable.  *)
-    val make : var -> occur
+    (* [make (var,occur_type)] creates a [Recursive] or
+       [Non_recursive] occurrence of [var]. The pair (var,occur_type)
+       thus allows to create a new occurrence, and is called an
+       [maker]. [maker] and [rec_maker] are helper functions that
+       return [maker]s. *)
+    type maker = var * occur_type
+    val maker : var -> maker
+    val rec_maker: var -> maker
+    val make : maker -> occur
 
     (* Delete the occurrence of a variable. Must be called when
        deleting some parts of a CPS tree (this is handled by
@@ -135,5 +150,13 @@ module type VAR_RW = sig
   end
 end
 
-module Var:VAR_RW with type var = var and type occur = occur;;
-module Cont_var:VAR_RW with type var = cont_var and type occur = cont_occur;;
+
+module Var:VAR_RW with type var = var
+                  and type occur_maker = var * occur_type
+                  and type occur = occur;;
+module Cont_var:VAR_RW with type var = cont_var
+                       and type occur_maker = cont_var * occur_type
+                       and type occur = cont_occur;;
+
+type occur_maker = Var.Occur.maker
+type cont_occur_maker = Cont_var.Occur.maker

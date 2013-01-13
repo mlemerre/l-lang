@@ -94,18 +94,20 @@ and cont_occur_desc = unit
 
 (* \subsection*{Instantiations of [Cpsvar]} *)
 
+type occur_type = Cpsvar.occur_type = Recursive | Non_recursive
 
 module type VAR_RW = sig
   type var
+  type occur_maker
   type occur
   module Var: sig
     val make : unit -> var
     val init: var -> enclosing -> unit
-    type occurrence_number =
+    type number_of_occurrences =
       | No_occurrence
       | One_occurrence of occur
       | Several_occurrences
-    val occurrence_number: var -> occurrence_number
+    val number_of_occurrences: var -> number_of_occurrences
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
     val replace_with: var -> var -> unit
     val to_string : var -> string
@@ -116,7 +118,10 @@ module type VAR_RW = sig
   end
 
   module Occur: sig
-    val make : var -> occur
+    type maker = var * occur_type
+    val maker: var -> maker
+    val rec_maker: var -> maker
+    val make : maker -> occur
     val delete: occur -> unit
     val binding_variable : occur -> var
     val to_string : occur -> string
@@ -140,6 +145,7 @@ end);;
 
 module Var = struct
   type var = Var_.var
+  type occur_maker = var * occur_type;;
   type occur = Var_.occur
   module Var = struct
     include Var_.Var
@@ -160,8 +166,11 @@ module Var = struct
   module Occur = Var_.Occur
 end
 
+type occur_maker = Var.Occur.maker;;
+
 module Cont_var = struct
   type var = Cont_var_.var
+  type occur_maker = var * occur_type
   type occur = Cont_var_.occur
   module Var = struct
     include Cont_var_.Var
@@ -177,6 +186,7 @@ module Cont_var = struct
   module Occur = Cont_var_.Occur
 end
 
+type cont_occur_maker = Cont_var.Occur.maker;;
 
 (* \subsection*{The [Term], [Empty], and [Fresh] modules} *)
 
