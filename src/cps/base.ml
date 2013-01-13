@@ -8,13 +8,14 @@ module Traverse = Basepack.Cpstraverse;;
 
 module type VAR = sig
   type var
+  type occur_maker
   type occur
   module Var: sig
-    type occurrence_number =
+    type number_of_occurrences =
       | No_occurrence
       | One_occurrence of occur
       | Several_occurrences
-    val occurrence_number: var -> occurrence_number
+    val number_of_occurrences: var -> number_of_occurrences
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
     val binding_site: var -> enclosing
     val to_string : var -> string
@@ -23,6 +24,9 @@ module type VAR = sig
   end
 
   module Occur: sig
+    type maker = occur_maker
+    val maker: var -> maker
+    val rec_maker: var -> maker
     val binding_variable : occur -> var
     val to_string : occur -> string
     module Map : Map.S with type key = occur

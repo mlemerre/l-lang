@@ -55,8 +55,9 @@ module type VAR = sig
 
   (* Types of variables and occurrences (different for standard
      variables/occurrences and for continuations
-     variables/occurrences). *)
+     variables/occurrences). [occur_maker] is explained below. *)
   type var
+  type occur_maker
   type occur
 
   module Var: sig
@@ -64,11 +65,11 @@ module type VAR = sig
        the case where a variable has 0 occurrence (the variable is not
        used), 1 occurrence case (a good candidate for inlining), and
        the case where it has more than one occurrence. *)
-    type occurrence_number =
+    type number_of_occurrences =
     | No_occurrence
     | One_occurrence of occur
     | Several_occurrences
-    val occurrence_number: var -> occurrence_number
+    val number_of_occurrences: var -> number_of_occurrences
 
     (* This function allows iteration on occurrences. The order is
        arbitrary. *)
@@ -87,6 +88,26 @@ module type VAR = sig
   end
 
   module Occur: sig
+    (* A [maker] creates new occurrences of a variable. An occurrence
+       is [Recursive] if it refers to a binding currently being
+       defined; else it is [Non_recursive]. For instance in the CPS
+       term:
+
+       [let x1 = p1
+        and x2 = p2
+        and ...
+        and xn = pn
+        in body]
+
+       Occurrences of [x1] in [p1,p2,...,] or [pn] are recursive;
+       occurrences of [x1] in [body] are not recursive.
+
+       If an occurrence is recursive, it must be created with a
+       [rec_maker]; else it must be created with a regular [maker]. *)
+    type maker = occur_maker
+    val maker: var -> maker
+    val rec_maker: var -> maker
+
     (* [binding_variable occur] returns the binding variable of
        [occur], i.e. the variable [var] such that [occur] is an
        occurrence of [var]. *)
@@ -102,8 +123,12 @@ module type VAR = sig
   end
 end
 
-module Var:VAR with type var = var and type occur = occur;;
-module Cont_var:VAR with type var = cont_var and type occur = cont_occur;;
+module Var:VAR with type var = var
+               and type occur_maker = Cpsdef.Var.Occur.maker
+               and type occur = occur;;
+module Cont_var:VAR with type var = cont_var
+                    and type occur_maker = Cpsdef.Cont_var.Occur.maker
+                    and type occur = cont_occur;;
 
 (* These modules keep the same interface; see their respective
    interface files for their documentation. *)
