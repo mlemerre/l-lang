@@ -18,7 +18,17 @@
   i.e. all the members of a partition are occurrences of the same
   variable. The description of the partition is the binding variable
   itself. This allows near-constant time access to the binding
-  variable, and merging of occurrence sets. *)
+  variable, and merging of occurrence sets.
+
+  We chose to keep normal occurrences, and recursive occurrences, in
+  two separate equivalence classes. Not merging them:
+  \begin{itemize}
+  \item allows to replace the binding variable for only the normal
+  occurrences, or only the recursive occurrences;
+  \item simplifies the implementation of [replace_with];
+  \item makes each equivalence class smaller (and thus slightly more
+    efficient).
+  \end{itemize} *)
 
 module Union_find = Union_find.Safe;;
 
@@ -26,14 +36,16 @@ module Union_find = Union_find.Safe;;
    all applications of Cpsvar.Make, but this is not a huge issue. *)
 module UniqueId = Unique.Make(struct end);;
 
-(*s Variables link to their description, and to one occurrence (if
-  there is one). We also add a unique id to allow variable comparison.
-  Also, unique variables remove any need for alpha conversion. *)
+(*s Variables link to their description, to one occurrence and one
+  recursive occurrence (if there is one). We also add a unique id to
+  allow variable comparison. Also, unique variables remove any need
+  for alpha conversion. *)
 type ('a,'b) variable =
-    { mutable var_desc: 'a initialized;
-      mutable occurrences:('a, 'b) occurrence option;
-      var_id: UniqueId.t;
-      mutable occur_nb: int }
+  { mutable var_desc: 'a initialized;
+    mutable occurrences:('a, 'b) occurrence option;
+    mutable recursive_occurrences: ('a, 'b) occurrence option;
+    var_id: UniqueId.t;
+    mutable occur_nb: int }
 
 (* Occurrences need a description; a "union-find link" (to retrieve
    the binding variable, which is the description of the union-find
@@ -52,6 +64,17 @@ and ('a,'b) occurrence =
    already initialized description. *)
 and 'a initialized = Undef | Initialized_to of 'a;;
 
+(*s [occur_type] distinguish between normal and recursive occurrences.
+  The following functions allows code factorisation. *)
+type occur_type = Recursive | Non_recursive;;
+
+let get_occurrences var (ot:occur_type) = match ot with
+  | Recursive -> var.occurrences
+  | Non_recursive -> var.recursive_occurrences;;
+
+let set_occurrences var (ot:occur_type) value = match ot with
+  | Recursive -> (var.occurrences <- value)
+  | Non_recursive -> (var.recursive_occurrences <- value);;
 
 (*s The CPSVar functor takes a DESCRIPTION argument as explained in the interface.  *)
 module type DESCRIPTION = sig
@@ -97,6 +120,7 @@ module Make(Desc:DESCRIPTION) = struct
     let make() =
       { var_desc = Undef;
         occurrences = None;
+        recursive_occurrences = None;
         var_id = UniqueId.fresh();
         occur_nb = 0 } ;;
 
@@ -112,13 +136,13 @@ module Make(Desc:DESCRIPTION) = struct
       no, one, or more than one occurrence. For that we must not
       return the list of occurrence if there are several; instead the
       user must then use the [fold_on_occurrences] function. *)
-    type occurrence_number = 
+    type number_of_occurrences =
       | No_occurrence
       | One_occurrence of occur
       | Several_occurrences
 
-    let occurrence_number var = 
-      match var.occurrences with
+    let number_of_occurrences_ ot var =
+      match get_occurrences var ot with
         | None -> No_occurrence
         | Some(occ) -> 
           if occ.previous_occurrence == occ
@@ -128,8 +152,10 @@ module Make(Desc:DESCRIPTION) = struct
           end
           else Several_occurrences;;
 
-    let fold_on_occurrences var init f = 
-      match var.occurrences with
+    let number_of_occurrences = number_of_occurrences_ Non_recursive
+
+    let fold_on_occurrences_ ot var init f =
+      match get_occurrences var ot with
         | None -> init
         | Some(occ) -> 
           let rec loop value cur = 
@@ -137,37 +163,47 @@ module Make(Desc:DESCRIPTION) = struct
             then f value cur
             else loop (f value cur) cur.next_occurrence
           in loop init occ.next_occurrence;;
+    let fold_on_occurrences var init f = fold_on_occurrences_ Non_recursive var init f
+    let fold_on_recursive_occurrences var init f = fold_on_occurrences_ Recursive var init f
+
 
     (*s This function allows "merging" of variables in O(1) time:
       merging the doubly-linked lists is a O(1) operation, and so is
       performing union in the union-find algorithm. *)
     let replace_with old new_ =
-      match old.occurrences with
+      let replace_with_ ot =
+        match get_occurrences old ot with
         (* If there were already no occurrences of [old], there is
            nothing to do. *)
         | None -> ()
-        | Some(occ_old) -> ((match new_.occurrences with
+        | Some(occ_old) as some_occ_old ->
+          ((match get_occurrences new_ ot with
 
-            (* If new_ had no occurrences, there is no need for full
-               list merge and union-find: we can just update the
-               partition description. *)
-            | None ->
-              new_.occurrences <- Some(occ_old);
-              let part_old = Var_union_find.find ufds occ_old in
-              Var_union_find.set_description ufds part_old new_
+          (* If new_ had no occurrences, there is no need for full
+             list merge and union-find: we can just update the
+             partition description. *)
+          | None ->
+            set_occurrences new_ ot some_occ_old;
+            let part_old = Var_union_find.find ufds occ_old in
+            Var_union_find.set_description ufds part_old new_
 
-            (* The non-trivial case: merge the two circular
-               doubly-linked lists into one big circular doubly-linked
-               list. Also works on single-elements lists. *)
-            | Some(occ_new) ->
-              occ_old.next_occurrence.previous_occurrence <- occ_new.previous_occurrence;
-              occ_new.previous_occurrence.next_occurrence <- occ_old.next_occurrence;
-              occ_old.next_occurrence <- occ_new;
-              occ_new.previous_occurrence <- occ_old;
-              let (part_old,part_new) = (Var_union_find.find ufds occ_old,
-                                         Var_union_find.find ufds occ_new) in
-              ignore(Var_union_find.union ufds part_old part_new new_));
-          old.occurrences <- None)
+          (* The non-trivial case: merge the two circular
+             doubly-linked lists into one big circular doubly-linked
+             list. Also works on single-elements lists. *)
+          | Some(occ_new) ->
+            occ_old.next_occurrence.previous_occurrence <- occ_new.previous_occurrence;
+            occ_new.previous_occurrence.next_occurrence <- occ_old.next_occurrence;
+            occ_old.next_occurrence <- occ_new;
+            occ_new.previous_occurrence <- occ_old;
+            let (part_old,part_new) = (Var_union_find.find ufds occ_old,
+                                       Var_union_find.find ufds occ_new) in
+            ignore(Var_union_find.union ufds part_old part_new new_));
+
+           (* [old] can be reused if needed. *)
+           set_occurrences old ot None) in
+
+      replace_with_ Recursive;
+      replace_with_ Non_recursive
     ;;
 
 
@@ -190,10 +226,15 @@ module Make(Desc:DESCRIPTION) = struct
   module Occur = 
   struct
 
+    type maker = var * occur_type;;
+
+    let maker v = (v,Non_recursive);;
+    let rec_maker v = (v,Recursive);;
+
     (*s Create a new occurrence of VAR, i.e. add it to the
       doubly-linked list of all the occurrences of VAR, and to the
       union-find partition of the occurrences of VAR. *)
-    let make var = 
+    let make (var,ob) =
       (* Create an initial self-linked occurrence of var.  *)
       let self_linked_occur var = 
         var.occur_nb <- var.occur_nb + 1;
@@ -204,12 +245,12 @@ module Make(Desc:DESCRIPTION) = struct
                           occur_id = var.occur_nb; } 
         in occur
       in
-      match var.occurrences with
+      match get_occurrences var ot with
         (* If this is the first occurrence of var. *)
         | None -> 
           let new_occur = self_linked_occur var in
           Var_union_find.singleton ufds new_occur var;
-          var.occurrences <- Some(new_occur);
+          set_occurrences var ot (Some(new_occur));
           new_occur
         (* Else there are already some occurrences of var. *)
         | Some(existing_occur) -> 
@@ -243,8 +284,10 @@ module Make(Desc:DESCRIPTION) = struct
       (* One-variable case. *)
       then begin
         assert (occur == prev);
-        assert( match var.occurrences with Some(a) when a == occur -> true | _ -> false);
-        var.occurrences <- None;
+        match (var.occurrences, var.recursive_occurrences) with
+        | (Some(a),_) when a == occur -> var.occurrences <- None;
+        | (_,Some(a)) when a == occur -> var.recursive_occurrences <- None;
+        | _ -> assert false
       end
       else begin
         assert (occur != prev);
@@ -252,7 +295,11 @@ module Make(Desc:DESCRIPTION) = struct
         next.previous_occurrence <- prev;
         (match var.occurrences with
         | Some(a) when a == occur -> var.occurrences <- Some(prev)
-        | _ -> ())
+        | _ ->
+          (match var.recursive_occurrences with
+          | Some(a) when a == occur -> var.recursive_occurrences <- Some(prev)
+          | _ -> ()))
+
       end;;
 
     (* Similarly to [Var], description can be get and set only once.  *)
@@ -300,12 +347,13 @@ module type S = sig
   module Var :
   sig
     val make : unit -> var
-    type occurrence_number = 
+    type number_of_occurrences =
       | No_occurrence
       | One_occurrence of occur
       | Several_occurrences
-    val occurrence_number: var -> occurrence_number
+    val number_of_occurrences: var -> number_of_occurrences
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
+    val fold_on_recursive_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
     val replace_with: var -> var -> unit
     val description : var -> var_desc
     val set_description : var -> var_desc -> unit
@@ -316,7 +364,10 @@ module type S = sig
 
   module Occur :
   sig
-    val make : var -> occur
+    type maker = var * occur_type
+    val maker : var -> maker
+    val rec_maker : var -> maker
+    val make : maker -> occur
     val delete: occur -> unit
     val binding_variable : occur -> var
     val description: occur -> occur_desc

@@ -4,20 +4,26 @@
    attached. [occurrence] stores data about the use of a variable
    (like the location of the use). [variable] stores data common to
    all the uses of the variable, like its type, or the location where
-   the variable is bound. *)
+   the variable is bound. Each occurrence is linked to its binding
+   variable, while a variable is linked to the set of its occurrences.
+   There are actually two sets of occurrences for each variable: the
+   recursive, and non-recursive occurrences. The distinction allows to
+   detect, for instance, when there are no occurrences of a recursive
+   function, which can then be eliminated. *)
 type ('a, 'b) variable
 type ('a, 'b) occurrence
+type occur_type = Recursive | Non_recursive
 
 (* The user of the module must configure the information it wants to
    attach to a [variable] or [occurrence] (using the DESC structure).
    This information is called a [description].
 
-   The [make] functions, that create new variables and occurence, do
+   The [make] functions, that create new variables and occurences, do
    not take an initial [description] argument. This allows to break
    circular dependencies, e.g. where a term points to a variable or
    occurrence, and a variable points to the term that bind or use it.
 
-   Instead, for both the variable and its occurrence, the description
+   Instead, for both the variable and its occurrences, the description
    is set with the [set_description] function, and obtained with the
    [description] function. It is illegal (and checked by assertions)
    to set a description more than once, or to call [description] on a
@@ -41,27 +47,33 @@ module type S = sig
   module Var :
   sig
 
-    (* [make ()] create a new variable. *)
+    (* [make ()] creates a new variable. *)
     val make : unit -> var
 
     (* The following function differentiates, in O(1) time, between
        the 0-occurrence case (the variable is useless), the
        1-occurrence case (a good candidate for inlining), and the case
-       with more than one occurrence. *)
-    type occurrence_number = 
+       with more than one occurrence. The count does not include
+       recursive occurrences. *)
+    type number_of_occurrences =
       | No_occurrence
       | One_occurrence of occur
       | Several_occurrences
-    val occurrence_number: var -> occurrence_number
+    val number_of_occurrences: var -> number_of_occurrences
 
-    (* This function allows iteration on occurrences. The order is
-       arbitrary. *)
+    (* These functions allows iteration on normal or recursive
+       occurrences of a variable. The order is arbitrary. *)
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
+    val fold_on_recursive_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
+    (*i TODO: fold_on_all_occurrences? i*)
 
     (* This function "merges" variables; more specifically it makes
-       all occurrences of [old] become occurrence of [new]. After the
-       call [old] is a variable with no occurrence. *)
+       all (recursive or non-recursive) occurrences of [old] become
+       occurrence of [new]. After the call [old] is a variable with no
+       occurrence. *)
     val replace_with: var -> var -> unit
+    (*i TODO: functions to replace_with only on
+       recursive/non-recursive occurrences? i*)
 
     val description : var -> var_desc
     val set_description : var -> var_desc -> unit
@@ -73,9 +85,15 @@ module type S = sig
 
   module Occur :
   sig
-
-    (* [make var] creates a new occurrence of [var]. *)
-    val make : var -> occur
+    (* [make (var,occur_type)] creates a [Recursive] or
+       [Non_recursive] occurrence of [var]. The pair (var,occur_type)
+       thus allows to create a new occurrence, and is called an
+       [occur_maker]. [maker] and [rec_maker] are helper functions
+       that return [occur_maker]s.  *)
+    type maker = var * occur_type
+    val maker: var -> maker
+    val rec_maker: var -> maker
+    val make : maker -> occur
 
     (* [delete occur] deletes an occurrence of a variable *)
     val delete: occur -> unit
