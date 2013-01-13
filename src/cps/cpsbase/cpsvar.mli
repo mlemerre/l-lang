@@ -87,9 +87,9 @@ module type S = sig
   sig
     (* [make (var,occur_type)] creates a [Recursive] or
        [Non_recursive] occurrence of [var]. The pair (var,occur_type)
-       thus allows to create a new occurrence, and is called an
-       [occur_maker]. [maker] and [rec_maker] are helper functions
-       that return [occur_maker]s.  *)
+       thus allows to create a new occurrence, and is called a
+       [maker]. [maker] and [rec_maker] are helper functions that
+       return [maker]s. *)
     type maker = var * occur_type
     val maker: var -> maker
     val rec_maker: var -> maker
