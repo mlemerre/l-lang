@@ -102,11 +102,11 @@ val replace_all_occurrences: var -> var -> unit
 (* [replace_some_occurrences f t] replaces all occurrences in subterms
    of [t] according to the [f] function. If [v] is the binding
    variable of an occurrence [o], [o] is not changed if [f v] returns
-   None; if [f v] returns [Some(x)], [o] is deleted and replaced by an
+   None; if [f v] returns [Some(r)], [o] is deleted and replaced by an
    occurrence of [x]. [replace_some_occurrences] traverses [Lambda]
    expressions. This operation takes time proportional to the size of
    the term.*)
-val replace_some_occurrences: term -> (var -> var option) -> unit
+val replace_some_occurrences: term -> (var -> occur_maker option) -> unit
 
 (* [replace_some_occurrences f term] is just [iter_on_terms term
    (replace_some_occurrences_in_one_term f)]. We provide the
@@ -114,4 +114,4 @@ val replace_some_occurrences: term -> (var -> var option) -> unit
    traversal of subterms can be combined with other transformations
    (so as to combine several transformation passes into one); or if
    traversal of terms inside [Lambda]s is not needed. *)
-val replace_some_occurrences_in_one_term: term -> (var -> var option) -> unit
+val replace_some_occurrences_in_one_term: term -> (var -> occur_maker option) -> unit
