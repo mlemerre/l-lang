@@ -234,7 +234,7 @@ module Make(Desc:DESCRIPTION) = struct
     (*s Create a new occurrence of VAR, i.e. add it to the
       doubly-linked list of all the occurrences of VAR, and to the
       union-find partition of the occurrences of VAR. *)
-    let make (var,ob) =
+    let make (var,ot) =
       (* Create an initial self-linked occurrence of var.  *)
       let self_linked_occur var = 
         var.occur_nb <- var.occur_nb + 1;
