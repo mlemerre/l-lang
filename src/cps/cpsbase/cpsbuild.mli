@@ -23,6 +23,13 @@ open Cpsdef;;
    escape its scope (i.e. in the above [x] can be used only in
    subterms of [let_constant]).
 
+   Whenever a function of the Build API "uses" a variable, to create a
+   new occurrence, it takes an "[occur_maker = variable * occur_type]"
+   as an argument (instead of a variable). The additional [occur_type]
+   allows the [Build] function to know if it should created a normal,
+   or recursive, occurrence of a variable. This is used especially by
+   the CPS transformation algorithm.
+
    However, instead of automatically creating new variables, the build
    functions can also use an existing variable, using the [~var] named
    parameter. New variables and continuation variables can also be
@@ -60,7 +67,6 @@ open Cpsdef;;
    variable, or pass an occurrence to [Build] functions; you should
    delete the occurrence and let [Build] re-create it instead. *)
 
-
 type fresh = Fresh.t
 
 (*s Functions used to explicitely create new variables. *)
@@ -75,27 +81,27 @@ val with_var_in_def : (var -> definition) -> definition
 val let_constant :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.t -> (var -> fresh) -> fresh
+  Constant.t -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [let_void (fun var -> ...)] corresponds to
    [let var = void in ...] *)
 val let_void :
   ?reconnect:Empty.t ->
-  ?var:var -> (var -> fresh) -> fresh
+  ?var:var -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [let_proj i tuple (fun var -> ...) corresponds to
    [let var = #i(tuple) in ... ] *)
 val let_proj :
   ?reconnect:Empty.t ->
   ?var:var ->
-  int -> var -> (var -> fresh) -> fresh
+  int -> occur_maker -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [let_inj i j occ (fun var -> ...) corresponds to
    [let var = #i(tuple) in ... ] *)
 val let_inj :
   ?reconnect:Empty.t ->
   ?var:var ->
-  int -> int -> var -> (var -> fresh) -> fresh
+  int -> int -> occur_maker -> (occur_maker -> fresh) -> fresh
 
 
 (* Usage: [match_pair pair (fun (var0,var1) -> ...)] corresponds to
@@ -106,14 +112,14 @@ val match_pair :
   ?reconnect:Empty.t ->
   ?var0:var ->
   ?var1:var ->
-  var -> (var * var -> fresh) -> fresh
+  occur_maker -> (occur_maker * occur_maker -> fresh) -> fresh
 
 (* Usage: [let_pair (var0,var1) (fun var -> ...)] corresponds to
    [let var = (var0,var1) in ...] *)
 val let_pair :
   ?reconnect:Empty.t ->
   ?var:var ->
-  var * var -> (var -> fresh) -> fresh
+  occur_maker * occur_maker -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [let_tuple [var0;var1;...] (fun var -> ...)] corresponds to
    [let var = (var0,var1,...) in ...]. Note that 0- and 1-tuples are
@@ -121,7 +127,7 @@ val let_pair :
 val let_tuple :
   ?reconnect:Empty.t ->
   ?var:var ->
-  var list -> (var -> fresh) -> fresh
+  occur_maker list -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [match_tuple t (fun vars -> ...)] corresponds to
    [let [var0;var1;...] = t in ...], i.e. to
@@ -129,23 +135,21 @@ val let_tuple :
     let var1 = #1(t) in ... ] *)
 val match_tuple :
   ?reconnect:Empty.t ->
-  int -> var -> (var list -> fresh) -> fresh
+  int -> occur_maker -> (occur_maker list -> fresh) -> fresh
 
 (* Usage: [let_integer_binary_op op a b (fun var -> ...)] corresponds to
    [let var = a op b in ...] *)
 val let_integer_binary_op :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.integer_binary_op -> var -> var -> (var -> fresh) -> fresh
+  Constant.integer_binary_op -> occur_maker -> occur_maker -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [let_integer_comparison predicate a b (fun var -> ...)] corresponds to
    [let var = predicate(a, b) in ...] *)
 val let_integer_comparison :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.Icmp.predicate -> var -> var -> (var -> fresh) -> fresh
-
-
+  Constant.Icmp.predicate -> occur_maker -> occur_maker -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [let_lambda (fun (k,x) -> ...) (fun var -> ... )] corresponds to
    [let var = { (k,x) -> ... } in ...] *)
@@ -153,7 +157,8 @@ val let_lambda :
   ?reconnect:Empty.t ->
   ?lambda_var:var ->
   ?param_var:var ->
-  (cont_var * var -> fresh) -> (var -> fresh) -> fresh
+  (cont_occur_maker * occur_maker -> fresh) -> (occur_maker -> fresh) -> fresh
+
 
 (* Usage: [let_function (fun nb_args (k,[x1,x2,...xn]) -> ...)
    (fun var -> ... )] corresponds to
@@ -164,25 +169,24 @@ val let_function :
   ?cont_arg: cont_var ->
   ?args: var list ->
   int ->
-  (cont_var * var list -> fresh) -> (var -> fresh) -> fresh
-
+  (cont_occur_maker * occur_maker list -> fresh) -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [apply_closure f ft k [x1,...,xn]] corresponds to
    f(k,(x1,...xn)). ft designates the function type: Function or
    Closure. *)
 val apply :
   ?reconnect:Empty.t -> function_type ->
-  var -> cont_var -> var list -> fresh
+  occur_maker -> cont_occur_maker -> occur_maker list -> fresh
 
 (* Same as apply Closure. *)
 val apply_closure :
   ?reconnect:Empty.t ->
-  var -> cont_var -> var list -> fresh
+  occur_maker -> cont_occur_maker -> occur_maker list -> fresh
 
 (* Same as apply Function. *)
 val apply_function :
   ?reconnect:Empty.t ->
-  var -> cont_var -> var list -> fresh
+  occur_maker -> cont_occur_maker -> occur_maker list -> fresh
 
 
 (* Usage: [let_cont (fun x -> ...) (fun k -> ...)] corresponds to
@@ -191,25 +195,25 @@ val apply_function :
    as to allow loops. *)
 val let_cont :
   ?reconnect:Empty.t ->
-  (var -> fresh) -> (cont_var -> fresh) -> fresh
+  (occur_maker -> fresh) -> (cont_occur_maker -> fresh) -> fresh
 
 (* Usage: [apply_cont k x] corresponds to k(x) *)
 val apply_cont :
   ?reconnect:Empty.t ->
-  cont_var -> var -> fresh
+  cont_occur_maker -> occur_maker -> fresh
 
 (* Usage: [case v [(i1,k1);...;(in,kn)]; d] corresponds to
    [case(v) { i1 -> k1 ... in -> kn default -> d }] *)
 val case:
   ?reconnect:Empty.t ->
   ?default:fresh ->
-  var -> (int * cont_var) list -> fresh
+  occur_maker -> (int * cont_occur_maker) list -> fresh
 
 
 (* Usage: [halt x] corresponds to [halt x]. *)
 val halt :
   ?reconnect:Empty.t ->
-  var -> fresh
+  occur_maker -> fresh
 
 (*s Functions used to build definitions. *)
 val def_constant: Constant.t -> definition

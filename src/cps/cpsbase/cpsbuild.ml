@@ -116,7 +116,7 @@ let with_subterm fresh f =
 
 let let_prim ?reconnect ?var prim fterm =
   with_var ?var (fun v ->
-    with_subterm (fterm v) (fun body ->
+    with_subterm (fterm (Var.Occur.maker v)) (fun body ->
       Term.make ?reconnect (Let_prim(v,prim,body))))
 
 let let_value ?reconnect ?var value fterm =
@@ -179,8 +179,8 @@ let let_lambda ?reconnect ?lambda_var ?param_var ftermlambda ftermparam =
   with_cont_var ( fun cv ->
     with_var ?var:lambda_var ( fun lambdav ->
       with_var ?var:param_var ( fun paramv ->
-        with_subterm (ftermparam lambdav) (fun body_param ->
-          with_subterm (ftermlambda (cv,paramv)) (fun body_lambda ->
+        with_subterm (ftermparam (Var.Occur.maker lambdav)) (fun body_param ->
+          with_subterm (ftermlambda (Cont_var.Occur.maker cv,Var.Occur.maker paramv)) (fun body_lambda ->
             Term.make ?reconnect
               (Let_prim(lambdav,
                         Value (Lambda(Closure,cv,[paramv], body_lambda)),
@@ -190,8 +190,8 @@ let let_function ?reconnect ?fun_var ?cont_arg ?args nb_args fterm_fun ftermpara
     with_var ?var:fun_var ( fun funv ->
       with_cont_var ?var:cont_arg ( fun cv ->
         with_n_vars ?vars:args nb_args (fun params ->
-          with_subterm (ftermparam funv) (fun body_param ->
-            with_subterm (fterm_fun (cv,params)) (fun body_fun ->
+          with_subterm (ftermparam (Var.Occur.maker funv)) (fun body_param ->
+            with_subterm (fterm_fun (Cont_var.Occur.maker cv,List.map Var.Occur.maker params)) (fun body_fun ->
               Term.make ?reconnect
                 (Let_prim(funv,
                           Value (Lambda(No_environment,cv,params, body_fun)),
@@ -210,8 +210,8 @@ let apply_function ?reconnect f k xl = apply No_environment ?reconnect f k xl
 let let_cont ?reconnect fterm1 fterm2 =
   with_cont_var ( fun cv ->
     with_var( fun v ->
-      with_subterm (fterm1 v) (fun t1 ->
-        with_subterm (fterm2 cv) (fun t2 ->
+      with_subterm (fterm1 (Var.Occur.maker v)) (fun t1 ->
+        with_subterm (fterm2 (Cont_var.Occur.maker cv)) (fun t2 ->
           Term.make ?reconnect (Let_cont(cv, v, t1, t2 ))))));;
 
 let apply_cont ?reconnect k x =
@@ -267,4 +267,4 @@ let with_var_in_def f =
 (*s The definition building functions are also straightforward. *)
 let def_constant c =
   with_var_in_def (fun v ->
-    Definition(Public v, Static_value(Constant c)))
+    Definition(Public v, Static_value(Constant c)));;
