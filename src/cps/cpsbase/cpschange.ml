@@ -93,7 +93,7 @@ let delete_let_prim term =
   | Let_prim(var,prim,body) ->
     (* TODO: recursively delete prim. *)
     failwith "Deletion of `prim' not yet handled";
-    (assert (Var.Var.occurrence_number var == Var.Var.No_occurrence);
+    (assert (Var.Var.number_of_occurrences var == Var.Var.No_occurrence);
      replace_with_body term body)
   | _ -> assert false;;
 
@@ -102,7 +102,7 @@ let delete_let_cont term =
   | Let_cont(k,_,cont,body) ->
     (* TODO: recursively delete cont. *)
     failwith "Deletion of `cont' not yet handled";
-    (assert (Cont_var.Var.occurrence_number k == Cont_var.Var.No_occurrence);
+    (assert (Cont_var.Var.number_of_occurrences k == Cont_var.Var.No_occurrence);
      replace_with_body term body)
   | _ -> assert false
 ;;
@@ -125,7 +125,7 @@ let update_function_type_and_arguments term ft new_args =
 
     (* Checks that removed variables have no occurrences left. *)
     Var.Var.Set.iter
-      (fun v -> assert ((Var.Var.occurrence_number v) == Var.Var.No_occurrence)) removed;
+      (fun v -> assert ((Var.Var.number_of_occurrences v) == Var.Var.No_occurrence)) removed;
 
     Cpscheck.And.set_term term
       (Let_prim(x,Value(Lambda(ft,k,new_args,lambda_body)),body))
