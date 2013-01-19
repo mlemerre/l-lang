@@ -61,7 +61,8 @@ module Uplinks = struct
     let prim = function 
       | Value v -> value v
       | Projection(_,t) -> occ t
-      | Integer_binary_op(_,a,b) -> occ a; occ b in
+      | Integer_binary_op(_,a,b) -> occ a; occ b
+      | Integer_comparison(_,a,b) -> occ a; occ b in
 
     match Term.get t with
     | Let_prim(x, p, b) -> var x; prim p; body b
