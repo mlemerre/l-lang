@@ -94,10 +94,10 @@ val delete_halt: term -> Empty.t
 val update_function_type_and_arguments: term -> function_type -> var list -> unit
 
 
-(* [replace_all_occurrences v_old v_new] makes all occurrences of
-   [v_old] become occurrences of [v_new]. Takes amortized
-   quasi-constant time. *)
-val replace_all_occurrences: var -> var -> unit
+(* [replace_all_non_recursive_occurrences_of_with v_old v_new] makes
+   all non_recursive occurrences of [v_old] become occurrences of
+   [v_new]. Takes amortized quasi-constant time. *)
+val replace_all_non_recursive_occurrences_of_with: var -> var -> unit
 
 (* [replace_some_occurrences f t] replaces all occurrences in subterms
    of [t] according to the [f] function. If [v] is the binding

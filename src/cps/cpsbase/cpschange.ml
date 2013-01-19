@@ -134,10 +134,10 @@ let update_function_type_and_arguments term ft new_args =
 (****************************************************************)
 (*s Occurrence-replacement functions.  *)
 
-(* [replace_all_occurrences] is fast thanks to the [Var] data
-   structure. *)
-let replace_all_occurrences v_old v_new =
-  Var.Var.replace_with v_old v_new;;
+(* [replace_all_non_recursive_occurrences] is fast thanks to the [Var]
+   data structure. *)
+let replace_all_non_recursive_occurrences_of_with v_old v_new =
+  Var.Var.replace_all_non_recursive_occurrences_of_with v_old v_new;;
 
 (* For each variable, the f function should either return None (if it
    must not be changed), or Some(variable) (if it must be replaced by
