@@ -72,6 +72,7 @@ module type S = sig
        occurrence of [new]. After the call [old] is a variable with no
        occurrence. *)
     val replace_with: var -> var -> unit
+    val replace_all_non_recursive_occurrences_of_with: var -> var -> unit
     (*i TODO: functions to replace_with only on
        recursive/non-recursive occurrences? i*)
 

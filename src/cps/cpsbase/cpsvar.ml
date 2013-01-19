@@ -170,41 +170,43 @@ module Make(Desc:DESCRIPTION) = struct
     (*s This function allows "merging" of variables in O(1) time:
       merging the doubly-linked lists is a O(1) operation, and so is
       performing union in the union-find algorithm. *)
+    let replace_with_ ot old new_ =
+      match get_occurrences old ot with
+      (* If there were already no occurrences of [old], there is
+         nothing to do. *)
+      | None -> ()
+      | Some(occ_old) as some_occ_old ->
+        ((match get_occurrences new_ ot with
+
+        (* If new_ had no occurrences, there is no need for full
+           list merge and union-find: we can just update the
+           partition description. *)
+        | None ->
+          set_occurrences new_ ot some_occ_old;
+          let part_old = Var_union_find.find ufds occ_old in
+          Var_union_find.set_description ufds part_old new_
+
+        (* The non-trivial case: merge the two circular
+           doubly-linked lists into one big circular doubly-linked
+           list. Also works on single-elements lists. *)
+        | Some(occ_new) ->
+          occ_old.next_occurrence.previous_occurrence <- occ_new.previous_occurrence;
+          occ_new.previous_occurrence.next_occurrence <- occ_old.next_occurrence;
+          occ_old.next_occurrence <- occ_new;
+          occ_new.previous_occurrence <- occ_old;
+          let (part_old,part_new) = (Var_union_find.find ufds occ_old,
+                                     Var_union_find.find ufds occ_new) in
+          ignore(Var_union_find.union ufds part_old part_new new_));
+
+         (* [old] can be reused if needed. *)
+         set_occurrences old ot None);;
+
     let replace_with old new_ =
-      let replace_with_ ot =
-        match get_occurrences old ot with
-        (* If there were already no occurrences of [old], there is
-           nothing to do. *)
-        | None -> ()
-        | Some(occ_old) as some_occ_old ->
-          ((match get_occurrences new_ ot with
+      replace_with_ Recursive old new_;
+      replace_with_ Non_recursive old new_;;
 
-          (* If new_ had no occurrences, there is no need for full
-             list merge and union-find: we can just update the
-             partition description. *)
-          | None ->
-            set_occurrences new_ ot some_occ_old;
-            let part_old = Var_union_find.find ufds occ_old in
-            Var_union_find.set_description ufds part_old new_
-
-          (* The non-trivial case: merge the two circular
-             doubly-linked lists into one big circular doubly-linked
-             list. Also works on single-elements lists. *)
-          | Some(occ_new) ->
-            occ_old.next_occurrence.previous_occurrence <- occ_new.previous_occurrence;
-            occ_new.previous_occurrence.next_occurrence <- occ_old.next_occurrence;
-            occ_old.next_occurrence <- occ_new;
-            occ_new.previous_occurrence <- occ_old;
-            let (part_old,part_new) = (Var_union_find.find ufds occ_old,
-                                       Var_union_find.find ufds occ_new) in
-            ignore(Var_union_find.union ufds part_old part_new new_));
-
-           (* [old] can be reused if needed. *)
-           set_occurrences old ot None) in
-
-      replace_with_ Recursive;
-      replace_with_ Non_recursive
-    ;;
+    let replace_all_non_recursive_occurrences_of_with old new_ =
+       replace_with_ Non_recursive old new_;;
 
 
     (*s Utility functions. Comparison is done using the unique ids;
@@ -355,6 +357,7 @@ module type S = sig
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
     val fold_on_recursive_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
     val replace_with: var -> var -> unit
+    val replace_all_non_recursive_occurrences_of_with: var -> var -> unit
     val description : var -> var_desc
     val set_description : var -> var_desc -> unit
     val to_string : var -> string
