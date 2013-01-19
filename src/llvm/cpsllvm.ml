@@ -479,7 +479,7 @@ let rec build_term cps env builder =
     try Cont_var_Map.find (Cont_var.Occur.binding_variable k) env.contvarmap
     with _ -> failwith "in translate_cont_occurrence" in
 
-  let add_to_varmap var value = print_endline (Var.Var.to_string var); Var_Map.add var value env.varmap in
+  let add_to_varmap var value = Var_Map.add var value env.varmap in
   let add_to_contvarmap contvar block = Cont_var_Map.add contvar (Jmp_to block) env.contvarmap in
 
   (*s Converting the term is done by inductive decomposition. There are
