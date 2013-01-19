@@ -110,6 +110,7 @@ module type VAR_RW = sig
     val number_of_occurrences: var -> number_of_occurrences
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
     val replace_with: var -> var -> unit
+    val replace_all_non_recursive_occurrences_of_with: var -> var -> unit
     val to_string : var -> string
     val binding_site: var -> enclosing
     val set_binding_site: var -> enclosing -> unit

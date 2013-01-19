@@ -114,6 +114,7 @@ module type VAR_RW = sig
     (* [replace_with v1 v2] makes all occurrences of [v1] become
        occurrences of [v2]. *)
     val replace_with: var -> var -> unit
+    val replace_all_non_recursive_occurrences_of_with: var -> var -> unit
 
     val to_string : var -> string
 
