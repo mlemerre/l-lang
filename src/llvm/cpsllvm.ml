@@ -528,7 +528,30 @@ let rec build_term cps env builder =
            variable maps (with only the x parameter), so the lambda
            expression must not contain any free variables. *)
         | Value (Lambda(ft,k,vl,body)) -> assert(ft == No_environment);
-          let f = build_function (Cont_var.Var.to_string k) k vl body env.globalvarmap in
+          let funname =  ((Var.Var.to_string x) ^ "fun") in
+
+          (* Declare the function, and add it to the map, so as to
+             allow recursive use of the function.
+
+             TODO: Extend this to any mutually recursive value
+             (Lamdba, Tuples, Injections). This is an argument for
+             separating let_prim(x,prim,body) from
+             let_values([(x1,value1);...(xn,valuen)],body).
+
+             FIXME: The function is build from [env.globalvarmap]. This
+             can cause issues when an inner function recursively calls
+             the function in which it is defined. It works currently
+             because the closure conversion algorithm pass the outer
+             function in the environment, but optimisations will break
+             that. One solution would be to lift the lamdba to global
+             scope. Another solution would be to pass the current
+             varmap, but then cpsllvm will not be able to catch some
+             errors. *)
+          let the_function = declare_llvm_function funname (List.length vl) true in
+          let the_function = Llvm.build_bitcast the_function anystar_type (funname ^ "cast") builder in
+          let function_build_map = Var_Map.add x the_function env.globalvarmap in
+
+          let f = build_function funname k vl body function_build_map in
           Llvm.set_linkage Llvm.Linkage.Private f;
           Llvm.build_bitcast f anystar_type xname builder
 
@@ -620,6 +643,19 @@ let rec build_term cps env builder =
           ignore(Llvm.build_ret_void builder)
     ); End_of_block
 
+(* Declare a llvm function with name [name], [numparams] parameters.
+   [returns] if true if the function returns a value, and false if it
+   returns void. *)
+and declare_llvm_function name numparams returns =
+  match (Llvm.lookup_function name the_module) with
+  | Some(f) -> f
+  | None ->
+    let args_type = Array.make numparams anystar_type in
+    let ret_type = if returns then anystar_type else void_type in
+    let function_type = Llvm.function_type ret_type args_type in
+    let the_function = Llvm.declare_function name function_type the_module in
+    the_function
+
 (*s The following function factorizes the creation of a function with
   LLVM. It takes the following arguments:
 
@@ -642,20 +678,25 @@ let rec build_term cps env builder =
 
   \end{itemize}
 *)
+and created_functions = ((Hashtbl.create 47):(string, unit) Hashtbl.t)
 and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
-  (* Note: it is important for LLVM that function names are unique.  *)
-  let funname = uniquify_name name in
 
-  (* Compute [function_type]. *)
-  let args_type = match params with
-    | Some(_,l) -> Array.make (List.length l) anystar_type
-    | None -> [| |] in
-  let ret_type = match handle_halt with
-    | Halt_returns_value -> anystar_type
-    | Halt_stores_results_in _ | Halt_returns_void -> void_type in
-  let function_type = Llvm.function_type ret_type args_type in
+  (* It is important for LLVM that function names are unique; but
+     names are used by LLVM as identifiers, so we cannot uniquify them
+     here; [name] must already be uniquifed by the caller. The
+     hashtable allows to check that: a name is in the hashtable iff
+     a function with the same name has been built. *)
+  if Hashtbl.mem created_functions name
+  then failwith ("Calling build_llvm_function twice with name `" ^ name ^"'")
+  else Hashtbl.add created_functions name ();
 
-  let the_function = Llvm.declare_function funname function_type the_module in
+  let numparams = match params with
+      | Some(_,l) -> (List.length l)
+      | None -> 0 in
+  let returns = match handle_halt with
+       | Halt_returns_value -> true
+       | Halt_stores_results_in _ | Halt_returns_void -> false in
+  let the_function = declare_llvm_function name numparams returns in
 
   (* Compute the initial environment; this requires that [the_function] is created. *)
   let (initial_contvarmap, initial_varmap) = match params with
@@ -679,21 +720,23 @@ and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
   try
     ignore(build_term cpsbody initial_env builder);
     (* Prints the textual representation of the function to stderr. *)
-    Llvm.dump_value the_function;
+    if Log.Llvm_output.is_output
+    then Llvm.dump_value the_function
+    else ();
     (* Validate the code we just generated.  *)
     Llvm_analysis.assert_valid_function the_function;
     the_function
   (* Normally, no exception should be thrown, be we never know. *)
   with e -> Llvm.delete_function the_function; raise e
 
-(* A function takes parameters and returns a result. *)
+(* A function takes parameters and returns a result with "return". *)
 and build_function name contparam params cpsbody globalvarmap =
   build_llvm_function name ~params:(Some(contparam,params)) cpsbody Halt_returns_value globalvarmap
 ;;
 
 (* "nodef" is just a thunk that executes an expression when called.  *)
 let build_nodef cpsbody globalvarmap =
-  build_llvm_function "nodef" ~params:None cpsbody Halt_returns_void globalvarmap;;
+  build_llvm_function (uniquify_name "nodef") ~params:None cpsbody Halt_returns_void globalvarmap;;
 
 (* A definition is a global variable, plus a constructor function that
    stores a value in it. The constructor is also a thunk, that stores a
