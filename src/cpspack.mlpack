@@ -1,4 +1,4 @@
-cps/Newcpsconversion
+cps/Cpsclosureconversion
 cps/Base
 cps/Cpsfree
 # Note: Cpsfree is not part of the mlpack, but there are
