@@ -269,10 +269,10 @@ let build_boolean name value builder =
 (*s Apply primitive operations.  *)
 let build_integer_binary_op name op a b builder =
   let build_fn = match op with
-    | Constant.IAdd -> Llvm.build_add
-    | Constant.ISub -> Llvm.build_sub
-    | Constant.IMul -> Llvm.build_mul
-    | Constant.IDiv -> Llvm.build_udiv in
+    | Constant.Ibop.Add -> Llvm.build_add
+    | Constant.Ibop.Sub -> Llvm.build_sub
+    | Constant.Ibop.Mul -> Llvm.build_mul
+    | Constant.Ibop.Div -> Llvm.build_udiv in
   let a_unbox = (build_unbox (name ^ "_a") a i32_type builder) in
   let b_unbox = (build_unbox (name ^ "_b") b i32_type builder) in
   let res = build_fn a_unbox b_unbox (name ^ "_bop") builder in
@@ -280,16 +280,16 @@ let build_integer_binary_op name op a b builder =
 
 let build_integer_comparison name op a b builder =
   let llvm_pred = match op with
-    | Constant.Icmp.Eq -> Llvm.Icmp.Eq
-    | Constant.Icmp.Ne -> Llvm.Icmp.Ne
-    | Constant.Icmp.Ugt -> Llvm.Icmp.Ugt
-    | Constant.Icmp.Uge -> Llvm.Icmp.Uge
-    | Constant.Icmp.Ult -> Llvm.Icmp.Ult
-    | Constant.Icmp.Ule -> Llvm.Icmp.Ule
-    | Constant.Icmp.Sgt -> Llvm.Icmp.Sgt
-    | Constant.Icmp.Sge -> Llvm.Icmp.Sge
-    | Constant.Icmp.Slt -> Llvm.Icmp.Slt
-    | Constant.Icmp.Sle -> Llvm.Icmp.Sle in
+    | Constant.Ibpred.Eq -> Llvm.Icmp.Eq
+    | Constant.Ibpred.Ne -> Llvm.Icmp.Ne
+    | Constant.Ibpred.Ugt -> Llvm.Icmp.Ugt
+    | Constant.Ibpred.Uge -> Llvm.Icmp.Uge
+    | Constant.Ibpred.Ult -> Llvm.Icmp.Ult
+    | Constant.Ibpred.Ule -> Llvm.Icmp.Ule
+    | Constant.Ibpred.Sgt -> Llvm.Icmp.Sgt
+    | Constant.Ibpred.Sge -> Llvm.Icmp.Sge
+    | Constant.Ibpred.Slt -> Llvm.Icmp.Slt
+    | Constant.Ibpred.Sle -> Llvm.Icmp.Sle in
   let a_unbox = (build_unbox (name ^ "_a") a i32_type builder) in
   let b_unbox = (build_unbox (name ^ "_b") b i32_type builder) in
   let res = Llvm.build_icmp llvm_pred a_unbox b_unbox (name ^ "_icmp") builder in
@@ -559,9 +559,9 @@ let rec build_term cps env builder =
            translation of a call to a primitive operation (e.g.
            +(a,b)), and not the use of a primitive as a function (e.g.
            let a = +). *)
-        | Integer_binary_op(op,xa,xb) ->
+        | Integer_binary_operation(op,xa,xb) ->
           build_integer_binary_op xname op (translate_occurrence xa) (translate_occurrence xb) builder
-        | Integer_comparison(pred,xa,xb) ->
+        | Integer_binary_predicate(pred,xa,xb) ->
           build_integer_comparison xname pred (translate_occurrence xa) (translate_occurrence xb) builder
         | Projection(i,x) -> build_letproj xname (translate_occurrence x) i builder
 

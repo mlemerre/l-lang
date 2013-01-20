@@ -183,14 +183,14 @@ let replace_some_occurrences_in_one_term t f_ =
          [Some(np)] if [p] in [t] must be changed to [np]. *)
       let newp =
         (match p with
-        | Integer_binary_op(op,a,b) ->
+        | Integer_binary_operation(op,a,b) ->
           (match (f a,f b) with
           | (None,None) -> None
-          | (newa,newb) -> Some (Integer_binary_op(op,choose a newa, choose b newb)))
-	| Integer_comparison(pred,a,b) ->
+          | (newa,newb) -> Some (Integer_binary_operation(op,choose a newa, choose b newb)))
+	| Integer_binary_predicate(pred,a,b) ->
           (match (f a,f b) with
           | (None,None) -> None
-          | (newa,newb) -> Some (Integer_comparison(pred,choose a newa, choose b newb)))
+          | (newa,newb) -> Some (Integer_binary_predicate(pred,choose a newa, choose b newb)))
         | Projection(i, occ) ->
           (match f occ with
           | None -> None

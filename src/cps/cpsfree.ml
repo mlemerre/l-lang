@@ -81,8 +81,8 @@ let rec term t = match Term.get t with
 (*s Prim and value return only a set (they would always return an
   empty map, because the [Lambda] case is already handled above). *)
 and prim = function
-  | Integer_binary_op(_, a,b) -> doubleton (var a) (var b)
-  | Integer_comparison(_, a,b) -> doubleton (var a) (var b)
+  | Integer_binary_operation(_, a,b)
+  | Integer_binary_predicate(_, a,b) -> doubleton (var a) (var b)
   | Projection(_,x) -> VarSet.singleton (var x)
   | Value v -> value v
 

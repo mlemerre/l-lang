@@ -112,8 +112,8 @@ module type S = sig
   and primitive =
   | Value of value
   | Projection of int * occur
-  | Integer_binary_op of Constant.integer_binary_op * occur * occur
-  | Integer_comparison of Constant.Icmp.predicate * occur * occur
+  | Integer_binary_operation of Constant.Ibop.t * occur * occur
+  | Integer_binary_predicate of Constant.Ibpred.t * occur * occur
 
   (* Values are completely evaluated objects. They are separated from
      primitives only because they can be evaluated statically and put

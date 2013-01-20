@@ -137,19 +137,19 @@ val match_tuple :
   ?reconnect:Empty.t ->
   int -> occur_maker -> (occur_maker list -> fresh) -> fresh
 
-(* Usage: [let_integer_binary_op op a b (fun var -> ...)] corresponds to
+(* Usage: [let_integer_binary_operation op a b (fun var -> ...)] corresponds to
    [let var = a op b in ...] *)
-val let_integer_binary_op :
+val let_integer_binary_operation :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.integer_binary_op -> occur_maker -> occur_maker -> (occur_maker -> fresh) -> fresh
+  Constant.Ibop.t -> occur_maker -> occur_maker -> (occur_maker -> fresh) -> fresh
 
-(* Usage: [let_integer_comparison predicate a b (fun var -> ...)] corresponds to
+(* Usage: [let_integer_binary_predicate predicate a b (fun var -> ...)] corresponds to
    [let var = predicate(a, b) in ...] *)
-val let_integer_comparison :
+val let_integer_binary_predicate :
   ?reconnect:Empty.t ->
   ?var:var ->
-  Constant.Icmp.predicate -> occur_maker -> occur_maker -> (occur_maker -> fresh) -> fresh
+  Constant.Ibpred.t -> occur_maker -> occur_maker -> (occur_maker -> fresh) -> fresh
 
 (* Usage: [let_lambda (fun (k,x) -> ...) (fun var -> ... )] corresponds to
    [let var = { (k,x) -> ... } in ...] *)

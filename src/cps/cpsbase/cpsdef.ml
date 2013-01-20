@@ -26,8 +26,8 @@ and term_ =
 and primitive =
   | Value of value
   | Projection of int * occur
-  | Integer_binary_op of Constant.integer_binary_op * occur * occur
-  | Integer_comparison of Constant.Icmp.predicate * occur * occur
+  | Integer_binary_operation of Constant.Ibop.t * occur * occur
+  | Integer_binary_predicate of Constant.Ibpred.t * occur * occur
 
 (*i Note: it is unclear now whether it is interesting to put these
   values together in a value data type, or split them directly in the
