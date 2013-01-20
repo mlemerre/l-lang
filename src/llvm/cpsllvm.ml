@@ -504,7 +504,7 @@ let rec build_term cps env builder =
     | Let_prim(x,prim,body) ->
       let xname = (Var.Var.to_string x) in
       let result = (match prim with
-        | Value (Constant(Constant.Int i)) ->
+        | Value (Constant(Constant.Integer i)) ->
           let llvalue = Llvm.const_int i32_type i in
           build_box (xname ^ "_is_const_" ^ string_of_int i) llvalue  builder
 
