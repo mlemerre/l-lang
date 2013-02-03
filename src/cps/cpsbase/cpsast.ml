@@ -152,7 +152,8 @@ module type S = sig
      constitutes an environment that need to be stored, from
      functions, who may not. We distinguish them only as an argument
      to [Apply] and [Lambda], because most of the code that access
-     them does not depend on this distinction.  *)
+     them does not depend on this distinction. Having functions at
+     the top level is useful, for instance, to interact with C.  *)
   and function_type =
   | Closure
   | No_environment
