@@ -313,7 +313,7 @@ let top_convert t =
   (*s Replace the body of the lambda to use variables passed in the
     environments instead of the free variables. *)
   and use_environment term rec_free_vars nonrec_free_vars =
-    let Let_prim(x,(Value(Lambda(Closure,k,[arg],lambda_body)) as prim),_) 
+    let Let_prim(x,(Value(Lambda(Closure,k,[arg],lambda_body)) as prim),_)
         = Term.get term in
 
     (*c Add a new [env_arg] argument to the lambda. *)
@@ -321,7 +321,7 @@ let top_convert t =
       Change.update_function_type_and_arguments term No_environment [env_arg; arg];
 
       (*c Retrieve parameters from [env_arg]. *)
-      let (lambda_body_reconnect,lambda_body_reuse) 
+      let (lambda_body_reconnect,lambda_body_reuse)
           = Change.disconnect lambda_body in
       let num_env_vars = List.length nonrec_free_vars in
       Build.match_tuple ~reconnect:lambda_body_reconnect
