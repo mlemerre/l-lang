@@ -508,6 +508,9 @@ let rec build_term cps env builder =
           let llvalue = Llvm.const_int i32_type i in
           build_box (xname ^ "_is_const_" ^ string_of_int i) llvalue  builder
 
+        | Value( Constant(Constant.Float(_) | Constant.String(_))) ->
+          failwith "Float and strings not yet implemented"
+
         (* For now, any value is a pointer, so we compile void to
            pointers; but void values should not be dereferenced, so we
            can just use undef as a pointer. *)
@@ -567,10 +570,9 @@ let rec build_term cps env builder =
 
         (* Expressions such as $let x = primitive$ should have been
            eta-expanded into something like $let x = { (a,b) ->
-           primitiveop( a,b) }$ in previous compilation stage, and
+           primitiveop( a,b) }$ in previous compilation stage, so we
            fail here. *)
         | Value (Constant(c)) -> print_endline (Constant.to_string c);
-          assert( Constant.is_function c);
           failwith "ICE: primitive operations as value in LLVM translation."
       )
       in build_term body {env with varmap=(add_to_varmap x result)} builder
