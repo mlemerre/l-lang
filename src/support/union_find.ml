@@ -321,7 +321,7 @@ let autotest() =
   assert (part2 <> part3);
 
   (* Should fail: the element is already in a set.  *)
-  assert ( try A.singleton t elt1 "smth"; false
+  assert ( try ignore(A.singleton t elt1 "smth"); false
     with _ -> true);
 
   assert (A.description t part1 = "1");
@@ -329,14 +329,14 @@ let autotest() =
 
   (* Using the wrong union-find structure, i.e. t2 instead of t,
      should fail. *)
-  assert ( try  A.description t2 part1; false with _ -> true);
-  assert ( try  A.set_description t2 part1 "toto"; false with _ -> true);
-  assert ( try  A.find t2 elt1; false with _ -> true);
-  assert (try A.union t2 part1 part2 "1 and 2"; false with _ -> true );
+  assert ( try  ignore(A.description t2 part1); false with _ -> true);
+  assert ( try  ignore(A.set_description t2 part1 "toto"); false with _ -> true);
+  assert ( try  ignore(A.find t2 elt1); false with _ -> true);
+  assert (try ignore(A.union t2 part1 part2 "1 and 2"); false with _ -> true );
 
   (* Merging partitions from different union-find structures fails. *)
-  assert (try A.union t part1 part4 "1 and 4"; false with _ -> true );
-  assert (try A.union t2 part1 part4 "1 and 4"; false with _ -> true );
+  assert (try ignore(A.union t part1 part4 "1 and 4"); false with _ -> true );
+  assert (try ignore(A.union t2 part1 part4 "1 and 4"); false with _ -> true );
 
   let part12 = A.union t part1 part2 "1 and 2" in
   assert (A.find t elt1 = part12);
