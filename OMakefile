@@ -1,0 +1,65 @@
+########################################################################
+# OMake configuration
+
+# Display all commands, not just the ones that display output.
+OMakeFlags(--no-S)
+
+# Display each directory. This allows Emacs compile-mode to retrieve
+# the correct files on errors. 
+OMakeFlags(-w)
+
+########################################################################
+# Phony targets are scoped, so you probably want to declare them first.
+#
+
+# Note: only all is defined for now.
+.PHONY: all clean install
+
+
+
+########################################################################
+# OCaml configuration.
+
+# The default OMake configuration for Ocaml fails on warning (-warn-error A)
+# we change that.
+OCAMLFLAGS=
+OCAMLFLAGS += -annot
+
+# General configuration.
+NATIVE_ENABLED = false
+BYTE_ENABLED = true
+
+
+########################################################################
+# Subdirectories.
+# You may want to include some subdirectories in this project.
+# If so, define the subdirectory targets and uncomment this section.
+#
+
+# OCAMLFLAGS += -warn-error a
+
+vmount_rec_in(src, dest) =
+#    echo "mounting:"
+    foreach(d, $(subdirs $(src)))
+#        echo $(dest)/$(d)
+	mkdir -p $(d)
+        vmount(-fl, $(d), $(dest)/$(d))
+
+SRC_SUBDIRS[] = src unit_tests
+
+# We vmount each directory containing source code in `build', to allow
+# out-of-source build. But we add these directories to "project
+# directories", so that we can type "omake" anywhere without omake 
+# complaining that "the current directory [...] is not part of the root project".
+foreach(d, $(SRC_SUBDIRS))
+	vmount_rec_in($(d),build)
+	add-project-directories($(subdirs $(d)))
+
+.SUBDIRS: $(addprefix build/, $(SRC_SUBDIRS))
+
+# All files are built in `build', so it is easy to clean things up.
+clean:
+	rm -Rf build
+
+clone:
+	sh -c 'cd `mktemp -d` && git clone $(PWD) && omake'

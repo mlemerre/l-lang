@@ -1,0 +1,9 @@
+FILES[] = test_cpsclosureconversion
+FILES[] += ../../src/constant 
+FILES[] += $(addprefix ../../src/cps/, \
+	   cpsbase cpsbase/cpsbasepack cpsfree cpsclosureconversion)
+
+OCAMLINCLUDES += ../../src/support ../../src  ../../src/cps 
+OCAML_LIBS[] = ../../src/support/support
+
+.DEFAULT: $(OCamlProgram test_cpsclosureconversion,$(FILES))

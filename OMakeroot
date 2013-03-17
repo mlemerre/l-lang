@@ -1,0 +1,73 @@
+# -*- mode:makefile -*-
+
+#open build/C
+open build/OCaml
+#open build/LaTeX
+
+# The command-line variables are defined *after* the
+# standard configuration has been loaded.
+DefineCommandVars()
+
+# This is the fix from Alain Frish from 
+# http://lists.metaprl.org/pipermail/omake/2007-September/001883.html
+public.OCamlPackage(name, files) =
+    protected.OFILES   = $(addsuffix $(EXT_OBJ), $(files))
+    protected.CMOFILES = $(addsuffix .cmo, $(files))
+    protected.CMXFILES = $(addsuffix .cmx, $(files))
+
+    protected.OBJ       = $(file $(name)$(EXT_OBJ))
+    protected.CMO       = $(file $(name).cmo)
+    protected.CMX       = $(file $(name).cmx)
+    protected.CMI       = $(file $(name).cmi)
+    protected.MLI       = $(file $(name).mli)
+
+    protected.BYTE_TARGETS   = $(CMO)
+    protected.NATIVE_TARGETS = $(CMX) $(OBJ)
+
+    protected.TARGETS = $(CMI)
+    if $(NATIVE_ENABLED)
+        TARGETS += $(NATIVE_TARGETS)
+        export
+
+    if $(BYTE_ENABLED)
+        TARGETS += $(BYTE_TARGETS)
+        export
+
+    #
+    # Link commands
+    #
+    protected.BYTE_DEPS = $(CMOFILES)
+    protected.NATIVE_DEPS = $(CMXFILES) $(OFILES)
+
+    if $(target-exists $(MLI))
+      BYTE_DEPS += $(CMI)
+      NATIVE_DEPS += $(CMI)
+      $(CMI): $(MLI) :scanner: scan-ocaml-$(basename $(name)).mli
+        $(OCamlC) -c $<
+      export
+    elseif $(NATIVE_ENABLED)
+      BYTE_DEPS += $(CMI)
+      NATIVE_TARGETS += $(CMI)
+      export
+    else
+      BYTE_TARGETS += $(CMI)
+      export
+
+    $(BYTE_TARGETS): $(BYTE_DEPS)
+      $(OCAMLFIND) $(OCAMLC) $(LAZY_OCAMLFINDFLAGS) \
+      $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS) \
+      $(OCAMLCFLAGS) $(OCAML_LIB_FLAGS) -pack \
+      -o $(CMO) $(OCamlLinkSort $(CMOFILES))
+
+    $(NATIVE_TARGETS): $(NATIVE_DEPS)
+      $(OCAMLFIND) $(OCAMLOPTLINK) $(LAZY_OCAMLFINDFLAGS) \
+      $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS) \
+      $(OCAMLOPTFLAGS) $(OCAML_LIB_FLAGS) -pack \
+      -o $(CMX) $(OCamlLinkSort $(CMXFILES))
+
+    return $(TARGETS)
+
+
+# Include the OMakefile in this directory.
+#
+.SUBDIRS: .

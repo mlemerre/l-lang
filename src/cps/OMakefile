@@ -1,0 +1,9 @@
+.SUBDIRS: cpsbase
+
+OCAMLINCLUDES = . cpsbase ../support
+
+# TODO: with OMake, we can have mli files for packages. We could
+# remove the module cpsbase, and compile cpsbasepack here, with
+# the interface of cpsbase.
+OCamlPackage(cpspack, cpsclosureconversion cpsbase cpsfree cpsbase/cpsbasepack)
+
