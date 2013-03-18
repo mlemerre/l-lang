@@ -1,12 +1,11 @@
-all: unit_tests doc 
-
 ################################################################
-# Unit tests.
+# The build system now uses omake, rather than GNU Make +
+# ocamlbuild.
+omake:
+	omake
 
-test_union_find:
-	ocamlbuild -I src/support unit_tests/support/test_union_find.byte && ./test_union_find.byte
-
-unit_tests: test_union_find
+# Below remains what has not yet been converted.
+all: unit_tests # doc
 
 ################################################################
 # Documentation.
@@ -15,7 +14,7 @@ unit_tests: test_union_find
 # Note: it should be top-down: more important things first, details
 # second. This presumes that what does a lower-level module is
 # understandable just by looking at the code that use it.
-doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml cps/base.mli cps/base.ml \
+doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml cps/cpsbase.mli cps/cpsbase.ml \
 	cps/cpsbase/cpsvar.mli cps/cpsbase/cpsvar.ml cps/cpsbase/cpsdef.mli \
 	cps/cpsbase/cpsdef.ml cps/cpsbase/cpsprint.ml cps/cpsbase/cpscheck.ml \
 	llvm/cpsllvm.mli llvm/cpsllvm.ml \
