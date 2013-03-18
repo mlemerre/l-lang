@@ -41,7 +41,8 @@ let rec term t = match Term.get t with
     let set = List.fold_left (fun set v -> VarSet.remove v set) set vl in
     Log.Free_variables.output "Free variables for %s: [%a] \n"
       (Var.Var.to_string x)
-      Log.sep_list_string (", ", Var.Var.to_string, VarSet.elements set);
+      (Make_printer.list ~sep:", " (Make_printer.from_string Var.Var.to_string))
+      (VarSet.elements set);
     (* [x] is still considered free in [bodylambda]: it is removed from
        [set], but after being added to [map]. *)
     let map = VarMap.add x set map in

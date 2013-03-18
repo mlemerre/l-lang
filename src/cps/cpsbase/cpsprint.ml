@@ -19,8 +19,8 @@ and occur ppf v = fprintf ppf "%s" (Var.Occur.to_string v)
 and cont_var ppf v = fprintf ppf "%s" (Cont_var.Var.to_string v)
 and cont_occur ppf v = fprintf ppf "%s" (Cont_var.Occur.to_string v)
 
-and var_list ppf vl = Utils.print_list_ppf ppf ", " var vl
-and occur_list ppf ol = Utils.print_list_ppf ppf ", " occur ol
+and var_list ppf vl = (Make_printer.list ~sep:", " var) ppf vl
+and occur_list ppf vl = (Make_printer.list ~sep:", " occur) ppf vl
 
 and term ppf t = match Term.get t with
   | Halt v ->
@@ -41,9 +41,7 @@ and term ppf t = match Term.get t with
         var v prim p term body
   | Case(v,l,d) ->
     let case ppf (i,k) = fprintf ppf "%d -> %a" i cont_occur k in
-    let case_list ppf l = Utils.iter_with_sep
-      (fun x -> case ppf x)
-      (fun () -> fprintf ppf "@\n") l in
+    let case_list ppf l = Make_printer.list ~sep:"@\n" case ppf l in
     let default ppf d =
       (match d with
       | None -> ()
@@ -66,8 +64,7 @@ and value ppf = function
   | Constant(c) ->
       fprintf ppf "%s" (Constant.to_string c)
   | Tuple(l) ->
-      fprintf ppf "( %a)"
-        (fun ppf -> Utils.print_list_ppf ppf ", " occur) l
+      fprintf ppf "( %a)" occur_list l
   | Injection(i,j,x) -> fprintf ppf "inj_{%d/%d}( %a)" i j occur x
   | Lambda(_,k,vl,term_) ->
       fprintf ppf "@,@[<v>{ @[<v>%a -> (%a) ->@\n@[<v>%a@]@]@\n}@]"
