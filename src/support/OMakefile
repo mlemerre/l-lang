@@ -1,3 +1,3 @@
 # Note: support contains misc modules used by most of the code. We
 # build it in a library to simplify building executables.
-OCamlLibrary(support, unique union_find log extFormat)
+OCamlLibrary(support, unique union_find log make_printer)
