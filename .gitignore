@@ -1,18 +1,23 @@
+# Ocaml build files. They are all in the build subdirectory.
+build
 *.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
+# *.cmo
+# *.cma
+# *.cmi
+# *.a
+# *.o
+# *.cmx
+# *.cmxs
+# *.cmxa
 
-# Documentation.
-*.ml.haux
-*.ml.tex
-*.mli.haux
-*.mli.tex
-_build
+# Documentation; produced in the web directory.
 web
+# *.ml.haux
+# *.ml.tex
+# *.mli.haux
+# *.mli.tex
 
+*.omc
+.omakedb
+.omakedb.lock
+*~
