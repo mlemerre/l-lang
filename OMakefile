@@ -1,3 +1,9 @@
+# Copyright 2013 Matthieu Lemerre
+# This is the OMakefile for the `omake' build system.
+# For more information about using OMake, see
+# http://omake.metaprl.org/manual/omake-doc.html#htoc147
+# http://www.camlcity.org/knowledge/kb_001_omake_recipes.html
+
 ########################################################################
 # OMake configuration
 
@@ -8,14 +14,15 @@ OMakeFlags(--no-S)
 # the correct files on errors. 
 OMakeFlags(-w)
 
+# Warn on problems in OMakefiles.
+OMakeFlags(-Wdeclare)
+
 ########################################################################
 # Phony targets are scoped, so you probably want to declare them first.
 #
 
-# Note: only all is defined for now.
-.PHONY: all clean install
-
-
+# Note: doc and install are not yet implemented.
+.PHONY: all clean clone test annot # doc install
 
 ########################################################################
 # OCaml configuration.
@@ -55,11 +62,28 @@ foreach(d, $(SRC_SUBDIRS))
 	vmount_rec_in($(d),build)
 	add-project-directories($(subdirs $(d)))
 
-.SUBDIRS: $(addprefix build/, $(SRC_SUBDIRS))
+.SUBDIRS: $(addprefix build/, $(SRC_SUBDIRS)) # $(SRC_SUBDIRS) # (for annots)
+
+# Annot rule: copies .annot files from build/ when .ml files have
+# changed, if the file has been built. Useful to query types from Emacs.
+section
+	ROOTDIR = $(absname $(PWD))
+	.SUBDIRS: $(ls RD, $(SRC_SUBDIRS))
+		%.annot: %.ml # build/%.cmo
+			cp -f $(addprefix $(ROOTDIR)/build,$(removeprefix $(ROOTDIR), $(absname $@))) $@ || touch $@
+
+	src_files = $(filter %.ml, $(ls R, $(SRC_SUBDIRS)))
+	annot_files = $(replacesuffixes .ml, .annot, $(src_files))
+	annot: $(annot_files)
+
+all: test annot
+
+.DEFAULT: all
 
 # All files are built in `build', so it is easy to clean things up.
 clean:
 	rm -Rf build
+#	find . -name '*.annot' -delete
 
 clone:
-	sh -c 'cd `mktemp -d` && git clone $(PWD) && omake'
+	sh -c 'cd `mktemp -d` && git clone $(PWD) && cd l-lang && omake '

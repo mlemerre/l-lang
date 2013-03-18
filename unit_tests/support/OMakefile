@@ -2,5 +2,6 @@ FILES[] = test_union_find
 OCAMLINCLUDES += ../../src/support
 OCAML_LIBS[] = ../../src/support/support
 
+test: $(OCamlProgram test_union_find,$(FILES))
+	./test_union_find
 
-.DEFAULT: $(OCamlProgram test_union_find,$(FILES))
