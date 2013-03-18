@@ -224,7 +224,7 @@
 
 (*s Start of the algorithm.  *)
 
-open Base;;
+open Cpsbase;;
 
 let top_convert t = 
 

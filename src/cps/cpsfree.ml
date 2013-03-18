@@ -3,7 +3,7 @@
 (* The [Cpsfree] module computes a map associating each lambda with the set
    of free variables used in the body of this lambda. *)
 
-open Base;;
+open Cpsbase;;
 
 module VarSet = Var.Var.Set;;
 module VarMap = Var.Var.Map;;
