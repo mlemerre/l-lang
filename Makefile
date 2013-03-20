@@ -17,6 +17,7 @@ all: unit_tests # doc
 doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml cps/cpsbase.mli cps/cpsbase.ml \
 	cps/cpsbase/cpsvar.mli cps/cpsbase/cpsvar.ml cps/cpsbase/cpsdef.mli \
 	cps/cpsbase/cpsdef.ml cps/cpsbase/cpsprint.ml cps/cpsbase/cpscheck.ml \
+	cps/cpsclosureconversion.ml cps/cpsfree.ml \
 	llvm/cpsllvm.mli llvm/cpsllvm.ml \
 	support/unique.mli support/unique.ml
 
