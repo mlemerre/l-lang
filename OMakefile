@@ -22,7 +22,7 @@ OMakeFlags(-Wdeclare)
 #
 
 # Note: doc and install are not yet implemented.
-.PHONY: all clean clone test annot # doc install
+.PHONY: all clean clone test annot backup # doc install
 
 ########################################################################
 # OCaml configuration.
@@ -87,3 +87,6 @@ clean:
 
 clone:
 	sh -c 'cd `mktemp -d` && git clone $(PWD) && cd l-lang && omake '
+
+backup: clean
+	sh -c 'cd .. && tar czf l-lang_`date "+%y-%m-%d-%H-%M"`_`uname -n`.tgz l-lang'
