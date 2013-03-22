@@ -8,7 +8,7 @@ let koutput_ k (bool,name) x =
       (* We use kfprintf to preserve the type of output_ *)
       Format.kfprintf (fun fmt -> Format.printf "@."; k()) Format.std_formatter x
     end
-  else Format.ifprintf Format.std_formatter x;;
+  else Format.ikfprintf (fun _ -> k()) Format.std_formatter x;;
 
 let output_ (bool,name) x = koutput_ (fun () -> ()) (bool,name) x;;
 
@@ -34,8 +34,8 @@ module type CATEGORY = sig
   val debug: ('a, Format.formatter, unit) format -> 'a
   val info: ('a, Format.formatter, unit) format -> 'a
   val warning: ('a, Format.formatter, unit) format -> 'a
-  val raise_user_error: ('a, Format.formatter, unit) format -> 'a
-  val raise_compiler_error: ('a, Format.formatter, unit) format -> 'a
+  val raise_user_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
+  val raise_compiler_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
 
   exception User_error;;
   exception Compiler_error;;
@@ -71,4 +71,14 @@ end)
 module Llvm_output = Make(struct
   let min_output_level = Debug;;
   let printed_name = "llvm output"
+end)
+
+module Lexer = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "lexer"
+end)
+
+module Parser = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "parser"
 end)

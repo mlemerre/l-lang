@@ -51,12 +51,12 @@ module type CATEGORY = sig
   val output: level -> ('a, Format.formatter, unit) format -> 'a
 
   (* [Format.printf]-like functions for each log level. In addition
-     the last two levels throw an error. *)
+     the last two levels do not return, and throw an error. *)
   val debug: ('a, Format.formatter, unit) format -> 'a
   val info: ('a, Format.formatter, unit) format -> 'a
   val warning: ('a, Format.formatter, unit) format -> 'a
-  val raise_user_error: ('a, Format.formatter, unit) format -> 'a
-  val raise_compiler_error: ('a, Format.formatter, unit) format -> 'a
+  val raise_user_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
+  val raise_compiler_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
   exception User_error;;
   exception Compiler_error;;
 end
@@ -65,5 +65,8 @@ end
    locations? The advantage of declaring it here is that it is a
    central location to customize the logging. But logging levels
    should be chosen by the command line/environment anyway. *)
+(* TODO:  We should have hierarchical categories. *)
 module Free_variables:CATEGORY;;
 module Llvm_output:CATEGORY;;
+module Lexer:CATEGORY;;
+module Parser:CATEGORY;;
