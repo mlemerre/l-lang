@@ -39,7 +39,7 @@ let rec term t = match Term.get t with
     let (set,map) = (term bodylambda) in
     (* Remove arguments from the free variables of [bodylambda]. *)
     let set = List.fold_left (fun set v -> VarSet.remove v set) set vl in
-    Log.Free_variables.output "Free variables for %s: [%a] \n"
+    Log.Free_variables.debug "Free variables for %s: [%a] \n"
       (Var.Var.to_string x)
       (Make_printer.list ~sep:", " (Make_printer.from_string Var.Var.to_string))
       (VarSet.elements set);
