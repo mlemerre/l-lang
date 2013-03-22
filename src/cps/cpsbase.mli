@@ -124,10 +124,10 @@ module type VAR = sig
 end
 
 module Var:VAR with type var = var
-               and type occur_maker = Cpsdef.Var.Occur.maker
+               and type occur_maker = Cpsdef.occur_maker
                and type occur = occur;;
 module Cont_var:VAR with type var = cont_var
-                    and type occur_maker = Cpsdef.Cont_var.Occur.maker
+                    and type occur_maker = Cpsdef.cont_occur_maker
                     and type occur = cont_occur;;
 
 (* These modules keep the same interface; see their respective
