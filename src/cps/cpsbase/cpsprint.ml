@@ -79,7 +79,7 @@ and visibility ppf = function
   | Private(v) -> fprintf ppf "let %a" var v
   | Unused -> fprintf ppf "let _"
 and definition_type ppf = function
-  | Static_value(_) | Function(_,_) | External_value -> failwith "Not yet implemented"
+  | Static_value(_) | Function(_,_) -> failwith "Not yet implemented"
   | Dynamic_value(t) -> term ppf t;;
 
 let definitions ppf l = List.iter (fun def -> definition ppf def; fprintf ppf "@.") l
