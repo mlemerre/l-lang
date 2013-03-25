@@ -137,6 +137,9 @@ module type S = sig
      closure conversion, and allows to express some transformations
      such as arity-raising.
 
+     \item [external( name)] denotes a value defined in another
+     compilation unit.
+
      \end{itemize}
      Note that contrary to the source language, we can have Tuple
      objets with 1 element; they correspond to pointers to an object.
@@ -146,6 +149,7 @@ module type S = sig
   | Tuple of occur list
   | Injection of int * int * occur
   | Lambda of function_type * cont_var * var list *  term
+  | External of string
 
 
   (* We distinguish closures, that may contain free variables which
@@ -184,7 +188,6 @@ module type S = sig
   | Function of var list * term
   | Static_value of value
   | Dynamic_value of term
-  | External_value
 
   (*s Enclosing are uplinks from any element (variables, occurrences,
     expressions...) to the enclosing expression or toplevel

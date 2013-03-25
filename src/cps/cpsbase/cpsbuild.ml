@@ -174,6 +174,9 @@ let let_integer_binary_predicate ?reconnect ?var op a b fterm =
   let (oa, ob) = (Var.Occur.make a, Var.Occur.make b) in
   let_prim ?reconnect ?var (Integer_binary_predicate(op,oa,ob)) fterm
 
+let let_external ?reconnect ?var string fterm =
+  let_value ?reconnect ?var (External string) fterm
+
 
 let let_lambda ?reconnect ?lambda_var ?param_var ftermlambda ftermparam =
   with_cont_var ( fun cv ->

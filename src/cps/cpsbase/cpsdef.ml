@@ -40,6 +40,7 @@ and value =
   | Tuple of occur list
   | Injection of int * int * occur
   | Lambda of function_type * cont_var * var list *  term
+  | External of string
 
 and function_type =
 | Closure
@@ -65,6 +66,7 @@ and definition_type =
   | Static_value of value
   | Dynamic_value of term
   | External_value
+and definitions = definition list
 
 (* \subsection*{Backlinks and mutability for efficient operations} *)
 

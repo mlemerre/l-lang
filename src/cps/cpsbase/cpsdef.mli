@@ -3,7 +3,7 @@
 (* This module provides low-level, read-write access to the abstract
    syntax tree of the CPS intermediate representation. *)
 
-(* Abstract syntax for CPS terms; one should start here. *)
+(* Abstract syntax for CPS terms. *)
 include Cpsast.S;;
 
 (*s An empty term is a [term] without a downlink to a [term_].  *)

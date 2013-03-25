@@ -89,6 +89,14 @@ val let_void :
   ?reconnect:Empty.t ->
   ?var:var -> (occur_maker -> fresh) -> fresh
 
+(* Usage: [let_external str (fun var -> ...)] corresponds to
+   [let var = external(str) in ...] *)
+val let_external :
+  ?reconnect:Empty.t ->
+  ?var:var ->
+  string -> (occur_maker -> fresh) -> fresh
+
+
 (* Usage: [let_proj i tuple (fun var -> ...) corresponds to
    [let var = #i(tuple) in ... ] *)
 val let_proj :

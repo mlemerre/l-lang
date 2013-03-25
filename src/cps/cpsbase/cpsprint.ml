@@ -69,7 +69,7 @@ and value ppf = function
   | Lambda(_,k,vl,term_) ->
       fprintf ppf "@,@[<v>{ @[<v>%a -> (%a) ->@\n@[<v>%a@]@]@\n}@]"
         cont_var k var_list vl term term_
-
+  | External(str) -> fprintf ppf "external( \"%s\")" str
 
 let rec definition ppf (Definition(v,dt)) =
   fprintf ppf "%a = %a" visibility  v definition_type dt
