@@ -65,7 +65,6 @@ and definition_type =
   | Function of var list * term
   | Static_value of value
   | Dynamic_value of term
-  | External_value
 and definitions = definition list
 
 (* \subsection*{Backlinks and mutability for efficient operations} *)
