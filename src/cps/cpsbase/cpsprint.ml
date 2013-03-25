@@ -71,6 +71,18 @@ and value ppf = function
         cont_var k var_list vl term term_
 
 
+let rec definition ppf (Definition(v,dt)) =
+  fprintf ppf "%a = %a" visibility  v definition_type dt
+
+and visibility ppf = function
+  | Public(v) -> fprintf ppf "def %a" var v
+  | Private(v) -> fprintf ppf "let %a" var v
+  | Unused -> fprintf ppf "let _"
+and definition_type ppf = function
+  | Static_value(_) | Function(_,_) | External_value -> failwith "Not yet implemented"
+  | Dynamic_value(t) -> term ppf t;;
+
+let definitions ppf l = List.iter (fun def -> definition ppf def; fprintf ppf "@.") l
 let debug_term t =
   Format.eprintf "----------------------------------------\n";
   Format.eprintf "%a\n" term t;

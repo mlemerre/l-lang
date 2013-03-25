@@ -160,17 +160,10 @@ module type S = sig
 
 
   (*s We now present the logical structure of toplevel definitions.
-    The main difference with terms is that definitions bind terms
-    globally (and are thus accessible to the following definitions.) *)
-
-  (* A [module] is composed of a list of "toplevel definitions". Each
-     [toplevel definition] simultaneously defines several objects (this
-     allows mutually recursive definitions). *)
-  (*i Note: Alternatively, we could maybe define a module as a list of
-    toplevel definitions that are all defined at the same time; this
-    would avoid the "list of list". i*)
-  type modul = Module of toplevel list
-  and toplevel = Top of definition list
+    The main difference with terms is that definitions bind variables
+    globally (and are thus accessible to the following definitions);
+    while the scope of variables in terms is always local. *)
+  type definitions = definition list
 
   (*s A [definition] binds a (global) variable to a value, with some
     [visibility]. Public global variables may be used by other modules.
