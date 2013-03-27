@@ -22,7 +22,7 @@ OMakeFlags(-Wdeclare)
 #
 
 # Note: doc and install are not yet implemented.
-.PHONY: all clean clone test annot backup # doc install
+.PHONY: all clean clone tests annot backup # doc install
 
 ########################################################################
 # OCaml configuration.
@@ -76,7 +76,12 @@ section
 	annot_files = $(replacesuffixes .ml, .annot, $(src_files))
 	annot: $(annot_files)
 
-all: test annot
+all: tests annot
+
+tests[] = support/test_union_find.out cps/test_cpsclosureconversion.out
+tests[] = $(addprefix build/unit_tests/, $(tests)) build/next/cpstransformtest.out
+
+tests: $(tests)
 
 .DEFAULT: all
 

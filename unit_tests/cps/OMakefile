@@ -6,5 +6,7 @@ FILES[] += $(addprefix ../../src/cps/, \
 OCAMLINCLUDES += ../../src/support ../../src  ../../src/cps 
 OCAML_LIBS[] = ../../src/support/support
 
-test: $(OCamlProgram test_cpsclosureconversion,$(FILES))
-	./test_cpsclosureconversion
+OCamlProgram( test_cpsclosureconversion,$(FILES))
+
+test_cpsclosureconversion.out: test_cpsclosureconversion
+	./test_cpsclosureconversion | tee test_cpsclosureconversion.out
