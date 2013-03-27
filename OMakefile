@@ -78,8 +78,8 @@ section
 
 all: tests annot
 
-tests[] = support/test_union_find.out cps/test_cpsclosureconversion.out
-tests[] = $(addprefix build/unit_tests/, $(tests)) build/next/cpstransformtest.out
+tests[] = support/test_union_find.out cps/test_cpsconvertclosures.out
+tests[] = $(addprefix build/unit_tests/, $(tests))
 
 tests: $(tests)
 

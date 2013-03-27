@@ -1,12 +1,11 @@
-FILES[] = test_cpsclosureconversion
+FILES[] = test_cpsconvertclosures
 FILES[] += ../../src/constant 
-FILES[] += $(addprefix ../../src/cps/, \
-	   cpsbase cpsbase/cpsbasepack cpsfree cpsclosureconversion)
+FILES[] += ../../src/cps/cpspack
 
 OCAMLINCLUDES += ../../src/support ../../src  ../../src/cps 
 OCAML_LIBS[] = ../../src/support/support
 
-OCamlProgram( test_cpsclosureconversion,$(FILES))
+OCamlProgram( test_cpsconvertclosures,$(FILES))
 
-test_cpsclosureconversion.out: test_cpsclosureconversion
-	./test_cpsclosureconversion | tee test_cpsclosureconversion.out
+test_cpsconvertclosures.out: test_cpsconvertclosures
+	./test_cpsconvertclosures | tee test_cpsconvertclosures.out

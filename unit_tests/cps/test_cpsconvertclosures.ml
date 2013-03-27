@@ -2,10 +2,11 @@
 (* Unit test for cpsconversion. Testing is currently done by manual
    inspection of the output (+ calls to Cpscheck). *)
 
+open Cpspack;;
 open Cpsbase;;
 open Build;;
 
-let top_convert = Cpsclosureconversion.top_convert;;
+let top_convert = Cpsconvertclosures.top_convert;;
 
 (* Test with a single lambda. *)
 let test1 =
