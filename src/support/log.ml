@@ -1,14 +1,17 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
+(* Note: unlike C, writed to stderr are not buffered by default; this
+   module handles all the flushing. *)
+
 let koutput_ k (bool,name) x =
   if bool
   then
     begin
-      Format.printf "#LOG (%s): %! " name;
+      Format.eprintf "@.#LOG (%s): @? " name;
       (* We use kfprintf to preserve the type of output_ *)
-      Format.kfprintf (fun fmt -> Format.printf "@."; k()) Format.std_formatter x
+      Format.kfprintf (fun fmt -> Format.eprintf "@?"; k()) Format.err_formatter x
     end
-  else Format.ikfprintf (fun _ -> k()) Format.std_formatter x;;
+  else Format.ikfprintf (fun _ -> k()) Format.err_formatter x;;
 
 let output_ (bool,name) x = koutput_ (fun () -> ()) (bool,name) x;;
 
