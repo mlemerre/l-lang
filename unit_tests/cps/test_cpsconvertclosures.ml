@@ -6,8 +6,6 @@ open Cpspack;;
 open Cpsbase;;
 open Build;;
 
-let top_convert = Cpsconvertclosures.top_convert;;
-
 (* Test with a single lambda. *)
 let test1 =
   let_cont (fun x -> halt x) (fun k ->
@@ -63,7 +61,7 @@ let do_test test =
     let (_,free_map) = Cpsfree.term test in
     print_free_map free_map in
   print_and_inspect test;
-  top_convert test;
+  Cpsconvertclosures.in_expression test;
   print_and_inspect test;;
 
 List.iter do_test tests;;

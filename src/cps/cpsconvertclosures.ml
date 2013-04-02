@@ -367,3 +367,11 @@ let top_convert t =
      [replace_occurrence_in_one_term] function. *)
   let f = (fun _ -> None) in
   Traverse.iter_on_terms ~enter_lambdas:false t (convert f);;
+
+let in_expression exp = top_convert exp;;
+
+let in_definition def =
+  let Definition(_,deftype) = def in match deftype with
+    | Static_value(_) -> ()
+    | Dynamic_value(t) -> in_expression t;;
+
