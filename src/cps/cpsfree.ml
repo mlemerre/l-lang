@@ -88,7 +88,7 @@ and prim = function
   | Value v -> value v
 
 and value = function
-  | Constant(_) -> VarSet.empty
+  | Constant(_) | External(_) -> VarSet.empty
   | Tuple(l) -> (List.fold_left
                    (fun set occ -> VarSet.add (var occ) set)
                    VarSet.empty l )
