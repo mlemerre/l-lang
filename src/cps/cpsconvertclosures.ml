@@ -1,6 +1,6 @@
 (* Copyright 2012 Matthieu Lemerre *)
 
-(* This file performs \emph{closure conversion}, i.e. removes the
+(* This module performs \emph{closure conversion}, i.e. removes the
    \emph{free variables} from [Lambda] constructs. For a general
    introduction to closure conversion in CPS form, see the book
    "Compiling with continuations", by Andrew Appel.
