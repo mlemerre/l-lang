@@ -22,7 +22,7 @@ OMakeFlags(-Wdeclare)
 #
 
 # Note: doc and install are not yet implemented.
-.PHONY: all clean clone tests annot backup # doc install
+.PHONY: all clean clone tests todos annot backup # doc install
 
 ########################################################################
 # OCaml configuration.
@@ -82,6 +82,10 @@ tests[] = support/test_union_find.out cps/test_cpsconvertclosures.out
 tests[] = $(addprefix build/unit_tests/, $(tests))
 
 tests: $(tests)
+
+todos:
+	sh -c "find . -type f -exec grep -e TODO {} +"
+
 
 .DEFAULT: all
 
