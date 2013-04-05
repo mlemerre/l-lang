@@ -11,7 +11,7 @@
    merge bytecode files. This is because for JIT, Llvm does not allow
    reference to symbols in other modules, so we need to create a
    single module and then extend it. *)
-let env_file = "c/env.bc";;
+let env_file = "src/libl/libl.bc";;
 
 let file_to_module file =
   let context = Llvm.global_context() in

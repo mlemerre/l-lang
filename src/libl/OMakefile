@@ -1,0 +1,7 @@
+
+libl.bc: misc.bc debug.bc
+	llvm-link-3.0 $^ -o=libl.bc
+
+%.bc: %.c
+	clang -O0 -S -emit-llvm $< # For debugging only
+	clang -O0 -c -emit-llvm $< -o $@
