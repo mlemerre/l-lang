@@ -1,0 +1,2 @@
+OCAMLPACKS = llvm-3_0
+OCAMLINCLUDES = . .. ../cps ../support
