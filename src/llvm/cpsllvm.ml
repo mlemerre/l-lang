@@ -1,4 +1,6 @@
-(* Copyright 2012 Matthieu Lemerre. *)
+(* Copyright 2012-2013 Matthieu Lemerre. *)
+
+module List = Extensions.List;;         (* For List.fold_left_with_index. *)
 
 (*i \section{Module Cpsllvm} i*)
 
@@ -154,7 +156,7 @@ let undef_anystar = Llvm.undef anystar_type;;
 let null_anystar = Llvm.const_null anystar_type;;
 
 (* Note: Base will be (in the future) Cps.Base. *)
-module Base = Cps.Base;;
+module Base = Cpsbase;;
 module Var_Map = Base.Var.Var.Map;;
 module Cont_var_Map = Base.Cont_var.Var.Map;;
 open Base;;
@@ -196,7 +198,7 @@ let build_tuple name l builder =
   let array_type = Llvm.array_type anystar_type length in
   let pointer = Llvm.build_malloc array_type (name ^ "_tuple") builder in
 
-  let f () (int,elem) =
+  let f elem int =
     (* Note: the first 0 is because pointer is not the start of
        the array, but a pointer to the start of the array, that
        must thus be dereferenced. *)
@@ -204,7 +206,7 @@ let build_tuple name l builder =
     let gep_ptr = Llvm.build_gep pointer path (name ^ "_tuple_" ^ (string_of_int int)) builder in
     ignore(Llvm.build_store elem gep_ptr builder) in
 
-  Utils.Int.fold_with_list f () (0,l);
+  List.iter_with_index f l;
   Llvm.build_bitcast pointer anystar_type name builder;;
 
 (*s Retrieve an element from a tuple.  *)
@@ -467,7 +469,7 @@ let rec build_term cps env builder =
     match Var.Var.binding_site bound_var with
       (* Global dynamic values are allocated with an extra level of
          indirection, so we need to unbox them. *)
-      | Enclosing_definition(Definition(_,(External_value|(Dynamic_value(_))))) ->
+      | Enclosing_definition(Definition(_,Dynamic_value(_))) ->
         build_unbox (Var.Occur.to_string x) llvalue anystar_type builder
       (* Note: we could directly return constant integer here. It
          seems not worth it, because LLVM should be able to deal
@@ -510,6 +512,10 @@ let rec build_term cps env builder =
 
         | Value( Constant(Constant.Float(_) | Constant.String(_))) ->
           failwith "Float and strings not yet implemented"
+
+        | Value( External( id)) ->
+          let llvalue = Llvmenv.lookup_global id in
+          Llvm.build_bitcast llvalue anystar_type ("external_" ^ id) builder
 
         (* For now, any value is a pointer, so we compile void to
            pointers; but void values should not be dereferenced, so we
@@ -703,9 +709,9 @@ and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
   (* Compute the initial environment; this requires that [the_function] is created. *)
   let (initial_contvarmap, initial_varmap) = match params with
     | Some(k,l) -> (Cont_var_Map.singleton k Ret,
-                    Utils.Int.fold_with_list (fun map (i,x) ->
+                    List.fold_left_with_index (fun map x i ->
                       Var_Map.add x (Llvm.param the_function i) map)
-                      globalvarmap (0,l))
+                      globalvarmap l)
     | None -> (Cont_var_Map.empty, globalvarmap) in
   let initial_env = { contvarmap = initial_contvarmap;
                       varmap = initial_varmap;
@@ -722,7 +728,7 @@ and build_llvm_function name ~params cpsbody handle_halt globalvarmap =
   try
     ignore(build_term cpsbody initial_env builder);
     (* Prints the textual representation of the function to stderr. *)
-    if Log.Llvm_output.is_output
+    if Log.Llvm_output.is_output Log.Debug
     then Llvm.dump_value the_function
     else ();
     (* Validate the code we just generated.  *)
@@ -736,14 +742,14 @@ and build_function name contparam params cpsbody globalvarmap =
   build_llvm_function name ~params:(Some(contparam,params)) cpsbody Halt_returns_value globalvarmap
 ;;
 
-(* "nodef" is just a thunk that executes an expression when called.  *)
-let build_nodef cpsbody globalvarmap =
+(* Build a thunk that executes an expression when called.  *)
+let build_unbound_def cpsbody globalvarmap =
   build_llvm_function (uniquify_name "nodef") ~params:None cpsbody Halt_returns_void globalvarmap;;
 
 (* A definition is a global variable, plus a constructor function that
    stores a value in it. The constructor is also a thunk, that stores a
    result in the global variable when called.*)
-let build_def var cpsbody globalvarmap =
+let build_bound_def var cpsbody globalvarmap =
   let varname = Var.Var.to_string var in
   let funname = ("construct_" ^ varname) in
   let the_variable = Llvm.define_global varname undef_anystar the_module in
@@ -753,19 +759,17 @@ let build_def var cpsbody globalvarmap =
 ;;
 
 (* Build a toplevel definition. *)
-let build_toplevel toplevel globalvarmap =
-  (* TODO: handle the case with several definitions. *)
-  let Top(defs) = toplevel in
-  let [Definition(visib,Dynamic_value(expr))] = defs in
+let build_definition def globalvarmap =
+  let (Definition(visib,Dynamic_value(expr))) = def in
 
   match visib with
     (* The result of the expression is meaningful, and bound to a variable.  *)
     | Public(var) | Private(var) ->
-      let (the_variable, the_function) = build_def var expr globalvarmap in
+      let (the_variable, the_function) = build_bound_def var expr globalvarmap in
       let newmap = Var_Map.add var the_variable globalvarmap in
       (the_function, newmap)
     (* We do not care about the result of the expression. *)
     | Unused ->
-      let the_function = build_nodef expr globalvarmap in
+      let the_function = build_unbound_def expr globalvarmap in
       (the_function, globalvarmap)
 ;;
