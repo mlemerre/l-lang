@@ -1,3 +1,11 @@
 # Note: support contains misc modules used by most of the code. We
 # build it in a library to simplify building executables.
-OCamlLibrary(support, unique union_find log make_printer)
+.SUBDIRS: extensions
+
+OCAML_LIBS[] = extensions/libextensions
+
+# We build extensions in a package so that everything is included in
+# the support/ library; there is no need to include a "libextensions" too.
+OCamlPackage( extensionspack, extensions/extlist)
+
+OCamlLibrary(support, unique union_find log make_printer compilation_pass extensions extensionspack)
