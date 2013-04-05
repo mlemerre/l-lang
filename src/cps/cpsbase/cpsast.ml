@@ -177,15 +177,11 @@ module type S = sig
   and definition = Definition of visibility * definition_type
   and visibility = Public of var | Private of var | Unused
 
-  (* Variables can be bound either to functions (compiled to code in
-     .text section), statically computed and allocated values (put in
-     .data section), or dynamic values, computed at initialization time
-     and compiled into constructors calls (.ctors and .bss).
-
-     Note: currently, constants are considered as static values, but
-     this may change. *)
+  (* Variables can be bound either to statically computed and
+     allocated values and functions (put in .data/.rodata/.text
+     sections), or dynamic values, computed at initialization time and
+     compiled into constructors calls (.ctors and .bss). *)
   and definition_type =
-  | Function of var list * term
   | Static_value of value
   | Dynamic_value of term
 

@@ -62,7 +62,6 @@ and toplevel = Top of definition list
 and definition = Definition of visibility * definition_type
 and visibility = Public of var | Private of var | Unused
 and definition_type =
-  | Function of var list * term
   | Static_value of value
   | Dynamic_value of term
 and definitions = definition list
