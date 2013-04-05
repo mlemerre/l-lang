@@ -5,7 +5,7 @@
 module Base:module type of Cpspack.Base;;
 
 type term = Base.term;;
-type toplevel = Base.toplevel;;
+type definition = Base.definition;;
 type var = Base.var;;
 type cont_var = Base.cont_var;;
 
