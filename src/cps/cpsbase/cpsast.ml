@@ -163,17 +163,22 @@ module type S = sig
   | No_environment
 
 
-  (*s We now present the logical structure of toplevel definitions.
-    The main difference with terms is that definitions bind variables
-    globally (and are thus accessible to the following definitions);
-    while the scope of variables in terms is always local. *)
+  (*s We now present the logical structure of toplevel definitions. A
+    definition is like a let-binding, except that the variable is
+    bound globally (and are thus accessible to all the following
+    definitions), instead of just in the body the let-binding. *)
   type definitions = definition list
 
   (*s A [definition] binds a (global) variable to a value, with some
-    [visibility]. Public global variables may be used by other modules.
-    Private ones can be used by other definitions of the module. Unused
-    ones cannot be used by any code, they are used to represent
-    computations used only for their side effects. *)
+    [visibility]. [Public] global variables may be used by other
+    modules. [Private] ones can be used by other definitions of the
+    module. [Unused] ones cannot be used by any code, they are used to
+    represent computations used only for their side effects.
+
+    Note that [Unused] cannot be replaced by a check that the variable
+    has no occurrences when compiling incrementally: indeed when the
+    definition is compiled, the variable may not yet have any
+    occurrence. *)
   and definition = Definition of visibility * definition_type
   and visibility = Public of var | Private of var | Unused
 
@@ -181,6 +186,8 @@ module type S = sig
      allocated values and functions (put in .data/.rodata/.text
      sections), or dynamic values, computed at initialization time and
      compiled into constructors calls (.ctors and .bss). *)
+  (*i TODO: A "staticalization" phase will transform dynamic values into
+      static ones. *)
   and definition_type =
   | Static_value of value
   | Dynamic_value of term
