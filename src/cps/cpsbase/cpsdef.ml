@@ -43,22 +43,14 @@ and value =
   | External of string
 
 and function_type =
-| Closure
-| No_environment
+  | Closure
+  | No_environment
 
+(* \subsection*{Definitions} *)
 
-(* \subsection*{Definitions representation} *)
+(*i Note: to avoid redundancies, definitions should look like
+  let-bindings, so that they can be handled similarly. i*)
 
-
-
-(*i The problem of top-level definitions is that a definition is really
-   like a term, except that the variable that it binds is global. This
-   introduce some redundancies, in particular concerning handling
-   backlinks from terms to their parent terms or definitions. The
-   definition structure is thus likely to be heavily changed, or even
-   disappear in favor of an extended notion of "top-level term". i*)
-and modul = Module of toplevel list
-and toplevel = Top of definition list
 and definition = Definition of visibility * definition_type
 and visibility = Public of var | Private of var | Unused
 and definition_type =
