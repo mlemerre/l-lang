@@ -506,7 +506,7 @@ let rec build_term cps env builder =
     | Let_prim(x,prim,body) ->
       let xname = (Var.Var.to_string x) in
       let result = (match prim with
-        | Value (Constant(Constant.Integer i)) ->
+        | Value( Constant(Constant.Integer i)) ->
           let llvalue = Llvm.const_int i32_type i in
           build_box (xname ^ "_is_const_" ^ string_of_int i) llvalue  builder
 
@@ -520,10 +520,10 @@ let rec build_term cps env builder =
         (* For now, any value is a pointer, so we compile void to
            pointers; but void values should not be dereferenced, so we
            can just use undef as a pointer. *)
-        | Value (Tuple []) ->
+        | Value( Tuple []) ->
           Llvm.undef anystar_type
 
-        | Value (Tuple(l)) ->
+        | Value( Tuple(l)) ->
           let llvalues = List.map translate_occurrence l in
           build_tuple xname llvalues builder
 
@@ -536,7 +536,7 @@ let rec build_term cps env builder =
            function. Also it will use new variables and continuation
            variable maps (with only the x parameter), so the lambda
            expression must not contain any free variables. *)
-        | Value (Lambda(ft,k,vl,body)) -> assert(ft == No_environment);
+        | Value( Lambda(ft,k,vl,body)) -> assert(ft == No_environment);
           let funname =  ((Var.Var.to_string x) ^ "fun") in
 
           (* Declare the function, and add it to the map, so as to
