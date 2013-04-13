@@ -527,6 +527,10 @@ let rec build_term cps env builder =
           let llvalues = List.map translate_occurrence l in
           build_tuple xname llvalues builder
 
+        | Value( Injection( i,_,value)) ->
+          let llvalue = translate_occurrence value in
+          Variant.build xname (Llvm.const_int i32_type i) llvalue builder
+
         (* This build a new function, with private linkage (since
            that it can be used only by the current term), which
            allows llvm optimizations.
