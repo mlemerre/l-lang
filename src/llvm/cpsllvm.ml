@@ -589,18 +589,27 @@ let rec build_term cps env builder =
 
     (*s Building new basic blocks. The algorithm first creates an
       empty basic block, bound to [k], then build [body], then build
-      [term] (if [k] is really called), binding [x] to the phi node.
+      [term] (if [k] is really called), binding [x] to the phi
+      node. *)
 
-      The tricky part is that the llvm bindings do not allow to create
-      an "empty" phi node (even if it would, in future implementations
-      which would not box everything we would still have to know the
-      llvm type of the phi node, and that llvm type is not known until
-      we have processed the jumps to that node). So it is the calls to
-      k that create or change the phi node; no phi node means [k] is
-      never called (so we do not bother building it).
+    (* An unused continuation is translated to a basic block with no
+       predecessor, which makes LLVM complain. So we optimize this
+       case. *)
+    | Let_cont(k,_,_,body) when
+        Cont_var.Var.number_of_occurrences k == Cont_var.Var.No_occurrence ->
+      build_term body env builder
 
-      Doing the operations in this order ensures that calls to [k] are
-      processed before [k] is built. *)
+    (* The general case. The tricky part is that the llvm bindings do
+       not allow to create an "empty" phi node (even if it would, in
+       future implementations which would not box everything we would
+       still have to know the llvm type of the phi node, and that llvm
+       type is not known until we have processed the jumps to that
+       node). So it is the calls to k that create or change the phi
+       node; no phi node means [k] is never called (so we do not
+       bother building it).
+
+       Doing the operations in this order ensures that calls to [k] are
+       processed before [k] is built. *)
     | Let_cont(k,x,term,body) ->
       let new_bb = new_block (Cont_var.Var.to_string k) builder in
       let newcvm = add_to_contvarmap k new_bb in
