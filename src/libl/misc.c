@@ -37,9 +37,8 @@ void *not[2]={&not_,0};
 
 void * match_failure_(void *env, int *arg)
 {
-  printf("###Match failure\n");
+  fprintf(stderr, "###Match failure\n");
   exit(3);
-  return 0;
 }
 void *match_failure[2]={&match_failure_,0};
 
