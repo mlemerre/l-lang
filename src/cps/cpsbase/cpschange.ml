@@ -218,7 +218,10 @@ let replace_some_occurrences_in_one_term t f_ =
       (match f occ with
       | None -> ()
       | newocc -> Cpscheck.And.set_term t (Case(choose occ newocc, cases, default)))
-
+    | Halt(occ) ->
+      (match f occ with
+      | None -> ()
+      | newocc -> Cpscheck.And.set_term t (Halt (choose occ newocc)))
 ;;
 
 let replace_some_occurrences term f =
