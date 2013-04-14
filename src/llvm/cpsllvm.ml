@@ -637,23 +637,23 @@ let rec build_term cps env builder =
 
     | Case(x,cases,default) ->
       begin
-      let cases_nb = List.length cases in
-      let default_bb = (match default with
-        | None -> new_unreachable_block builder
-        (* Note: Default != None: if it was Some(k), it would be a
-           simple (basic_block_that_calls ...) *)
-        | _ -> failwith "Case with default != None not yet implemented") in
-
-      let xval = translate_occurrence x in
-      let (tag,value) = Variant.bind (Var.Occur.to_string x) xval builder in
-      let switch = Llvm.build_switch tag default_bb cases_nb builder in
-      List.iter (fun (i,k) ->
-        Llvm.add_case switch (Llvm.const_int i32_type i)
-          (basic_block_that_calls
-             ("bb_" ^ (Cont_var.Occur.to_string k))
-             (translate_cont_occurrence k) value builder))
-        cases;
-      End_of_block
+        let xval = translate_occurrence x in
+        let cases_nb = List.length cases in
+        let default_bb = (match default with
+          | None -> new_unreachable_block builder
+          | Some(k) ->
+            basic_block_that_calls
+              ("bb_" ^ (Cont_var.Occur.to_string k))
+              (translate_cont_occurrence k) xval builder) in
+        let (tag,value) = Variant.bind (Var.Occur.to_string x) xval builder in
+        let switch = Llvm.build_switch tag default_bb cases_nb builder in
+        List.iter (fun (i,k) ->
+          Llvm.add_case switch (Llvm.const_int i32_type i)
+            (basic_block_that_calls
+               ("bb_" ^ (Cont_var.Occur.to_string k))
+               (translate_cont_occurrence k) value builder))
+          cases;
+        End_of_block
       end
 
     | Halt(x) -> (match env.handle_halt with
