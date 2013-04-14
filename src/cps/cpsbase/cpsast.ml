@@ -84,7 +84,7 @@ module type S = sig
 
     This design decision should be stated when we compile pattern
     matching; for now we just do not use the last argument to case. i*)
-  | Case of occur * (int * cont_occur) list * term option
+  | Case of occur * (int * cont_occur) list * cont_occur option
   | Halt of occur
 
   (* Primitive are values, or operations that return a value. The

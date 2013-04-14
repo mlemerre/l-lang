@@ -72,7 +72,7 @@ module Uplinks = struct
     | Case(o,l,d) ->
       ( occ o;
         List.iter (fun (_,k) -> cont_occ k) l;
-        match d with None -> () | Some(t) -> body t)
+        match d with None -> () | Some(k) -> cont_occ k)
     | Halt(x) -> occ x;;
 
   let term t = Cpstraverse.iter_on_terms
@@ -216,7 +216,6 @@ module Contains = struct
   | Let_cont(_,_,t1,t2) when the_subterm == t1 || the_subterm == t2 -> true
   | Let_prim(_,_,t) when the_subterm == t -> true
   | Let_prim(_,Value(Lambda(_,_,_,t)),_) when the_subterm == t -> true
-  | Case(_,_,Some(t)) when the_subterm == t -> true
   | _ -> false;;
 end
 

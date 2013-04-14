@@ -76,7 +76,7 @@ let fold_on_variables_and_occurrences t init
       let acc = List.fold_left cont_occ acc cont_vars in
       (match d with
       | None -> acc
-      | Some(t) -> loop acc t)
+      | Some(k) -> cont_occ acc k)
     | Halt(x) -> occ acc x
   in loop init t
 ;;

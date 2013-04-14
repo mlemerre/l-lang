@@ -214,7 +214,7 @@ val apply_cont :
    [case(v) { i1 -> k1 ... in -> kn default -> d }] *)
 val case:
   ?reconnect:Empty.t ->
-  ?default:fresh ->
+  ?default:cont_occur_maker ->
   occur_maker -> (int * cont_occur_maker) list -> fresh
 
 

@@ -45,7 +45,7 @@ and term ppf t = match Term.get t with
     let default ppf d =
       (match d with
       | None -> ()
-      | Some(t) -> fprintf ppf "@\ndefault -> %a" term t) in
+      | Some(k) -> fprintf ppf "@\n_ -> %a" cont_occur k) in
     fprintf ppf "case(%a)@\n{ @[<v>%a%a@]@\n}" occur v case_list l default d
 
 and prim ppf = function

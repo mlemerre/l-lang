@@ -223,13 +223,13 @@ let apply_cont ?reconnect k x =
                  (Var.Occur.make x)));;
 
 let case ?reconnect ?default x l =
-  let f t = Term.make ?reconnect
+  let maybe_k_occur = match default with
+    | None -> None
+    | Some(k) -> Some(Cont_var.Occur.make k) in
+  Term.make ?reconnect
     (Case ((Var.Occur.make x),
            (List.map (fun (i,k) -> (i,Cont_var.Occur.make k)) l),
-           t)) in
-  match default with
-  | None -> f default
-  | Some(t) -> with_subterm t (fun _ -> f default)
+           maybe_k_occur))
 ;;
 
 let halt ?reconnect x =

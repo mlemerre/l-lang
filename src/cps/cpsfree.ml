@@ -68,15 +68,13 @@ let rec term t = match Term.get t with
   | Apply_cont(_,x) -> VarSet.singleton (var x), VarMap.empty
   | Case(o,_,default) ->
     let set = VarSet.singleton (var o) in
-    (match default with
-    | None -> set, VarMap.empty
-    | Some(t) -> (assert false; (* Case with default not yet supported. *)
-                  let (set2,map) = term t in
-                  VarSet.union set set2, map))
+    set, VarMap.empty
+
   | Apply(_,f,_,xl) ->
     let set = List.fold_left
       (fun set x -> VarSet.add (var x) set) VarSet.empty xl in
     VarSet.add (var f) set, VarMap.empty
+
   | Halt(x) -> VarSet.singleton (var x), VarMap.empty
 
 (*s Prim and value return only a set (they would always return an
