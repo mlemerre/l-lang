@@ -235,6 +235,12 @@ let case ?reconnect ?default x l =
 let halt ?reconnect x =
   Term.make ?reconnect (Halt (Var.Occur.make x));;
 
+let let_match_failure ?reconnect f =
+  let_cont (fun x ->
+    let_cont ?reconnect (fun res -> halt res (* Never called. *))(fun k ->
+      let_external "match_failure" (fun mf ->
+        apply No_environment mf k [x]))) f
+
 (*s The user-accessible [with_var_in*] Functions differ from
   [with_var], in that:
 

@@ -223,5 +223,11 @@ val halt :
   ?reconnect:Empty.t ->
   occur_maker -> fresh
 
+(* Usage: [let_match_failure (fun k -> ...)] creates a continuation k
+   that raises a "[Match_failure]" exception. *)
+val let_match_failure :
+  ?reconnect:Cpsdef.Empty.t ->
+  (cont_occur_maker -> fresh) -> fresh
+
 (*s Functions used to build definitions. *)
 val def_constant: Constant.t -> definition
