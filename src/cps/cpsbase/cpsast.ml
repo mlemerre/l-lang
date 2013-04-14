@@ -61,6 +61,15 @@ module type S = sig
     return; instead it will call $k$ with the "return values" as
     parameters.
 
+    \item ${\bf case}(x)\{ $i_1 \to k_1 \ldots $i_n \to k_n _ \to
+    kdefault \}$ extracts the tag $i$ and value $v$ from $x$; then
+    compares $i$ to all the $i_1 \ldots i_n$, and if equal calls the
+    corresponding continuation $k$ with argument $v$. If no suitable
+    $i$ is found, a default must have been provided, and $kdefault$ is
+    called with argument $x$.
+    Note: [Apply_cont] can be seen as a special case of [Case] with a
+    default argument and no pattern rule; and could be removed.
+
     \item $halt(x)$ is used only as a base case, to stop induction. Its
     semantics is that it returns the value [x], which is the result of
     the computation, to the caller.
@@ -71,19 +80,6 @@ module type S = sig
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
   | Apply of function_type * occur * cont_occur * occur list
-
-  (*i TODO: It makes no sense to compile the default case differently
-    than the other cases (e.g. when the default is shared with some
-    options), so default should be represented by a continuation
-    option (instead of a term). This makes [Case] a "terminator
-    instruction".
-
-    Provided that the argument to case is passed to the default
-    continuation, [Apply_cont] becomes a special case of Case, and
-    could be removed.
-
-    This design decision should be stated when we compile pattern
-    matching; for now we just do not use the last argument to case. i*)
   | Case of occur * (int * cont_occur) list * cont_occur option
   | Halt of occur
 
@@ -187,7 +183,7 @@ module type S = sig
      sections), or dynamic values, computed at initialization time and
      compiled into constructors calls (.ctors and .bss). *)
   (*i TODO: A "staticalization" phase will transform dynamic values into
-      static ones. *)
+      static ones. i*)
   and definition_type =
   | Static_value of value
   | Dynamic_value of term
