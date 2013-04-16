@@ -14,10 +14,13 @@
    \item To extend a specific module of the standard library (e.g.
    [List]), type [module List = Extensions.List]
    \end{itemize} *)
+
 module List = struct
   include List
   include Extensionspack.Extlist;;
 end
+
+module Map = Extensionspack.Extmap;;
 
 module Std = struct
   module List = List;;
