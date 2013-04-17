@@ -53,7 +53,7 @@ module Uplinks = struct
     let cont_occ cont_occ = () in
 
     let value = function
-      | Constant(_) -> ()
+      | Constant(_) | External(_) -> ()
       | Tuple(l) -> List.iter occ l
       | Injection(_,_,t) -> occ t
       | Lambda(_,k,vl,b) -> cont_var k; var_list vl; body b in

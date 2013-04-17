@@ -39,7 +39,7 @@ let fold_on_variables_and_occurrences t init
         | Projection(_,o) -> occ acc o
         | Integer_binary_operation(_,a,b) -> occ (occ acc a) b
         | Value v -> (match v with
-          | Constant(_) -> acc
+          | Constant(_) | External _ -> acc
           | Tuple(l) -> List.fold_left occ acc l
           | Injection(_,_,o) -> occ acc o
           | Lambda(_,k,xl,body) ->
