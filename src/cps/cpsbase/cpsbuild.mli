@@ -215,7 +215,7 @@ val apply_cont :
 val case:
   ?reconnect:Empty.t ->
   ?default:cont_occur_maker ->
-  occur_maker -> (int * cont_occur_maker) list -> fresh
+  occur_maker -> cont_occur_maker case_map -> fresh
 
 
 (* Usage: [halt x] corresponds to [halt x]. *)

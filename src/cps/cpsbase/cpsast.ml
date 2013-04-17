@@ -80,8 +80,12 @@ module type S = sig
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
   | Apply of function_type * occur * cont_occur * occur list
-  | Case of occur * (int * cont_occur) list * cont_occur option
+  | Case of occur * cont_occur case_map * cont_occur option
   | Halt of occur
+
+  (* A structure mapping cases (represented by an int) to something
+     representing the body corresponding to the case. *)
+  and 'a case_map
 
   (* Primitive are values, or operations that return a value. The
      various operations do not take values as parameters (even

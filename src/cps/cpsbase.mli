@@ -17,8 +17,11 @@
   the implementation of [Cps.Base]. *)
 open Cpsbasepack
 
+module CaseMap:Extensions.Map.S with type key = int and type 'a t = 'a Cpsdef.case_map;;
+
 include Cpsast.S with type term = Cpsdef.term
                  and type term_ = Cpsdef.term_
+		 and type 'a case_map = 'a Cpsdef.case_map
                  and type primitive = Cpsdef.primitive
                  and type value = Cpsdef.value
                  and type function_type = Cpsdef.function_type

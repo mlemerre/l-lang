@@ -4,7 +4,9 @@
    syntax tree of the CPS intermediate representation. *)
 
 (* Abstract syntax for CPS terms. *)
-include Cpsast.S;;
+module CaseMap:Extensions.Map.S with type key = int
+
+include Cpsast.S with type 'a case_map = 'a CaseMap.t;;
 
 (*s An empty term is a [term] without a downlink to a [term_].  *)
 module Empty: sig

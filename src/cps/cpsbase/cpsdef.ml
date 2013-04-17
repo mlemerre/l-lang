@@ -1,6 +1,12 @@
 (* Copyright 2012 Matthieu Lemerre.  *)
 (* Cpsdef: definitions of data types for CPS representation. *)
 
+module CaseMap = Extensions.Map.Make(struct
+  type t = int
+  let compare = Pervasives.compare
+end);;
+
+type 'a case_map = 'a CaseMap.t;;
 
 (* \subsection*{Variables} *)
 
@@ -20,7 +26,7 @@ and term_ =
   | Let_cont of cont_var * var * term * term
   | Apply_cont of cont_occur * occur
   | Apply of function_type * occur * cont_occur * occur list
-  | Case of occur * (int * cont_occur) list * cont_occur option
+  | Case of occur * cont_occur case_map * cont_occur option
   | Halt of occur
 
 and primitive =

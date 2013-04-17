@@ -72,7 +72,7 @@ let fold_on_variables_and_occurrences t init
       acc
     | Case(o,l,d) ->
       let acc = occ acc o in
-      let cont_vars = snd (List.split l) in
+      let cont_vars = CaseMap.values l in
       let acc = List.fold_left cont_occ acc cont_vars in
       (match d with
       | None -> acc

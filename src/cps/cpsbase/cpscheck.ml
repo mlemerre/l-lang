@@ -71,7 +71,7 @@ module Uplinks = struct
     | Apply_cont(k,x) -> cont_occ k; occ x
     | Case(o,l,d) ->
       ( occ o;
-        List.iter (fun (_,k) -> cont_occ k) l;
+        CaseMap.iter (fun _ k -> cont_occ k) l;
         match d with None -> () | Some(k) -> cont_occ k)
     | Halt(x) -> occ x;;
 

@@ -38,10 +38,11 @@ let test2 =
 let test3 =
   let_constant (Constant.Integer 12) (fun c12 ->
     let_inj 0 2 c12 (fun inj ->
-      let_cont (fun x -> halt x) (fun k ->
-        case inj [(0,k)] ~default:(let_constant (Constant.Integer 13) (fun c13 -> halt c13)))));;
+      let_cont (fun x -> (let_constant (Constant.Integer 13) (fun c13 -> halt c13))) (fun k ->
+        let_match_failure (fun default ->
+        case inj (CaseMap.singleton 0 k) ~default))));;
 
-let tests = [test1; test2(* ; test3 *)];;
+let tests = [test1; test2; test3];;
 
 let print_free_set s = Cpsfree.VarSet.iter (fun v -> Printf.printf "%s " (Var.Var.to_string v)) s;;
 

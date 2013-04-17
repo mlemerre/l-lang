@@ -228,7 +228,7 @@ let case ?reconnect ?default x l =
     | Some(k) -> Some(Cont_var.Occur.make k) in
   Term.make ?reconnect
     (Case ((Var.Occur.make x),
-           (List.map (fun (i,k) -> (i,Cont_var.Occur.make k)) l),
+           (CaseMap.map Cont_var.Occur.make l),
            maybe_k_occur))
 ;;
 
