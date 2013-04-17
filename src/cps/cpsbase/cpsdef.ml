@@ -21,9 +21,9 @@ and cont_occur =  (cont_var_desc,cont_occur_desc) Cpsvar.occurrence
 
 (* \subsection*{Expressions} *)
 
-and term_ =
-  | Let_prim of var * primitive *  term
-  | Let_cont of cont_var * var * term * term
+and expression_ =
+  | Let_prim of var * primitive *  expression
+  | Let_cont of cont_var * var * expression * expression
   | Apply_cont of cont_occur * occur
   | Apply of function_type * occur * cont_occur * occur list
   | Case of occur * cont_occur case_map * cont_occur option
@@ -45,7 +45,7 @@ and value =
   | Constant of Constant.t
   | Tuple of occur list
   | Injection of int * int * occur
-  | Lambda of function_type * cont_var * var list *  term
+  | Lambda of function_type * cont_var * var list *  expression
   | External of string
 
 and function_type =
@@ -61,24 +61,26 @@ and definition = Definition of visibility * definition_type
 and visibility = Public of var | Private of var | Unused
 and definition_type =
   | Static_value of value
-  | Dynamic_value of term
+  | Dynamic_value of expression
 and definitions = definition list
 
 (* \subsection*{Backlinks and mutability for efficient operations} *)
 
-(*s The [term_] type defines the logical structure of a term, and we
-  insert this structure between any two [term_]s, or between a [term_]
-  and its [definition]. It implements a mutable double-link between a
-  term and its parent, (which can be a term or a top-level
-  definition).
+(*s The [expression_] type defines the logical structure of an
+  expression, and we insert this structure between any two
+  [expression_]s, or between a [expression_] and its [definition]. It
+  implements a mutable double-link between an expression and its
+  parent, (which can be an expression or a top-level definition).
 
-  Note that a term has only one parent, and thus can appear only once
-  in a tree. *)
-and term = { mutable enclosing:enclosing; mutable term:term_ option}
+  Note that an expression has only one parent, and thus can appear
+  only once in a tree. *)
+and expression =
+  { mutable enclosing:enclosing;
+    mutable expression:expression_ option }
 
 and enclosing =
   | Enclosing_definition of definition
-  | Enclosing_term of term
+  | Enclosing_expression of expression
   | Enclosing_uninitialized
 
 (*s For now we have only implemented uplinks from variables to their
@@ -187,14 +189,14 @@ end
 
 type cont_occur_maker = Cont_var.Occur.maker;;
 
-(* \subsection*{The [Term], [Empty], and [Fresh] modules} *)
+(* \subsection*{The [Expression], [Empty], and [Fresh] modules} *)
 
-(* Definitions common to [Term], [Fresh], et [Empty]. *)
+(* Definitions common to [Expression], [Fresh], et [Empty]. *)
 module Common = struct
-  let get t = match t.term with Some(t_) -> t_ | None -> assert false;;
-  let set t t_ = t.term <- Some t_;;
-  let empty t = t.term <- None;;
-  let is_empty t = t.term == None;;
+  let get t = match t.expression with Some(t_) -> t_ | None -> assert false;;
+  let set t t_ = t.expression <- Some t_;;
+  let empty t = t.expression <- None;;
+  let is_empty t = t.expression == None;;
 
   let enclosing t = t.enclosing;;
   let set_enclosing t e = t.enclosing <- e;;
@@ -205,13 +207,13 @@ end;;
 
 module Empty = struct
 
-  type t = term
+  type t = expression
 
   let is_empty = Common.is_empty;;
-  let empty term =
-    assert( not( is_empty term));
-    Common.empty term;
-    term;;
+  let empty expression =
+    assert( not( is_empty expression));
+    Common.empty expression;
+    expression;;
 
   let set t t_ =
     assert( is_empty t);
@@ -221,9 +223,9 @@ end
 
 module Fresh = struct
 
-  type t = term
+  type t = expression
 
-  let make t_ = { term = Some t_;
+  let make t_ = { expression = Some t_;
                   enclosing = Enclosing_uninitialized }
   let is_fresh = Common.is_fresh;;
 
@@ -232,7 +234,7 @@ module Fresh = struct
   let set_enclosing t e = assert( is_fresh t); Common.set_enclosing t e;
 end
 
-module Term = struct
+module Expression = struct
   let get = Common.get
   let set = Common.set
 
@@ -244,9 +246,9 @@ module Term = struct
     | Some(t) -> Empty.fill t t_
   ;;
 
-  let discard term =
-    Common.delete_enclosing term;
-    Common.empty term
+  let discard expression =
+    Common.delete_enclosing expression;
+    Common.empty expression
   ;;
 
 end

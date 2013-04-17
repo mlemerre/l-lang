@@ -9,15 +9,16 @@
   a continuation $k$, which is a function that represents what is
   executed on $f$ has finished its execution. So instead of returning
   a value $x$, $f$ "returns" by calling $k(x)$. CPS style makes
-  returning from functions, and more generally control flow,
-  explicit, at the expense of more verbosity.
+  returning from functions, and more generally control flow, explicit,
+  at the expense of more verbosity (amounting to naming all
+  intermediary results).
 
-  This file presents a particular representation of CPS terms that
-  separates continuations, calling a continuations, variables holding
-  continations from (respectively) normal functions, normal function
-  calls, and normal variables. This distinction allows to compile the
-  CPS program using a stack (see the [Cpsllvm] module for an
-  implementation of that).
+  This file presents a particular representation of CPS expressions
+  that separates continuations, calling a continuations, variables
+  holding continations from (respectively) normal functions, normal
+  function calls, and normal variables. This distinction allows to
+  compile the CPS program using a stack (see the [Cpsllvm] module for
+  an implementation of that).
 
   The representation also forces all values (including constants such
   as integers) to be held in variables, which simplify later
@@ -35,13 +36,13 @@ module type S = sig
   type cont_var
   type cont_occur
 
-  (*s We distinguish the type [term_], that holds the sum type
-    representing the various terms, and the type [term], that also
+  (*s We distinguish the type [expression_], that holds the sum type
+    representing the various expressions, and the type [expression], that also
     holds other information (such as the uplink to the enclosing
-    term).
+    expression).
 
-    The representation of CPS terms separates continuations from
-    usual functions. The various terms are:
+    The representation of CPS expressions separates continuations from
+    usual functions. The various expressions are:
 
     \begin{itemize}
     \item ${\bf let} x = primitive; body$ creates a binding to a primitive
@@ -74,10 +75,10 @@ module type S = sig
     semantics is that it returns the value [x], which is the result of
     the computation, to the caller.
     \end{itemize} *)
-  type term;;
-  type term_ =
-  | Let_prim of var * primitive *  term
-  | Let_cont of cont_var * var * term * term
+  type expression;;
+  type expression_ =
+  | Let_prim of var * primitive *  expression
+  | Let_cont of cont_var * var * expression * expression
   | Apply_cont of cont_occur * occur
   | Apply of function_type * occur * cont_occur * occur list
   | Case of occur * cont_occur case_map * cont_occur option
@@ -148,7 +149,7 @@ module type S = sig
   | Constant of Constant.t
   | Tuple of occur list
   | Injection of int * int * occur
-  | Lambda of function_type * cont_var * var list *  term
+  | Lambda of function_type * cont_var * var list *  expression
   | External of string
 
 
@@ -190,17 +191,18 @@ module type S = sig
       static ones. i*)
   and definition_type =
   | Static_value of value
-  | Dynamic_value of term
+  | Dynamic_value of expression
 
-  (*s Enclosing are uplinks from any element (variables, occurrences,
-    expressions...) to the enclosing expression or toplevel
-    definition. They are thus not part of the AST stricto sensu (the
-    AST provides only downlinks from expressions to elements).
+  (*s [Enclosing]s are uplinks from any element (variables,
+    occurrences, expressions...) to the enclosing expression or
+    toplevel definition. They are thus not part of the AST stricto
+    sensu (the AST provides only downlinks from expressions to
+    elements).
 
     [Enclosing_uninitialized] is a temporary state, encountered only
-    during CPS term creation or transformation. *)
+    during CPS expression creation or transformation. *)
   type enclosing =
   | Enclosing_definition of definition
-  | Enclosing_term of term
+  | Enclosing_expression of expression
   | Enclosing_uninitialized;;
 end ;;

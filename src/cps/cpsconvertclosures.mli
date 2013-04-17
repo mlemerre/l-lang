@@ -9,5 +9,5 @@
 
    TODO (easy): Remove the definition of [in_expression] from the
    signature. *)
-val in_expression: Cpsbase.term -> unit
+val in_expression: Cpsbase.expression -> unit
 val in_definition: Cpsbase.definition -> unit

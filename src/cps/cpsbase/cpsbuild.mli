@@ -3,11 +3,11 @@
 open Cpsdef;;
 
 (* The functions of this [Build] module are the only provided mean to
-   build [term]s.
+   build CPS terms (expressions or definitions).
 
    These functions must be used following the higher-order abstract
    syntax style, i.e. using OCaml bindings to represent CPS bindings.
-   For instance, the term
+   For instance, the expression
 
    [ let x = 11 in
    halt x ]
@@ -21,7 +21,7 @@ open Cpsdef;;
    explicitly call functions to create bindings, like Lisp's
    [gensym]), and provides some guarantee that the binding cannot
    escape its scope (i.e. in the above [x] can be used only in
-   subterms of [let_constant]).
+   subexpressions of [let_constant]).
 
    Whenever a function of the Build API "uses" a variable, to create a
    new occurrence, it takes an "[occur_maker = variable * occur_type]"
@@ -36,7 +36,7 @@ open Cpsdef;;
    explicitely created using [with_var] and [with_cont_var]. Thus the
    above exemple can be rewritten as:
 
-   [ with_var_in_term (fun x ->
+   [ with_var_in_expression (fun x ->
    Build.let_constant ~var:x (Constant.Int 11) (fun x' ->
    Build.halt x)) ]
 
@@ -44,13 +44,13 @@ open Cpsdef;;
    act on the occurrences of a newly created variable.
 
    By default, the functions of the [Build] module create a new, fresh
-   term. However, they can also be used to replace the contents of an
-   existing term [t]: first [t] needs to be disconnected using the
+   expression. However, they can also be used to replace the contents of an
+   existing expression [t]: first [t] needs to be disconnected using the
    [Change] module; then it can be reconnected using the [~reconnect]
    argument. For instance, the previous exemple can be changed like
    the following:
 
-   [let Let_prim(_,_,body) = Term.get t in
+   [let Let_prim(_,_,body) = Expression.get t in
    let (dangling_body, body_to_reuse) = Change.disconnect body in
    ignore(
    Build.let_constant ~reconnect:dangling_body (Constant.Int 12) (fun y ->
@@ -70,11 +70,11 @@ open Cpsdef;;
 type fresh = Fresh.t
 
 (*s Functions used to explicitely create new variables. *)
-val with_var_in_term : (var -> fresh) -> fresh
-val with_cont_var_in_term : (cont_var -> fresh) -> fresh
+val with_var_in_expression : (var -> fresh) -> fresh
+val with_cont_var_in_expression : (cont_var -> fresh) -> fresh
 val with_var_in_def : (var -> definition) -> definition
 
-(*s Functions used to build terms. *)
+(*s Functions used to build expressions. *)
 
 (* Usage: [let_constant c (fun var -> ...)] corresponds to
    [let var = c in ...] *)

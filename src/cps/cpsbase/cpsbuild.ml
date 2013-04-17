@@ -5,30 +5,31 @@
 
   In particular, this module deals with the problem of mutual
   recursion caused by the presence of uplinks in some elements (from
-  the elements to their enclosing terms).
+  the elements to their enclosing expressions).
 
   \paragraph{The [~reconnect] argument}
 
   The building functions take an additional [~reconnect] argument of
-  type [term]; the purpose of this argument is to be replaced by the
+  type [expression]; the purpose of this argument is to be replaced by the
   building functions while preserving the up- and down-links.
 
-  When performing a replacement of a term [t] of type [term], we keep
-  the [term] structure and change only [t.term] (of type [term_]).
-  This preserves the downlinks from enclosing terms, and the uplink
-  from [t] to its enclosing term.
+  When performing a replacement of an expression [e] of type
+  [expression], we keep the [expression] structure and change only
+  [e.expression] (of type [expression_]). This preserves the downlinks
+  from enclosing expressions, and the uplink from [e] to its enclosing
+  expression.
 
-  But we must take care that any element (term or variable) that [t]
-  encloses points appropriately to [t]. We could first create a new
-  [term_] [t'], then change [t.term] to [t'], and then change the
-  uplinks of elements in [t'] to point to [t]. Changing the uplinks
+  But we must take care that any element (expression or variable) that [e]
+  encloses points appropriately to [e]. We could first create a new
+  [expression_] [e'], then change [e.expression] to [e'], and then change the
+  uplinks of elements in [e'] to point to [e]. Changing the uplinks
   is an O(1) operation, but not very efficient, that can be
-  completely avoided if the uplinks to [t] are set directly when
-  building the term [t']. This is why the functions in the [Build]
+  completely avoided if the uplinks to [e] are set directly when
+  building the expression [e']. This is why the functions in the [Build]
   module provide the [~reconnect] argument. *)
 open Cpsdef;;
 
-type fresh = term;;
+type fresh = expression;;
 
 (*s We create a [Make] functor factorizes the code for variables and
   continuation variables. It provides a function, [with_var], that
@@ -37,38 +38,38 @@ type fresh = term;;
 
   In addition to the [Var] or [Cont_var] module, and to [set_uplink],
   a function to change the uplink of a variable, the functor takes as
-  an argument [var_in_term]. The [with_var] function takes as
-  argument a function [f], that when called, returns a new term [t];
-  the variable created by [with_var] is supposed to be bound by [t]
-  (and not by the subterms of [t]). [var_in_term] allows to check
+  an argument [var_in_expression]. The [with_var] function takes as
+  argument a function [f], that when called, returns a new expression [e];
+  the variable created by [with_var] is supposed to be bound by [e]
+  (and not by the subexpressions of [e]). [var_in_expression] allows to check
   that. *)
 module type VAR_PARAM = sig
   module Var : Cpsdef.VAR_RW
-  val var_in_term: Var.var -> Cpsdef.term -> bool
-  val set_uplink: Var.var -> Cpsdef.term -> unit
+  val var_in_expression: Var.var -> Cpsdef.expression -> bool
+  val set_uplink: Var.var -> Cpsdef.expression -> unit
 end
 
 module Var_param = struct
   module Var = Cpsdef.Var
-  let var_in_term v t = Cpscheck.Contains.var (Term.get t) v;;
+  let var_in_expression v t = Cpscheck.Contains.var (Expression.get t) v;;
   let set_uplink v t =
     (* Note: set_description checks that var does not yet have a
        description, i.e. that the variable is fresh. *)
     assert ( try ( Var.Var.binding_site v); false with Assert_failure _ -> true);
-    Var.Var.init v (Enclosing_term t);;
+    Var.Var.init v (Enclosing_expression t);;
 end;;
 
 module Cont_var_param = struct
   module Var = Cpsdef.Cont_var
-  let var_in_term v t = Cpscheck.Contains.cont_var (Term.get t) v;;
+  let var_in_expression v t = Cpscheck.Contains.cont_var (Expression.get t) v;;
   let set_uplink v t = ();;
 end
 
 
 module Make(M:VAR_PARAM) = struct
   (* [with_var] creates a new var, and pass it to [f]. [f] returns a
-     term, and [with_var] creates an uplink from the new var to that
-     term. The [?var] optional argument allows to reuse an existing
+     expression, and [with_var] creates an uplink from the new var to that
+     expression. The [?var] optional argument allows to reuse an existing
      variable, instead of creating a new one; this variable must not
      be bound elsewhere (and has been created using a call to the
      user-accessible functions [with_var_in_*]). *)
@@ -77,7 +78,7 @@ module Make(M:VAR_PARAM) = struct
       | None -> M.Var.Var.make()
       | Some(v) ->v in
     let t = f v in
-    assert( M.var_in_term v t);
+    assert( M.var_in_expression v t);
     M.set_uplink v t;
     t
 end
@@ -99,109 +100,113 @@ let with_n_vars ?vars n f =
 module With_cont_var = Make(Cont_var_param)
 let with_cont_var = With_cont_var.with_var;;
 
-(* Similarly to the [with_var] functions, [with_subterm] is used to
-   update a fresh term.  *)
-let with_subterm fresh f =
+(* Similarly to the [with_var] functions, [with_subexpr] is used to
+   update a fresh expression.  *)
+let with_subexpr fresh f =
   let t = f fresh in
-  assert (Cpscheck.Contains.subterm (Term.get t) fresh);
+  assert (Cpscheck.Contains.subexpression (Expression.get t) fresh);
   assert( Fresh.is_fresh fresh);
-  Cpscheck.And.set_enclosing fresh (Enclosing_term t);
+  Cpscheck.And.set_enclosing fresh (Enclosing_expression t);
   t;;
 
-(*s The term building functions are straightforward. Note that we do
+(*s The expression building functions are straightforward. Note that we do
   not expose the primitive functions, like [let_prim] or [let_value],
   in the interface, and prefer exposing more specific functions (such
   as [let_constant] or [let_proj]). This makes translation to CPS more
-  agnostic to changes in the [Cpsdef.term_] data structure. *)
+  agnostic to changes in the [Cpsdef.expression_] data structure. *)
 
-let let_prim ?reconnect ?var prim fterm =
+let let_prim ?reconnect ?var prim fexpression =
   with_var ?var (fun v ->
-    with_subterm (fterm (Var.Occur.maker v)) (fun body ->
-      Term.make ?reconnect (Let_prim(v,prim,body))))
+    with_subexpr (fexpression (Var.Occur.maker v)) (fun body ->
+      Expression.make ?reconnect (Let_prim(v,prim,body))))
 
-let let_value ?reconnect ?var value fterm =
-  let_prim ?reconnect ?var (Value value) fterm
+let let_value ?reconnect ?var value fexpression =
+  let_prim ?reconnect ?var (Value value) fexpression
 
-let let_proj ?reconnect ?var i to_proj fterm =
-  let_prim ?reconnect ?var (Projection(i, Var.Occur.make to_proj)) fterm
+let let_proj ?reconnect ?var i to_proj fexpression =
+  let_prim ?reconnect ?var (Projection(i, Var.Occur.make to_proj)) fexpression
 
-let let_inj ?reconnect ?var i j  to_inj fterm =
-  let_prim ?reconnect ?var (Value (Injection(i,j,Var.Occur.make to_inj))) fterm
+let let_inj ?reconnect ?var i j  to_inj fexpression =
+  let value = Injection(i,j,Var.Occur.make to_inj) in
+  let_prim ?reconnect ?var (Value value) fexpression
 
 
-let let_pair ?reconnect ?var (x0,x1) fterm =
+let let_pair ?reconnect ?var (x0,x1) fexpression =
   let (o0,o1) = (Var.Occur.make x0, Var.Occur.make x1) in
-  let_value ?reconnect ?var (Tuple [o0;o1]) fterm;;
+  let_value ?reconnect ?var (Tuple [o0;o1]) fexpression;;
 
 (* Note: contrary to the [Ast] level, we do allow tuples with 0 or 1
    element. 0-element tuples correspond to "void" or "undef values"
    (they are pointers that should not be dereferenced), and 1-element
    tuples to simple references (pointers to a single element). *)
-let let_tuple ?reconnect ?var l_vars fterm =
+let let_tuple ?reconnect ?var l_vars fexpression =
   let l_occurs = List.map Var.Occur.make l_vars in
-  let_value ?reconnect ?var (Tuple l_occurs) fterm;;
+  let_value ?reconnect ?var (Tuple l_occurs) fexpression;;
 
-let let_void ?reconnect ?var fterm =
-  let_value ?reconnect ?var (Tuple []) fterm
+let let_void ?reconnect ?var fexpression =
+  let_value ?reconnect ?var (Tuple []) fexpression
 
-let match_pair ?reconnect ?var0 ?var1 x fterm =
+let match_pair ?reconnect ?var0 ?var1 x fexpression =
   let_proj ?reconnect ?var:var0 0 x (fun v0 ->
     let_proj ?var:var1 1 x (fun v1 ->
-      fterm (v0, v1)))
+      fexpression (v0, v1)))
 
-let match_tuple ?reconnect n x fterm =
+let match_tuple ?reconnect n x fexpression =
   let rec f k vars =
-    if k == n then (fterm vars)
+    if k == n then (fexpression vars)
     else let_proj (n-1-k) x  ( fun var ->
       f (k+1) (var::vars) )
   in
 
   if reconnect != None
   (* We use [let_void] just to reconnect, in particular for the
-     special case n == 0. The additional term can be removed by later
+     special case n == 0. The additional expression can be removed by later
      cleanup passes, or in the machine code translation. *)
   then let_void ?reconnect (fun _ -> f 0 [])
   else f 0 [];;
 
-let let_constant ?reconnect ?var c fterm =
-  let_value ?reconnect ?var (Constant c) fterm
+let let_constant ?reconnect ?var c fexpression =
+  let_value ?reconnect ?var (Constant c) fexpression
 
-let let_integer_binary_operation ?reconnect ?var op a b fterm =
+let let_integer_binary_operation ?reconnect ?var op a b fexpression =
   let (oa, ob) = (Var.Occur.make a, Var.Occur.make b) in
-  let_prim ?reconnect ?var (Integer_binary_operation(op,oa,ob)) fterm
+  let_prim ?reconnect ?var (Integer_binary_operation(op,oa,ob)) fexpression
 
-let let_integer_binary_predicate ?reconnect ?var op a b fterm =
+let let_integer_binary_predicate ?reconnect ?var op a b fexpression =
   let (oa, ob) = (Var.Occur.make a, Var.Occur.make b) in
-  let_prim ?reconnect ?var (Integer_binary_predicate(op,oa,ob)) fterm
+  let_prim ?reconnect ?var (Integer_binary_predicate(op,oa,ob)) fexpression
 
-let let_external ?reconnect ?var string fterm =
-  let_value ?reconnect ?var (External string) fterm
+let let_external ?reconnect ?var string fexpression =
+  let_value ?reconnect ?var (External string) fexpression
 
 
-let let_lambda ?reconnect ?lambda_var ?param_var ftermlambda ftermparam =
+let let_lambda ?reconnect ?lambda_var ?param_var flambda fparam =
   with_cont_var ( fun cv ->
     with_var ?var:lambda_var ( fun lambdav ->
       with_var ?var:param_var ( fun paramv ->
-        with_subterm (ftermparam (Var.Occur.maker lambdav)) (fun body_param ->
-          with_subterm (ftermlambda (Cont_var.Occur.maker cv,Var.Occur.maker paramv)) (fun body_lambda ->
-            Term.make ?reconnect
+        with_subexpr (fparam (Var.Occur.maker lambdav)) (fun body_param ->
+          let body_lambda = flambda (Cont_var.Occur.maker cv,Var.Occur.maker paramv) in
+          with_subexpr body_lambda (fun body_lambda ->
+            Expression.make ?reconnect
               (Let_prim(lambdav,
                         Value (Lambda(Closure,cv,[paramv], body_lambda)),
                         body_param)))))));;
 
-let let_function ?reconnect ?fun_var ?cont_arg ?args nb_args fterm_fun ftermparam =
+let let_function ?reconnect ?fun_var ?cont_arg ?args nb_args ffun fparam =
     with_var ?var:fun_var ( fun funv ->
       with_cont_var ?var:cont_arg ( fun cv ->
         with_n_vars ?vars:args nb_args (fun params ->
-          with_subterm (ftermparam (Var.Occur.maker funv)) (fun body_param ->
-            with_subterm (fterm_fun (Cont_var.Occur.maker cv,List.map Var.Occur.maker params)) (fun body_fun ->
-              Term.make ?reconnect
+          with_subexpr (fparam (Var.Occur.maker funv)) (fun body_param ->
+            let body_fun = ffun (Cont_var.Occur.maker cv,
+                                 List.map Var.Occur.maker params) in
+            with_subexpr body_fun (fun body_fun ->
+              Expression.make ?reconnect
                 (Let_prim(funv,
                           Value (Lambda(No_environment,cv,params, body_fun)),
                           body_param)))))));;
 
 let apply ?reconnect ft f k xl =
-  Term.make ?reconnect
+  Expression.make ?reconnect
     (Apply (ft,
             (Var.Occur.make f),
             (Cont_var.Occur.make k),
@@ -210,15 +215,15 @@ let apply ?reconnect ft f k xl =
 let apply_closure ?reconnect f k xl = apply Closure ?reconnect f k xl
 let apply_function ?reconnect f k xl = apply No_environment ?reconnect f k xl
 
-let let_cont ?reconnect fterm1 fterm2 =
+let let_cont ?reconnect fexpression1 fexpression2 =
   with_cont_var ( fun cv ->
     with_var( fun v ->
-      with_subterm (fterm1 (Var.Occur.maker v)) (fun t1 ->
-        with_subterm (fterm2 (Cont_var.Occur.maker cv)) (fun t2 ->
-          Term.make ?reconnect (Let_cont(cv, v, t1, t2 ))))));;
+      with_subexpr (fexpression1 (Var.Occur.maker v)) (fun t1 ->
+        with_subexpr (fexpression2 (Cont_var.Occur.maker cv)) (fun t2 ->
+          Expression.make ?reconnect (Let_cont(cv, v, t1, t2 ))))));;
 
 let apply_cont ?reconnect k x =
-  Term.make ?reconnect
+  Expression.make ?reconnect
     (Apply_cont ((Cont_var.Occur.make k),
                  (Var.Occur.make x)));;
 
@@ -226,14 +231,14 @@ let case ?reconnect ?default x l =
   let maybe_k_occur = match default with
     | None -> None
     | Some(k) -> Some(Cont_var.Occur.make k) in
-  Term.make ?reconnect
+  Expression.make ?reconnect
     (Case ((Var.Occur.make x),
            (CaseMap.map Cont_var.Occur.make l),
            maybe_k_occur))
 ;;
 
 let halt ?reconnect x =
-  Term.make ?reconnect (Halt (Var.Occur.make x));;
+  Expression.make ?reconnect (Halt (Var.Occur.make x));;
 
 let let_match_failure ?reconnect f =
   let_cont (fun x ->
@@ -253,7 +258,7 @@ let let_match_failure ?reconnect f =
   used in f.
 
   \end{enumerate} *)
-let with_var_in_term f =
+let with_var_in_expression f =
   let v = Var.Var.make() in
   let t = f v in
   (* If the variable has no binding site (e.g. it has not been given
@@ -261,7 +266,7 @@ let with_var_in_term f =
   assert ( try ( Var.Var.binding_site v); true with Assert_failure _ -> false);
   t;;
 
-let with_cont_var_in_term f =
+let with_cont_var_in_expression f =
   let v = Cont_var.Var.make() in
   let t = f v in
   t;;

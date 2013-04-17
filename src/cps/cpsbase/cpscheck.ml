@@ -3,47 +3,48 @@
 open Cpsdef;;
 
 (* For each kind of check, we provide a function to check an entire
-   [term]. *)
+   [expression]. *)
 module type S = sig
-  val term: term -> unit
+  val expression: expression -> unit
 end
 
 (*s This module allows checking the uplinks. We recursively traverse a
-  term, and for each term [t] we find, we examine its elements
-  (variables, occurrences, subterms...). If the element has an uplink,
+  expression, and for each expression [t] we find, we examine its elements
+  (variables, occurrences, subexpressions...). If the element has an uplink,
   it must point to [t]. *)
 module Uplinks = struct
 
   (* The following function is necessary (rather than just comparing 2
      enclosings with [=]) because comparison of uplinks is done with
-     [==]; so we must perform a match on the enclosing term before
+     [==]; so we must perform a match on the enclosing expression before
      comparing it with x[==]. *)
-  let check_enclosing_equal_to_term enclosing term = 
+  let check_enclosing_equal_to_expression enclosing expression =
 
     let print_error() = 
-      Format.eprintf
-        "\nError: wrong uplink: should point to %a@." Cpsprint.term term in
+      Format.eprintf "\nError: wrong uplink: should point to %a@."
+        Cpsprint.expression expression in
 
     match enclosing with
-    | Enclosing_term t when t == term -> ()
-    | Enclosing_term t -> 
+    | Enclosing_expression t when t == expression -> ()
+    | Enclosing_expression t ->
       (print_error();
-       Format.eprintf "Instead, points to %a@." Cpsprint.term t;
+       Format.eprintf "Instead, points to %a@." Cpsprint.expression t;
        assert false)
     | _ ->  (print_error();
              assert false)
   ;;
 
-  (* Checks that all the components in a term (subterms, variables,
-  occurrences...) have their uplink correctly set to [t]. *)
-  let one_term t =
+  (* Checks that all the components in an expression (subexpressions,
+     variables, occurrences...) have their uplink correctly set to [t]. *)
+  let one_expression t =
     (* Each of the following helper function performs a complete check
        on the corresponding element (e.g. [var] checks variables,
        [occ] occurences etc. In addition [body] recurses. *)
-    let body t' = check_enclosing_equal_to_term (Term.enclosing t') t in
+    let body t' =
+      check_enclosing_equal_to_expression (Expression.enclosing t') t in
     let var var =
       let enclosing = Var.Var.binding_site var in
-      check_enclosing_equal_to_term enclosing t in
+      check_enclosing_equal_to_expression enclosing t in
     let var_list vl = List.iter var vl in
 
     (* Note that [cont_var], [occ] and [cont_occ] do not yet have uplinks. *)
@@ -64,7 +65,7 @@ module Uplinks = struct
       | Integer_binary_operation(_,a,b) -> occ a; occ b
       | Integer_binary_predicate(_,a,b) -> occ a; occ b in
 
-    match Term.get t with
+    match Expression.get t with
     | Let_prim(x, p, b) -> var x; prim p; body b
     | Let_cont(k,x,bc,b) -> cont_var k; var x; body bc; body b
     | Apply(_,f,k,xl) -> occ f; cont_occ k; occ_list xl
@@ -75,8 +76,8 @@ module Uplinks = struct
         match d with None -> () | Some(k) -> cont_occ k)
     | Halt(x) -> occ x;;
 
-  let term t = Cpstraverse.iter_on_terms
-    ~enter_lambdas:true t one_term;;
+  let expression t = Cpstraverse.iter_on_expressions
+    ~enter_lambdas:true t one_expression;;
 
 end
 
@@ -94,12 +95,13 @@ module Occurrences:S = struct
 
     (* For each variable [x] in a term [t], we build a map mapping [x]
        to the set of occurrences of [x] we found in [t]. This map is
-       build and used using a depth-first traversal on terms. The term
-       data structure requires that the term containing the binding site
-       of a variable [v] is an ancestor of all the terms containing
-       occurrences of [v]. Thus a depth-first traversal of terms will
-       encounter the binding site of the variable on the way down, then
-       all occurrences, then the binding site of the variable on the way
+       build and used using a depth-first traversal on terms. The
+       [definition] and [expression] data structures require that the
+       term containing the binding site of a variable [v] is an
+       ancestor of all the expressions containing occurrences of [v].
+       Thus a depth-first traversal of terms will encounter the
+       binding site of the variable on the way down, then all
+       occurrences, then the binding site of the variable on the way
        up.
 
        When we first encounter the variable, we associate it to the
@@ -109,7 +111,7 @@ module Occurrences:S = struct
        its binding variable (function [add_occurrence]).
 
        When we last encounter the variable, we known that we have found
-       all occurrences in the term; thus we compare the sets of
+       all occurrences in the expression; thus we compare the sets of
        occurrences (function [compare_set]). *)
 
     (* Return a new map with [x] mapped to an empty set. *)
@@ -159,15 +161,17 @@ module Occurrences:S = struct
         Var.Occur.Set.iter (fun occ ->
           if (is_in_doubly_linked_list occ)
           then ()
-          else failwith ("Element "^(Var.Occur.to_string occ)^" in CPS term "
-                         ^ "was not in the doubly linked list")) set in
+          else
+            failwith("Element "^(Var.Occur.to_string occ)^" in CPS expression "
+                   ^ "was not in the doubly linked list")) set in
       
       let check_doubly_linked_list_subset_of_set () = 
         Var.Var.fold_on_occurrences x () (fun () o -> 
           if Var.Occur.Set.mem o set
           then ()
-          else failwith ("Element "^(Var.Occur.to_string o)^" in the "
-                         ^ "doubly linked list was not in the CPS term")) in
+          else
+            failwith ("Element "^(Var.Occur.to_string o)^" in the "
+                    ^ "doubly linked list was not in the CPS expression")) in
       
       check_set_subset_of_doubly_linked_list();
       check_doubly_linked_list_subset_of_set()
@@ -179,11 +183,11 @@ module Occurrences:S = struct
   module MakeContVar = Make(Cont_var);;
 
   (* The depth-first traversal of the variables and occurrences in the
-     term is handled by the [fold_on_variables_and_occurrences]
+     expression is handled by the [fold_on_variables_and_occurrences]
      function. *)
-  let term t = 
-    let beforevar (map,contmap) x  = (MakeVar.add_variable x map, contmap) in
-    let beforecontvar (map,contmap) k  = (map,MakeContVar.add_variable k contmap) in
+  let expression t =
+    let beforevar (map,contmap) x = (MakeVar.add_variable x map, contmap) in
+    let beforecontvar (map,contmap) k = (map,MakeContVar.add_variable k contmap) in
 
     let focc (map,contmap) o = (MakeVar.add_occurrence o map, contmap) in
     let fcontocc (map,contmap) o = (map, MakeContVar.add_occurrence o contmap) in
@@ -212,27 +216,27 @@ module Contains = struct
    | Let_prim(_,Value(Lambda(_,k,_,_)),_) when k == cv -> true
    | _ -> false;;
 
- let subterm term_ the_subterm = match term_ with
-  | Let_cont(_,_,t1,t2) when the_subterm == t1 || the_subterm == t2 -> true
-  | Let_prim(_,_,t) when the_subterm == t -> true
-  | Let_prim(_,Value(Lambda(_,_,_,t)),_) when the_subterm == t -> true
+ let subexpression expr_ subexpr = match expr_ with
+  | Let_cont(_,_,t1,t2) when subexpr == t1 || subexpr == t2 -> true
+  | Let_prim(_,_,t) when subexpr == t -> true
+  | Let_prim(_,Value(Lambda(_,_,_,t)),_) when subexpr == t -> true
   | _ -> false;;
 end
 
 
 module And = struct
   let set_enclosing t e = (match e with
-    | Enclosing_term(superterm) ->
-      assert( Contains.subterm (Term.get superterm) t));
-    Term.set_enclosing t e;;
+    | Enclosing_expression(superexpression) ->
+      assert( Contains.subexpression (Expression.get superexpression) t));
+    Expression.set_enclosing t e;;
 
-  let set_term t t_ =
-    Term.set t t_;
-    Uplinks.one_term t;;
+  let set_expression t t_ =
+    Expression.set t t_;
+    Uplinks.one_expression t;;
 
   let fill e t_ =
     let t = Empty.fill e t_ in
-    Uplinks.one_term t;
+    Uplinks.one_expression t;
     t;;
 
 end

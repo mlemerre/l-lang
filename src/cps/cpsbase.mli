@@ -3,15 +3,15 @@
 (*s The [CPS.Base] module is the entry point for modules that access
   or change terms in the CPS intermediate representation.
 
-  It provides access [CpsAST], the abstract syntax of CPS terms; to
-  the [Term] and [{Cont_}Var] modules, providing access to the
+  It provides access [CpsAST], the abstract syntax of CPS expressions; to
+  the [Expression] and [{Cont_}Var] modules, providing access to the
   various links between elements of the ast; and to modules that
   respectively allow printing, modifying, creating new, traversing,
-  and checking invariants of, CPS terms. *)
+  and checking invariants of, CPS expressions. *)
 
 (*s [CpsAST] provides the constructors for pattern matching of CPS
-  terms. The [CpsAST] module is shared with [Cpsdef] (which provides
-  low-level access to CPS terms for the code implementing [Cps.Base]);
+  expressions. The [CpsAST] module is shared with [Cpsdef] (which provides
+  low-level access to CPS expressions for the code implementing [Cps.Base]);
   the [with] constraints allow the types of [Cps.Base] and [Cpsdef] to
   be compatible. Still, [Cpsdef] should not be used directly outide of
   the implementation of [Cps.Base]. *)
@@ -19,8 +19,8 @@ open Cpsbasepack
 
 module CaseMap:Extensions.Map.S with type key = int and type 'a t = 'a Cpsdef.case_map;;
 
-include Cpsast.S with type term = Cpsdef.term
-                 and type term_ = Cpsdef.term_
+include Cpsast.S with type expression = Cpsdef.expression
+                 and type expression_ = Cpsdef.expression_
 		 and type 'a case_map = 'a Cpsdef.case_map
                  and type primitive = Cpsdef.primitive
                  and type value = Cpsdef.value
@@ -37,20 +37,20 @@ include Cpsast.S with type term = Cpsdef.term
 ;;
 
 (*s In addition to the base abstract syntax tree, the representation
-  of CPS terms provide additional "links" between entities: it is
-  possible to know the term in which an occurrence appears, where a
-  variable is bound, which term encloses another term... The [Term],
-  [Var] and [Conv_var] modules provide helper functions to access
-  these informations (in O(1) time). *)
+  of CPS expressions provide additional "links" between entities: it
+  is possible to know the expression in which an occurrence appears,
+  where a variable is bound, which term encloses an expression... The
+  [Expression], [Var] and [Conv_var] modules provide helper functions
+  to access these informations (in O(1) time). *)
 
-module Term: sig
-  (* Get the [term_] (i.e. actual tree element) inside a [term]
+module Expression: sig
+  (* Get the [expression_] (i.e. actual tree element) inside a [expression]
      structure. *)
-  val get: term -> term_
+  val get: expression -> expression_
 
-  (* Get what is enclosing the term (it can be a term or
+  (* Get what is enclosing the expression (it can be an expression or
      definition). *)
-  val enclosing: term -> enclosing
+  val enclosing: expression -> enclosing
 end;;
 
 module type VAR = sig
@@ -77,7 +77,7 @@ module type VAR = sig
        arbitrary. *)
     val fold_on_occurrences: var -> 'a -> ('a -> occur -> 'a) -> 'a
 
-    (* Get the term or definition that binds the variable. *)
+    (* Get the expression or definition that binds the variable. *)
     val binding_site: var -> enclosing
 
     (* Display a standard printed representation of variables. *)
@@ -93,7 +93,7 @@ module type VAR = sig
     (* A [maker] creates new occurrences of a variable. An occurrence
        is [Recursive] if it refers to a binding currently being
        defined; else it is [Non_recursive]. For instance in the CPS
-       term:
+       expression:
 
        [let x1 = p1
         and x2 = p2
@@ -135,7 +135,7 @@ module Cont_var:VAR with type var = cont_var
 (* These modules keep the same interface; see their respective
    interface files for their documentation. *)
 module Print:module type of Cpsprint;;
-module Change:module type of Cpschange with type fresh = term;;
-module Build:module type of Cpsbuild with type fresh = term;;
+module Change:module type of Cpschange with type fresh = expression;;
+module Build:module type of Cpsbuild with type fresh = expression;;
 module Traverse:module type of Cpstraverse;;
 module Check:module type of Cpscheck;;

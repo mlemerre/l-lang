@@ -2,12 +2,12 @@
 
 (* The [Print] module outputs textual representation of terms. *)
 
-(* Output a term, definition, or list of definitions on formatter. *)
-val term:Format.formatter -> Cpsdef.term -> unit
+(* Output an expression, definition, or list of definitions on formatter. *)
+val expression:Format.formatter -> Cpsdef.expression -> unit
 val definition:Format.formatter -> Cpsdef.definition -> unit
 val definitions:Format.formatter -> Cpsdef.definition list -> unit
 
 
 
-(* Output a term on stderr (between dashes).  *)
-val debug_term: Cpsdef.term -> unit
+(* Output an expression on stderr (between dashes).  *)
+val debug_expression: Cpsdef.expression -> unit

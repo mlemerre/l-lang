@@ -19,7 +19,7 @@ let merge_map m1 m2 = VarMap.fold (fun key value map ->
 
 let var occ = Var.Occur.binding_variable occ;;
 
-(*s [term t] returns a pair:
+(*s [expression t] returns a pair:
 
   \begin{itemize}
   \item The first element is set of free variables for [t]
@@ -27,16 +27,16 @@ let var occ = Var.Occur.binding_variable occ;;
   to the free variables in the lambda.
   \end{itemize}
 
-  The term is traverse using a depth-first traversal (that enter into
+  The expression is traverse using a depth-first traversal (that enter into
   [Lambda]s), and the set and the map are built bottom-up.
 
   In the case of a recursive or mutually recursive values (lambdas,
   injections, tuples)ambda, the recursive bindings are considered to
   be free in the value (and especially in the lambda). *)
-let rec term t = match Term.get t with
+let rec expression t = match Expression.get t with
 
   | Let_prim(x,Value(Lambda(_,_,vl,bodylambda)),body) ->
-    let (set,map) = (term bodylambda) in
+    let (set,map) = (expression bodylambda) in
     (* Remove arguments from the free variables of [bodylambda]. *)
     let set = List.fold_left (fun set v -> VarSet.remove v set) set vl in
     Log.Free_variables.debug "Free variables for %s: [%a] \n"
@@ -46,21 +46,21 @@ let rec term t = match Term.get t with
     (* [x] is still considered free in [bodylambda]: it is removed from
        [set], but after being added to [map]. *)
     let map = VarMap.add x set map in
-    let (set_body, map_body) = term body in
+    let (set_body, map_body) = expression body in
     let set = VarSet.remove x (VarSet.union set set_body) in
     let map = merge_map map_body map in
     (set,map)
 
   | Let_prim(x,p,body) ->
     let set_prim = prim p in
-    let (set_body, map_body) = term body in
+    let (set_body, map_body) = expression body in
     let set = VarSet.remove x (VarSet.union set_prim set_body) in
     let map = map_body in
     (set,map)
 
   | Let_cont(_,x,t,body) ->
-    let (set_t, map_t) = term t in
-    let (set_body, map_body) = term body in
+    let (set_t, map_t) = expression t in
+    let (set_body, map_body) = expression body in
     let set = (VarSet.union set_body (VarSet.remove x set_t)) in
     let map = merge_map map_body map_t in
     (set,map)

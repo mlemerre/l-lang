@@ -55,11 +55,11 @@ let print_free_map m =
 
 let do_test test = 
   let print_and_inspect test = 
-    Print.debug_term test;
+    Print.debug_expression test;
     print_endline "\n----";
-    Check.Uplinks.term test;
-    Check.Occurrences.term test;
-    let (_,free_map) = Cpsfree.term test in
+    Check.Uplinks.expression test;
+    Check.Occurrences.expression test;
+    let (_,free_map) = Cpsfree.expression test in
     print_free_map free_map in
   print_and_inspect test;
   Cpsconvertclosures.in_expression test;

@@ -9,25 +9,25 @@
 
    The [Lambda] construct allows dynamic creation of nested functions
    with \emph{free} variables. A variable $v$ is \emph{free} in an
-   expression if it is not \emph{bound} in that expression. A variable
+   term if it is not \emph{bound} in that term. A variable
    [x] is bound if it appears below a [Lambda], [Let_cont], or
-   [Let_prim] construct that binds [x], or it is a global variable
+   [Let_prim] expression that binds [x], or it is a global variable
    (i.e. it has been previously bound by [Def]).
 
-   For instance if we considered only the term $e = $ [halt(z)],
+   For instance if we considered only the expression $e = $ [halt(z)],
    then [z] is free in $e$ (there is no operator that binds it in
-   $e$). However if we consider an enclosing term $e'$: [let z =
+   $e$). However if we consider an enclosing expression $e'$: [let z =
    x + y in halt(z)], then [z] is bound in $e'$, while [x] and [y] are
    free. Thus, the fact that a variable is bound or free depends on
-   the term we consider.
+   the expression we consider.
 
-   An term is said to be closed if it contains no free variable.
-   For instance, the term
+   An expression is said to be closed if it contains no free variable.
+   For instance, the expression
 
    [ let f = { k (x,y) -> k(x) } in halt(f) ]
 
-   is closed. The goal of closure conversion is to close all terms
-   defining a [Lambda], because those terms cannot be compiled as is.
+   is closed. The goal of closure conversion is to close all expressions
+   defining a [Lambda], because those expressions cannot be compiled as is.
    It is achieved by transforming the code so that variables free in a
    [Lambda] variables are passed as arguments, in structures known as
    \emph{environments}. A \emph{closure} is the combination of a
@@ -207,7 +207,7 @@
    be changed.
 
    The CPS representation still works, but we cannot avoid traversing
-   the term to perform the replacements.
+   the expression to perform the replacements.
 
    \paragraph{Future improvements}
 
@@ -232,12 +232,12 @@ let top_convert t =
      the CPS AST. The first pass is only for analysis, and maps each lambda
      to the set of free variables it uses. Recursive occurrences of a
      function are considered free by this function. *)
-  let (_,free_map) = Cpsfree.term t in
+  let (_,free_map) = Cpsfree.expression t in
 
   (*s The main conversion function. The [f] argument tells which
     variables are to be used in place of the free variables; [t] is
-    the term to convert. *)
-  let rec convert f t = match Term.get t with
+    the expression to convert. *)
+  let rec convert f t = match Expression.get t with
     | Apply(_,_,_,_) ->  pass_environment t
     | Let_prim(x,(Value(Lambda(Closure,k,[arg],lambda_body)) as prim),body) ->
       begin
@@ -262,15 +262,15 @@ let top_convert t =
       end
     | _ -> ()
 
-  (*s Transform [Apply] terms to retrieve the function and pass the
+  (*s Transform [Apply] expressions to retrieve the function and pass the
     environment. *)
   and pass_environment t =
     (* Retrieve the variables *)
-    let Apply(_,focc,kocc,[xocc]) = Term.get t in
+    let Apply(_,focc,kocc,[xocc]) = Expression.get t in
     let f = Var.Occur.binding_variable focc in
     let k = Cont_var.Occur.binding_variable kocc in
     let x = Var.Occur.binding_variable xocc in
-    (* Delete apply and its occurrences, and return a dangling term *)
+    (* Delete apply and its occurrences, and return a dangling expression *)
     let dangling_t = Change.delete_apply t in
     (* Insert "let (func,env) = f; apply func k env pair" *)
     ignore(
@@ -294,16 +294,16 @@ let top_convert t =
 
     ignore(
       Build.let_tuple ~reconnect:replace_body env_vars (fun env ->
-        Build.with_var_in_term ( fun pair ->
+        Build.with_var_in_expression ( fun pair ->
 
           (* We create the [pair] variable, and make all non-recursive
              occurrences of [x] occurrences of [pair]. [pair] is bound
-             by [let_pair] in a "let pair = (x,env); body" term. This
+             by [let_pair] in a "let pair = (x,env); body" expression. This
              operation creates a new occurrence of [x]; therefore the
              [replace_all_non_recursive_occurrences_of_with] operation
              must be done before calling [let_pair] (else the
              occurrence of [x] would become an occurrence of [pair],
-             i.e. the term would become "let pair = (pair,env); body",
+             i.e. the expression would become "let pair = (pair,env); body",
              which would be incorrect.) *)
           Change.replace_all_non_recursive_occurrences_of_with x pair;
           Build.let_pair ~var:pair (Var.Occur.maker x,env) (fun pair ->
@@ -312,13 +312,14 @@ let top_convert t =
 
   (*s Replace the body of the lambda to use variables passed in the
     environments instead of the free variables. *)
-  and use_environment term rec_free_vars nonrec_free_vars =
+  and use_environment expression rec_free_vars nonrec_free_vars =
     let Let_prim(x,(Value(Lambda(Closure,k,[arg],lambda_body)) as prim),_)
-        = Term.get term in
+        = Expression.get expression in
 
     (*c Add a new [env_arg] argument to the lambda. *)
-    ignore( Build.with_var_in_term (fun env_arg ->
-      Change.update_function_type_and_arguments term No_environment [env_arg; arg];
+    ignore( Build.with_var_in_expression (fun env_arg ->
+      Change.update_function_type_and_arguments
+        expression No_environment [env_arg; arg];
 
       (*c Retrieve parameters from [env_arg]. *)
       let (lambda_body_reconnect,lambda_body_reuse)
@@ -353,20 +354,21 @@ let top_convert t =
 
           (*c We combine the replacement and the conversion in a
             single pass. *)
-          let do_on_term t =
-            Change.replace_some_occurrences_in_one_term t f;
+          let do_on_expression t =
+            Change.replace_some_occurrences_in_one_expression t f;
             convert f t in
-          Traverse.iter_on_terms ~enter_lambdas:false lambda_body_reuse do_on_term;
+          Traverse.iter_on_expressions
+            ~enter_lambdas:false lambda_body_reuse do_on_expression;
 
           lambda_body_reuse));
-      term))
+      expression))
   in
 
   (* Note that for top-level definitions, there are no occurrences to
      convert; hence [f] always return [None], and we do not call the
-     [replace_occurrence_in_one_term] function. *)
+     [replace_occurrence_in_one_expression] function. *)
   let f = (fun _ -> None) in
-  Traverse.iter_on_terms ~enter_lambdas:false t (convert f);;
+  Traverse.iter_on_expressions ~enter_lambdas:false t (convert f);;
 
 let in_expression exp = top_convert exp;;
 
