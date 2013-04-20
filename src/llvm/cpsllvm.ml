@@ -498,7 +498,7 @@ let rec build_term cps env builder =
     in the heap and accessed through a pointer), and of llvm type "i8
     *". Pointer conversions are done according to the use of the
     value. *)
-  match Term.get cps with
+  match Expression.get cps with
 
     (*s For [Let_prim(x,prim,body)] we just build the new llvalue
       corresponding to [prim], map it to [x], then continue building
