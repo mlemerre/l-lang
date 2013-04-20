@@ -84,7 +84,9 @@ tests[] = $(addprefix build/unit_tests/, $(tests))
 tests: $(tests)
 
 todos:
-	sh -c "find . -type f -exec grep -e TODO {} +"
+	sh -c "find . -type f -exec grep -n -e TODO {} +"
+# Lines with more than 80 characters.
+#	sh -c 'find . -type f -name *.ml* -exec grep -n -e ^................................................................................ {} +' 
 
 
 .DEFAULT: all
