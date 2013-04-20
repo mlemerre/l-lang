@@ -638,7 +638,7 @@ let rec build_term cps env builder =
     | Case(x,cases,default) ->
       begin
         let xval = translate_occurrence x in
-        let cases_nb = CaseMap.length cases in
+        let cases_nb = CaseMap.cardinal cases in
         let default_bb = (match default with
           | None -> new_unreachable_block builder
           | Some(k) ->
