@@ -14,8 +14,15 @@ module type S = sig
      [m], unless [key] is already a member of [m]. *)
   val add_unless_mem: key -> 'a -> 'a t -> 'a t
 
-  (* Get the number of bindings in the map. *)
-  val length: 'a t -> int
+(* [foldk] performs a continuation-passing-style folding on maps: it
+   passes an accumulator downwards, and then propagates the result
+   upwards. In other words, [foldk f x0 k map] computes
+   [f x0 key1 val1 (x1 ->
+     f x1 key2 val2 (x2 ->
+       ...
+      f xn keyn valn ( xn+1 ->
+        k xn+1)))]. *)
+  val foldk: ('a -> key -> 'b -> ('a -> 'c) -> 'c) -> 'a -> ('a -> 'c) -> 'b t -> 'c
 end
 
 module Make(Ord: Map.OrderedType): S with type key = Ord.t;;
