@@ -11,7 +11,7 @@ struct
     let compare = compare
   end
 
-  module Map = Map.Make(Ordered);;
+  module Map = Extensions.Map.Make(Ordered);;
   module Set = Set.Make(Ordered);;
 
   let to_string i = string_of_int i;;

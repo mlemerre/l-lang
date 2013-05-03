@@ -21,6 +21,6 @@ sig
   val compare : t -> t -> int
 
   (* Often-used helper modules.  *)
-  module Map : Map.S with type key = t
+  module Map : Extensions.Map.S with type key = t
   module Set : Set.S with type elt = t
 end
