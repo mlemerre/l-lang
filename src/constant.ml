@@ -27,7 +27,7 @@ type t =
 | Integer of int  | Float of float | String of string
 | Integer_binary_operation of Ibop.t
 | Integer_binary_predicate of Ibpred.t
-| True | False
+| Bool of bool
 | Not | If | And | Or
 (* TODO: Factorize these with a generic "throw" *)
 | Assert | Match_failure | Failwith of string
@@ -61,7 +61,7 @@ let to_string = function
   | String(s) -> "\"" ^ s ^ "\""
   | Integer_binary_operation( op) -> integer_binary_operation_to_string op
   | Integer_binary_predicate( pred) -> integer_binary_predicate_to_string pred
-  | True -> "true" | False -> "false"
+  | Bool(true) -> "true" | Bool(false) -> "false"
   | If -> "If" | Not -> "Not" | And -> "And" | Or -> "Or"
   | Assert -> "Assert"  | Match_failure -> "Match_failure"
   | Failwith(s) -> "Failwith( \"" ^ s ^ "\")"
