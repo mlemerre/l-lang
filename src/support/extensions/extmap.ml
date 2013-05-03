@@ -6,6 +6,7 @@ module type S = sig
   val values: 'a t -> 'a list
   val add_unless_mem: key -> 'a -> 'a t -> 'a t
   val foldk: ('a -> key -> 'b -> ('a -> 'c) -> 'c) -> 'a -> ('a -> 'c) -> 'b t -> 'c
+  val add_map: 'a t -> 'a t -> 'a t
 end
 
 module Make(Ord: Map.OrderedType): S with type key = Ord.t = struct
@@ -24,5 +25,7 @@ module Make(Ord: Map.OrderedType): S with type key = Ord.t = struct
     let bindings = Orig.bindings map in
     let f_for_list accu (key,value) g = f accu key value g in
     Extlist.foldk f_for_list init k bindings
+
+  let add_map m1 m2 = Orig.fold Orig.add m1 m2
 
 end;;

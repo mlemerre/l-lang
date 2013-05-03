@@ -23,6 +23,9 @@ module type S = sig
       f xn keyn valn ( xn+1 ->
         k xn+1)))]. *)
   val foldk: ('a -> key -> 'b -> ('a -> 'c) -> 'c) -> 'a -> ('a -> 'c) -> 'b t -> 'c
+
+  (* [add_map m1 m2] adds m1 into m2 (bindings of m1 replace those of m2). *)
+  val add_map: 'a t -> 'a t -> 'a t
 end
 
 module Make(Ord: Map.OrderedType): S with type key = Ord.t;;
