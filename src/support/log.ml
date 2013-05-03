@@ -72,7 +72,7 @@ module Free_variables = Make(struct
 end)
 
 module Llvm_output = Make(struct
-  let min_output_level = Debug;;
+  let min_output_level = Info;;
   let printed_name = "llvm output"
 end)
 
@@ -84,4 +84,9 @@ end)
 module Parser = Make(struct
   let min_output_level = Info;;
   let printed_name = "parser"
+end)
+
+module Pattern_matching = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "pattern matching"
 end)

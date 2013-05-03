@@ -70,3 +70,4 @@ module Free_variables:CATEGORY;;
 module Llvm_output:CATEGORY;;
 module Lexer:CATEGORY;;
 module Parser:CATEGORY;;
+module Pattern_matching:CATEGORY;;
