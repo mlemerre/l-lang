@@ -10,6 +10,10 @@ let rec iter_with_index f ?(start_index=0) = function
   | [] -> ()
   | a::l -> f a start_index; iter_with_index f ~start_index:(start_index+1) l
 
+let rec map_with_index f ?(start_index=0) = function
+  | [] -> []
+  | a::l -> (f a start_index)::(map_with_index f ~start_index:(start_index+1) l)
+
 let rec foldk f accu k list = match list with
   | [] -> k accu
   | a::b -> f accu a (fun x -> foldk f x k b)
