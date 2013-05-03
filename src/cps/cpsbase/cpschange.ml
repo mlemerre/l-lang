@@ -200,7 +200,7 @@ let replace_some_occurrences_in_one_expression t f_ =
           | newocc -> Some (Projection(i, choose occ newocc)))
         | Value v ->
           (match v with
-          | Constant(_) -> None
+          | Constant(_) | External _ -> None
           | Lambda(_,_,_,_) -> None
           | Tuple(l) ->
             let newl = List.map f l in
