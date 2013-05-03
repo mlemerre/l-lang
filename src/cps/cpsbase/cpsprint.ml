@@ -33,10 +33,18 @@ and expression ppf t = match Expression.get t with
       fprintf ppf "%a( %a)"
         cont_occur k occur v
   | Let_cont(k,v,loccont,incont) ->
-      (* fprintf ppf "do@\n{ @[<v>%a@]@\n} where %a( %a) =@\n{
-         @[<v>%a@]}@]" *)
-      fprintf ppf "decl %a@\n@[<v>%a@]@\n@\n%a( %a) = {@\n  @[<v>%a@]@\n}@]"
-        cont_var k expression incont cont_var k var v expression loccont
+    fprintf ppf "decl %a" cont_var k;
+    let rec loop accu e = match Expression.get e with
+      | Let_cont(k,v,loccont,incont) ->
+        fprintf ppf ", %a" cont_var k;
+        loop ((k,v,loccont)::accu) incont
+      | final_incont ->
+        fprintf ppf "@\n@[<v>%a@]" expression e;
+        List.iter (fun (k,v,cont) ->
+          fprintf ppf "@\n@\n%a( %a) = {@\n  @[<v>%a@]@\n}"
+            cont_var k var v expression cont)
+          accu
+    in loop [k,v,loccont] incont
   | Let_prim(v,p,body) ->
       fprintf ppf "@[<v>let %a = %a in@ %a@]"
         var v prim p expression body
@@ -47,7 +55,7 @@ and expression ppf t = match Expression.get t with
       (match d with
       | None -> ()
       | Some(k) -> fprintf ppf "@\n_ -> %a" cont_occur k) in
-    fprintf ppf "case(%a)@\n{ @[<v>%a%a@]@\n}"
+    fprintf ppf "case(%a){@\n  @[<v>%a%a@]@\n}"
       occur v case_list (CaseMap.bindings l) default d
 
 and prim ppf = function
@@ -74,7 +82,7 @@ and value ppf = function
   | External(str) -> fprintf ppf "external( \"%s\")" str
 
 let rec definition ppf (Definition(v,dt)) =
-  fprintf ppf "%a = %a" visibility  v definition_type dt
+  fprintf ppf "%a = @[%a@]" visibility  v definition_type dt
 
 and visibility ppf = function
   | Public(v) -> fprintf ppf "def %a" var v
