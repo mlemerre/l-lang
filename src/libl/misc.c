@@ -8,7 +8,7 @@
 
 void * assert_(void* env, int *value)
 {
-  fprintf(stderr, "Assertion ");
+  fprintf(stderr, "L assertion ");
   int res = *value;
   if(res) {
     fprintf(stderr, "passed: received %d\n", res);
