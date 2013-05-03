@@ -9,7 +9,7 @@ let koutput_ k (bool,name) x =
     begin
       Format.eprintf "@.#LOG (%s): @? " name;
       (* We use kfprintf to preserve the type of output_ *)
-      Format.kfprintf (fun fmt -> Format.eprintf "@?"; k()) Format.err_formatter x
+      Format.kfprintf (fun fmt -> Format.eprintf "@."; k()) Format.err_formatter x
     end
   else Format.ikfprintf (fun _ -> k()) Format.err_formatter x;;
 
