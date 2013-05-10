@@ -251,7 +251,7 @@ module Make(Desc:DESCRIPTION) = struct
         (* If this is the first occurrence of var. *)
         | None -> 
           let new_occur = self_linked_occur var in
-          Var_union_find.singleton ufds new_occur var;
+          ignore(Var_union_find.singleton ufds new_occur var);
           set_occurrences var ot (Some(new_occur));
           new_occur
         (* Else there are already some occurrences of var. *)
@@ -267,7 +267,7 @@ module Make(Desc:DESCRIPTION) = struct
           (* Merge new to the partition of occurrences of var. *)
           let new_part = Var_union_find.singleton ufds new_occur var in
           let existing_part = (Var_union_find.find ufds existing_occur) in
-          Var_union_find.union ufds new_part existing_part var;
+          ignore(Var_union_find.union ufds new_part existing_part var);
           new_occur;;
 
     (* Returns the variable of which [occur] is an occurrence. *)
