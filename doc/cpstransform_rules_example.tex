@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage{multirow}
+\usepackage{bigdelim} % rdelim
+\usepackage{mathtools} % overbracket
+
+% To get a png:
+% convert -trim -density 150 -transparent white file.pdf cpstransformpattern.ml001.png 
+
+% To edit this file with Emacs: use M-x toggle-truncate-lines to
+% preserver alignment; use M-x align to realign the columns.
+
+\begin{document}
+\pagestyle{empty}
+\renewcommand{\tabcolsep}{0.2pt}
+
+\begin{flushleft}
+match(e)\{\\
+\hspace{2em}\begin{tabular}{llllllcllllllll}
+   \multicolumn{10}{c}{$\overbracket{\rule{41mm}{0pt}}^{c_0}$}                                 &           &      & & & \\[-5pt]
+   &  \multicolumn{3}{c}{$\overbracket{\rule{7mm}{0pt}}^{c_1}$} & & \multicolumn{4}{c}{$\overbracket{\rule{27mm}{0pt}}^{c_2}$} &  & & & & & \\[-4pt]
+   &  \,\,$\overbracket{\rule{1ex}{0pt}}^{c_{3}}$ & & $\overbracket{\rule{1ex}{0pt}}^{c_{4}}$\,\, & & & $\overbracket{\rule{1ex}{0pt}}^{c_{5}}$\,$\overbracket{\rule{1ex}{0pt}}^{c_{6}}$ & & &  & & & & & \\[-3pt]
+
+ ( & (x  & , & \_\,)        & , & \ Cons( & (1\,,\,\_\,)&,&\ tl\,) & ) & \ $\to$\  & \ 1  & &\rdelim\}{4}{6ex}[$b_{i.a}$] & \rdelim\}{14}{6ex}[$b_i$]\\
+ ( & \multicolumn{3}{c}{\_} & , & \ Nil   & \multicolumn{3}{c}{}   & ) & \ $\to$\  & \ 2  & &                         &\\
+ ( & (\_ & , &  a\,)        & , & \ Cons( & (3\,,\,\_\,)&,&\ \_\,) & ) & \ $\to$\  & \ 3  & &                         &\\
+ ( & (\_ & , & \_\,)        & , & \ Cons( & (\_\,,\,4\,)&,&\ \_\,) & ) & \ $\to$\  & \ 4  & &                         &\\
+\\
+ ( & (5  & , & \_\,)        & , & \ Cons( & \_&,&\ \_\,)           & ) & \ $\to$\  & \ 5  & \rdelim\}{3}{7ex}[$b_{i.b.1}$] & \rdelim\}{6}{6ex}[$b_{i.b}$] &\\
+ ( & (4  & , & \_\,)        & , & \multicolumn{4}{c}{\_}           & ) & \ $\to$\  & \ 6  & &                         &\\
+ ( & (5  & , & \_\,)        & , &         \multicolumn{4}{c}{\_}   & ) & \ $\to$\  & \ 7  & &                         &\\[5pt]
+ ( & (\_ & , & 8)           & , &         \multicolumn{4}{c}{\_}   & ) & \ $\to$\  & \ 8  & \rdelim\}{1}{7ex}[$b_{i.b.2}$]& &\\[5pt]
+ ( & (9  & , & \_\,)        & , &         \multicolumn{4}{c}{\_}   & ) & \ $\to$\  & \ 9  & \rdelim\}{1}{7ex}[$b_{i.b.3}$]& &\\
+\\
+ ( & \multicolumn{3}{c}{\_} & , & \ Cons( & (\_\,,\,10\,)&,&\ Nil) & ) & \ $\to$\  & \ 10 & &\rdelim\}{2}{6ex}[$b_{i.c}$] &\\
+ ( & \multicolumn{3}{c}{\_} & , & \ Cons( & \_           &,&\ Nil) & ) & \ $\to$\  & \ 11 & &                         &\\
+\\
+  \multicolumn{10}{l}{x}                                               & \ $\to$\  & \ 12 & & & \rdelim\}{1}{6ex}[$b_{ii}$]\\
+\end{tabular}\\
+\} + 17
+\end{flushleft}
+
+\end{document}

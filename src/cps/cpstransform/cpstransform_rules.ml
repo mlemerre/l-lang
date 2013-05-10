@@ -275,7 +275,7 @@
 
    Here is a (contrived) exemple of a complete pattern matching:
 
-   \includegraphics{multirow.png}
+   \includegraphics{cpstransform_rules_example.png}
 
    This pattern is compiled as follows. We begin by creating a join
    continuation, which is where the result of the match is returned.

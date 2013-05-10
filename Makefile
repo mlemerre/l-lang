@@ -18,14 +18,20 @@ doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml c
 	cps/cpsbase/cpsvar.mli cps/cpsbase/cpsvar.ml cps/cpsbase/cpsdef.mli \
 	cps/cpsbase/cpsdef.ml cps/cpsbase/cpsprint.ml cps/cpsbase/cpscheck.ml \
 	cps/cpsclosureconversion.ml cps/cpsfree.ml \
-	llvm/cpsllvm.mli llvm/cpsllvm.ml \
-	support/unique.mli support/unique.ml
+	llvm/cpsllvm.mli llvm/cpsllvm.ml\
+	support/unique.mli support/unique.ml\
+	cps/cpstransform/cpstransform_rules.ml
 
-doc: $(addsuffix .html,$(addprefix web/,$(doc-files))) check_doc
+doc: $(addsuffix .html,$(addprefix web/,$(doc-files))) check_doc web/cps/cpstransform/cpstransform_rules.ml001.png
+
+web/cps/cpstransform/cpstransform_rules.ml001.png: doc/cpstransform_rules_example.tex
+	cd doc && pdflatex cpstransform_rules_example.tex
+	convert -trim -density 150 -transparent white doc/cpstransform_rules_example.pdf $@
+
 
 web/%.html: src/%
 	mkdir -p web/$(dir $*)
-	ocamlweb -p "\usepackage{hevea}\usepackage{url}" --no-index doc/ocamlwebhevea.tex src/$* --hevea-option "-I /usr/share/texmf/tex/latex/misc" > web/$*.tex
+	ocamlweb -p "\usepackage{hevea}\usepackage{url}\usepackage{graphics}" --no-index doc/ocamlwebhevea.tex src/$* --hevea-option "-I /usr/share/texmf/tex/latex/misc" > web/$*.tex
 	cd web/$(dir $*) && hevea -I /usr/share/texmf/tex/latex/misc ocamlweb.sty $(notdir $*).tex
 	rm -f web/$*.tex web/$*.haux
 
