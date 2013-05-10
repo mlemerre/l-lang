@@ -90,3 +90,8 @@ module Pattern_matching = Make(struct
   let min_output_level = Info;;
   let printed_name = "pattern matching"
 end)
+
+module Cps_transformation = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "cps transformation"
+end)

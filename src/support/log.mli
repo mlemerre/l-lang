@@ -71,3 +71,4 @@ module Llvm_output:CATEGORY;;
 module Lexer:CATEGORY;;
 module Parser:CATEGORY;;
 module Pattern_matching:CATEGORY;;
+module Cps_transformation:CATEGORY;;
