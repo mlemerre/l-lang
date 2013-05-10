@@ -2,8 +2,6 @@
 # build it in a library to simplify building executables.
 .SUBDIRS: extensions
 
-OCAML_LIBS[] = extensions/libextensions
-
 # We build extensions in a package so that everything is included in
 # the support/ library; there is no need to include a "libextensions" too.
 OCamlPackage( extensionspack, extensions/extlist extensions/extmap)
