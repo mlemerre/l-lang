@@ -49,7 +49,11 @@
 \ifthenelse{\equal{#1}{val}}{\spanboldblue{#1}}{%
 \ifthenelse{\equal{#1}{begin}}{\spanboldblue{#1}}{%
 \ifthenelse{\equal{#1}{end}}{\spanboldblue{#1}}{%
-\spanpurple{#1}}}}}}}}}}}}}}}}
+% These are L keywords
+\ifthenelse{\equal{#1}{decl}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{case}}{\spanboldblue{#1}}{%
+\ifthenelse{\equal{#1}{def}}{\spanboldblue{#1}}{%
+\spanpurple{#1}}}}}}}}}}}}}}}}}}}
 
 
 %% Ids that begin in lower case. The textrm command (note: Hevea does
