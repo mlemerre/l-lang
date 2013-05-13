@@ -777,9 +777,8 @@ module Make(Expression:EXPRESSION) = struct
 	  g x rules_for_i env (fun env ->
 	    transform_rules rules_for_i env))
         (fun k -> nextf (CaseMap.add i k map)) in
-    (* Compiles the case instruction *)
-    let finalf map = Build.case v ~default:env.defaultk map in
-    CaseMap.foldk f CaseMap.empty finalf rules_casemap
+    CaseMap.foldk f CaseMap.empty rules_casemap (fun map ->
+      Build.case v ~default:env.defaultk map)
 
 
   (* Compilation of integers and boolean is straightforward: we just
