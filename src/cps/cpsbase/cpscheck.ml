@@ -238,5 +238,13 @@ module And = struct
     let t = Empty.fill e t_ in
     Uplinks.one_expression t;
     t;;
-
 end
+
+(*i TODO:
+
+  - Module type S should have a [definition] field; checking should
+    occur on whole definitions.
+
+  - Recursive occurrences should be checked too.
+
+ i*)
