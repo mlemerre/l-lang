@@ -24,7 +24,7 @@
    NP-complete problem (the complexity arise when compiling multiple
    independent patterns, for instance tuple patterns). Rather than
    attempting to solve this problem, L specifies how pattern matching
-   is compiled, which allows the developper to visualize the costs of
+   is compiled, which allows the developer to visualize the costs of
    its pattern matching.
 
    \subsubsection*{Pattern matching rewrites}
@@ -263,7 +263,7 @@
    The L compiler does not yet allow it, but "or-patterns" (i.e. in
    [match(l){ Cons(Nil|Cons(_,Nil)) -> 0 _ -> 1 }]) also need join
    points. Finally, there is also a joint point (in
-   [expr_env.context]) to which the value of the bodies in each rule
+   [expr_env.kcontext]) to which the value of the bodies in each rule
    is returned.
    \end{itemize}
 
@@ -273,7 +273,7 @@
 
    \paragraph{A complete example}
 
-   Here is a (contrived) exemple of a complete pattern matching:
+   Here is a (contrived) example of a complete pattern matching:
 
    \includegraphics{cpstransform_rules_example.png}
 
@@ -384,13 +384,11 @@
 *)
 
 module CaseMap = Cpsbase.CaseMap;;
-module Build = Cpsbase.Build;;
-module Ast = Astdef;;
 
 (* This module is mutually recursive with the module performing
    transformation into CPS of expressions, from which we require
    the [transform] function. *)
-open Cps_transform_common;;
+open Cpstransform_base;;
 
 (****************************************************************)
 (*s Identifying the structure of patterns; retrieving needed
@@ -408,7 +406,7 @@ module Structure : sig
 
   (* The aim of this module is to produce a value of type [t], which
      is a CPS variable together with the CPS variables for each of its
-     subcomponents. Note that structures do not go into variants,
+     sub-components. Note that structures do not go into variants,
      because we cannot: the contents in variants can be obtained only
      once they are matched. *)
   type 'a structure = 'a * 'a structure_
@@ -517,7 +515,7 @@ end;;
 
 (****************************************************************)
 
-module Make(Expression:EXPRESSION) = struct
+module Make(Expression:EXPRESSION):RULES = struct
 
   (* The current status of pattern matching compilation is represented
      by a list of [rule]s and one [pattern_env]. [rule] contains
@@ -527,7 +525,7 @@ module Make(Expression:EXPRESSION) = struct
   type rule = {
     (* Maps AST variables in the patterns compiled so far, to the CPS
        variables containing their value. *)
-    scope_addition: Cpsbase.Var.occur_maker Ast.Variable.Map.t;
+    map_addition: Cpsbase.Var.occur_maker Ast.Variable.Map.t;
 
     (* The list of patterns that still have to be matched. Always
     have the same length than [env.remaining_vs]. *)
@@ -545,7 +543,7 @@ module Make(Expression:EXPRESSION) = struct
        rules. *)
     defaultk: Cpsbase.Cont_var.occur_maker;
 
-    (* The value agains which the rules are matched (with their
+    (* The value against which the rules are matched (with their
        structures). *)
     remaining_vs: Structure.t list;
 
@@ -553,8 +551,17 @@ module Make(Expression:EXPRESSION) = struct
        the environment corresponding to that expression. [expr_env] is
        used only when compiling the [body] of a [rule]. *)
     expr_env: expr_env;
+  }
+  and expr_env = {
 
-  };;
+  (* A mapping from AST variables to CPS variables. *)
+    map: Cpsbase.Var.occur_maker Ast.Variable.Map.t;
+
+  (* The continuation function, to which we "return" the result of
+     executing the body of the rule.*)
+    kcontext: Cpsbase.Var.Occur.maker -> Build.fresh
+  }
+;;
 
   (****************************************************************)
   (*s Helper functions for transform_rules: define refutability,
@@ -614,9 +621,9 @@ module Make(Expression:EXPRESSION) = struct
       if (List.tl rules != [])
       then Log.Pattern_matching.warning "There are unreachable rules";
 
-      let new_scope =
-        Ast.Variable.Map.add_map first.scope_addition env.expr_env.scope in
-      Expression.transform first.body new_scope env.expr_env.context
+      let new_map =
+        Ast.Variable.Map.add_map first.map_addition env.expr_env.map in
+      Expression.transform first.body new_map env.expr_env.kcontext
 
     (* At least one remaining pattern. If the pattern is refutable,
        select the rules beginning by a refutable pattern, else select
@@ -681,31 +688,31 @@ module Make(Expression:EXPRESSION) = struct
 
   (* As all values of the components of the tuple have already been
      retrieved (and are in [structv]), the only responsibility of this
-     function is to update the [scope_addition] of the [rules]. *)
+     function is to update the [map_addition] of the [rules]. *)
   and transform_rules_irrefutable structv rules env =
 
     (* Jointly traverse a [pattern] (containing the AST variable
        names) and a [structure] (containing the CPS variables) to
-       improve the [scope_addition] (containing a map from AST
+       improve the [map_addition] (containing a map from AST
        variables to CPS variables). *)
-    let rec loop scope pattern (v,structure) = match pattern with
+    let rec loop map pattern (v,structure) = match pattern with
       (*i Note: We could remove Wildcard, and replace it by an unused
 	variable.  The Cps variable is created anyway. This could
 	simplify typing too. But what about unused results? i.e. let
 	_ = ...? i*)
-      | Ast.Pattern.Wildcard -> scope
-      | Ast.Pattern.Variable var -> Ast.Variable.Map.add var v scope
+      | Ast.Pattern.Wildcard -> map
+      | Ast.Pattern.Variable var -> Ast.Variable.Map.add var v map
       | Ast.Pattern.Tuple l ->
         let Structure.Tuple(_,structs) = structure in
-        List.fold_left2 loop scope l structs
+        List.fold_left2 loop map l structs
       | Ast.Pattern.Fold(_,patt) ->
         let Structure.Fold(_,structure) = structure in
-        loop scope patt structure
+        loop map patt structure
       | _ -> assert false (* Not an irrefutable pattern. *) in
 
     let rules = List.map (fun rule ->
       let patt = List.hd rule.remaining_patts in
-      { rule with scope_addition = loop rule.scope_addition patt structv;
+      { rule with map_addition = loop rule.map_addition patt structv;
 	remaining_patts = List.tl rule.remaining_patts })
       rules in
 
@@ -824,7 +831,7 @@ module Make(Expression:EXPRESSION) = struct
   (****************************************************************)
 
   (* Entry point of the module. *)
-  let transform l v expr_env =
+  let transform l v map kcontext =
 
     (* Note: we could directly call [match_failure]. But should we
        allow this degenerate case? For now we fail if this happens. *)
@@ -834,13 +841,12 @@ module Make(Expression:EXPRESSION) = struct
     (* If there is only one rule (e.g. compiling [let]), keep the
        context. Else, create a "join" continuation, to avoid code
        duplication. *)
-    let maybe_change_context f =
-      if List.tl l == [] then f expr_env
+    let maybe_change_kcontext f =
+      if List.tl l == [] then f kcontext
       else Build.let_cont
-        (fun x -> expr_env.context x)
-        (fun kjoin -> let context x = Build.apply_cont kjoin x in
-                      f { expr_env with context }) in
-    maybe_change_context (fun expr_env ->
+        (fun x -> kcontext x)
+        (fun kjoin -> f (fun x -> Build.apply_cont kjoin x)) in
+    maybe_change_kcontext (fun kcontext ->
 
       let patts = List.map fst l in
 
@@ -854,9 +860,10 @@ module Make(Expression:EXPRESSION) = struct
 
         (* Initialize pattern compilation.  *)
         let rules = List.map (fun (patt,body) ->
-          { scope_addition = Ast.Variable.Map.empty;
+          { map_addition = Ast.Variable.Map.empty;
             remaining_patts = [patt];
             body = body }) l in
+        let expr_env = { map; kcontext } in
         Structure.build v patts (fun structure ->
           let env = { remaining_vs = [structure]; defaultk; expr_env } in
           transform_rules rules env )))
@@ -885,8 +892,16 @@ end
   redundant rules. I think there exists a lattice of patterns, and
   performing the union of all patterns should allow to test whether
   some patterns are missing (and by taking the complement, to know
-  which ones). To know if a rule is redundant is to test inclusion of
-  a pattern by the union of the previous patterns. This lattice could
-  maybe be used as the basis for building the "Structure".
+  which ones); we should use that do detect whether a "Match_failure"
+  case is missing. To know if a rule is redundant is to test inclusion
+  of a pattern by the union of the previous patterns. This lattice
+  could maybe be used as the basis for building the "Structure".
 
-  i*)
+  - The "Structure" module also generates cpsvars for subcomponents
+  that are never retrieved (e.g. when compiling [let (_,x) = y]). We
+  could identify that during unification, and avoid generating code
+  for that case (even though the unused component will be evenutally
+  removed by later shrinking reductions, this would make the
+  compilation of the rules "one-pass" in the sense of Andrew Kennedy's
+  "Compiling with continuations, continued", i.e. meaning xthat no
+  further administrative reductions would be necessary). i*)
