@@ -1,9 +1,9 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-(* This module handles the compilation of a set of \emph{rules}. A
-   \emph{rule} is composed of a pattern, matched against a value; and
-   an expression (the \emph{body} of the rule), to be executed if the
-   pattern succeeds in matching the value.
+(* This module compile the pattern matching of a set of \emph{rules}.
+   A \emph{rule} is composed of a pattern, matched against a value;
+   and an expression (the \emph{body} of the rule), to be executed if
+   the pattern succeeds in matching the value.
 
    The [match(expression){rules}] expression matches an expression
    against a set of rules; its behaviour is to evaluate the expression
