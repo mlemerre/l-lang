@@ -31,7 +31,7 @@ let var occ = Var.Occur.binding_variable occ;;
   [Lambda]s), and the set and the map are built bottom-up.
 
   In the case of a recursive or mutually recursive values (lambdas,
-  injections, tuples)ambda, the recursive bindings are considered to
+  injections, tuples), the recursive bindings are considered to
   be free in the value (and especially in the lambda). *)
 let rec expression t = match Expression.get t with
 
