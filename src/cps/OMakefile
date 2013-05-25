@@ -1,4 +1,4 @@
-.SUBDIRS: cpsbase
+.SUBDIRS: cpsbase cpstransform
 
 OCAMLINCLUDES = . cpsbase ../support
 
