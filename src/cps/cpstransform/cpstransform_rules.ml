@@ -641,12 +641,12 @@ module Make(Expression:EXPRESSION):RULES = struct
 
 	   If there are no [other] rule, execution jumps to the
 	   existing [defaultk] if the matching fails. *)
-	let change_defaultk_if_other f =
+	let change_defaultk_if_other g =
 	  if other == []
-	  then f env.defaultk
+	  then g env.defaultk
 	  else Build.let_cont
 	    (fun _ -> transform_rules other env)
-	    (fun k -> f k) in
+	    (fun k -> g k) in
 	change_defaultk_if_other (fun defaultk ->
 	  let v = List.hd env.remaining_vs in
 	  let new_env =
