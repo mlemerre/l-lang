@@ -1,11 +1,12 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-open Cpstransform_base;;
+open Base;;
 
 module List = Extensions.List;;
 module AstVarMap = Ast.Variable.Map;;
 
-module rec Rules : RULES = Cpstransform_rules.Make(Expression)
+module Rules_Make = Rules.Make;;
+module rec Rules : RULES = Rules_Make(Expression)
 and Expression: EXPRESSION = struct
 
   (* [transform ?v exp map kcontext] returns a CPS expression
@@ -182,4 +183,14 @@ let transform = Expression.transform;;
 
 i*)
 
+(*i Notes:
 
+  - This transformation use a functional accumulator, which makes it
+  higher-order. It is possible to have a first-order CPS
+  transformation, see "First Order One Pass CPS Transformation", by
+  Danvy and Nielsen. But the current implementation is relatively
+  simple, and interfaces well with the higher-order abstract
+  syntax-like interface of cps build functions, so it is not worth the
+  trouble.
+
+  i*)

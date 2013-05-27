@@ -388,7 +388,7 @@ module CaseMap = Cpsbase.CaseMap;;
 (* This module is mutually recursive with the module performing
    transformation into CPS of expressions, from which we require
    the [transform] function. *)
-open Cpstransform_base;;
+open Base;;
 
 (****************************************************************)
 (*s Identifying the structure of patterns; retrieving needed
