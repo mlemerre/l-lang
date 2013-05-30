@@ -1,5 +1,1 @@
 OCAMLINCLUDES += ../../support ../..
-FILES[] = cpsvar cpsbuild cpsdef cpsprint cpstraverse cpsast \
-	  cpschange cpscheck
-
-OCamlPackage(cpsbasepack, $(FILES))

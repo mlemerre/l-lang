@@ -1,6 +1,6 @@
 FILES[] = test_cpsconvertclosures
 FILES[] += ../../src/constant 
-FILES[] += ../../src/cps/cpspack
+FILES[] += ../../src/cpspack
 
 OCAMLINCLUDES += ../../src/support ../../src  ../../src/cps 
 OCAML_LIBS[] = ../../src/support/support
