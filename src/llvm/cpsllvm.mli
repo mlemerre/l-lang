@@ -12,5 +12,4 @@
   and translated to the use of CPS primitive operations.
   \end{itemize}
 *)
-
-val build_definition: Cpsbase.definition -> Llvm.llvalue Cpsbase.Var.Var.Map.t -> (Llvm.llvalue * Llvm.llvalue Cpsbase.Var.Var.Map.t)
+val from_stream : Cpsbase.definition Stream.t -> Llvm.llvalue Stream.t;;

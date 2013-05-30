@@ -786,3 +786,12 @@ let build_definition def globalvarmap =
       let the_function = build_unbound_def expr globalvarmap in
       (the_function, globalvarmap)
 ;;
+
+
+module Stream = Extensions.Stream;;
+
+let from_stream cps_stream =
+  let f state cps =
+    let (llvmdef, new_state) = build_definition cps state in
+    [llvmdef], new_state in
+  Stream.transformer f Cpsbase.Var.Var.Map.empty cps_stream ;;
