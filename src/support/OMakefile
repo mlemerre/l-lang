@@ -4,6 +4,8 @@
 
 # We build extensions in a package so that everything is included in
 # the support/ library; there is no need to include a "libextensions" too.
-OCamlPackage( extensionspack, extensions/extlist extensions/extmap)
+OCamlPackage( extensionspack, $(addprefix extensions/,\
+				extlist extstream extmap))
 
-OCamlLibrary(support, unique union_find log make_printer compilation_pass extensions extensionspack)
+OCamlLibrary(support, unique union_find log make_printer\
+		      extensions extensionspack)
