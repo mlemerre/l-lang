@@ -20,6 +20,12 @@ module List = struct
   include Extensionspack.Extlist;;
 end
 
+module Stream = struct
+  include Stream
+  include Extensionspack.Extstream;;
+end
+
+
 module Map = Extensionspack.Extmap;;
 
 module Std = struct
