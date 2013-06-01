@@ -1,1 +1,28 @@
 .SUBDIRS: support cps llvm libl
+
+# All this is for compilation_passes. TODO: Use indentation to reduce
+# the scope of FILES[] etc.
+#tests: main libl/libl.bc
+#	cd .. && echo $(PWD) && OCAMLRUNPARAM="b" ./src/main
+
+FILES[] = main
+FILES[] += compilation_passes
+FILES[] += $(addprefix cps/, \
+	   cpsbase cpsbasepack cpsconvertclosures cpsfree)
+FILES[] += llvm/cpsllvm llvm/llvmenv llvm/llvmexec
+FILES[] += cps/cpstransform cps/cpstransformpack
+
+
+OCAML_LIBS[] = support/support ../next/parser/libparser ../next/ast/libast
+OCAMLINCLUDES +=  . cps ../next/ast support ../next/parser  llvm # ../src/cps/cpstransform/
+
+OCAMLPACKS = llvm-3_0 llvm-3_0.bitreader llvm-3_0.executionengine llvm-3_0.analysis llvm-3_0.bitwriter
+
+OCamlProgram(main, $(FILES))
+
+# TODO: Encapsulate CPS into a pack. Currently this triggers an error
+# in the union-find data structure.
+# OCamlPackage(cpspack, $(addprefix cps/,\
+# 			cpstransform \
+# 			cpsconvertclosures cpsfree \
+# 			cpsbase cpsbasepack))
