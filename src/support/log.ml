@@ -67,7 +67,7 @@ end
 
 (* For now, we set manually the min output level. *)
 module Free_variables = Make(struct
-  let min_output_level = Debug;;
+  let min_output_level = Info;;
   let printed_name = "free variables"
 end)
 
@@ -91,7 +91,21 @@ module Pattern_matching = Make(struct
   let printed_name = "pattern matching"
 end)
 
+module Ast_elaboration = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "AST elaboration"
+end)
+
 module Cps_transformation = Make(struct
   let min_output_level = Info;;
-  let printed_name = "cps transformation"
+  let printed_name = "CPS transformation"
 end)
+
+module Closure_conversion = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "CPS closure conversion"
+end)
+
+
+
+
