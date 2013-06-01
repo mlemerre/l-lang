@@ -155,7 +155,7 @@ let anystar_type = Llvm.pointer_type (Llvm.i8_type context);;
 let undef_anystar = Llvm.undef anystar_type;;
 let null_anystar = Llvm.const_null anystar_type;;
 
-(* Note: Base will be (in the future) Cps.Base. *)
+(* Note: Base will be (in the future) Cps. *)
 module Base = Cpsbase;;
 module Var_Map = Base.Var.Var.Map;;
 module Cont_var_Map = Base.Cont_var.Var.Map;;
@@ -794,4 +794,4 @@ let from_stream cps_stream =
   let f state cps =
     let (llvmdef, new_state) = build_definition cps state in
     [llvmdef], new_state in
-  Stream.transformer f Cpsbase.Var.Var.Map.empty cps_stream ;;
+  Stream.transformer f Base.Var.Var.Map.empty cps_stream ;;
