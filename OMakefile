@@ -36,6 +36,8 @@ OCAMLFLAGS += -annot
 NATIVE_ENABLED = false
 BYTE_ENABLED = true
 
+# Use variables OCAMLPACKS to link with additional packages
+USE_OCAMLFIND = true
 
 ########################################################################
 # Subdirectories.
