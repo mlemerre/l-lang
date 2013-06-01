@@ -2,7 +2,6 @@
 (* Unit test for cpsconversion. Testing is currently done by manual
    inspection of the output (+ calls to Cpscheck). *)
 
-open Cpspack;;
 open Cpsbase;;
 open Build;;
 
