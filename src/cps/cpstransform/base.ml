@@ -16,6 +16,6 @@ module type RULES = sig
     (Ast.Pattern.t * Ast.Expression.t) list ->
     Cpsbase.Var.occur_maker ->
     Cpsbase.Var.occur_maker Ast.Variable.Map.t ->
-    (Cpsbase.Var.Occur.maker -> Build.fresh) -> 
+    (Cpsbase.Var.Occur.maker -> Build.fresh) ->
     Build.fresh
 end
