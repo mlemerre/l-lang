@@ -1,4 +1,4 @@
-.SUBDIRS: cpsbase
+.SUBDIRS: cpsbase cpstransform
 
 OCAMLINCLUDES += ../support ..
 CPSBASEPACK_FILES[] = cpsvar cpsbuild cpsdef cpsprint cpstraverse cpsast \

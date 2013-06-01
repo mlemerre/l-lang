@@ -231,3 +231,22 @@ val let_match_failure :
 
 (*s Functions used to build definitions. *)
 val def_constant: Constant.t -> definition
+
+(*i TODO:
+
+  - As I did with other modules, [Cpsbuild] should be split into three
+  submodules: [Expression], [Value], and [Definition]. [Values] should
+  become first-class in this module: this is especially important for
+  staticalisation (that means transforming [let_value] expressions
+  into [def_value] definitions; and encompass lambda-lifting).
+  [let_constant] could be renamed to [Expression.constant]; which is
+  the (CPS) composition of [Expression.value] and [Value.constant].
+
+  - The CPS language should have forward references. There is no need
+  for a letrec style construct: the advantage of letrec is type
+  inference of mutually recursive constructs, but this is useless in
+  the CPS language, as type inference is performed in the
+  higher-level languages. Forward declaration is more flexible
+  (allows to split definitions in several modules), and sufficient.
+
+  i*)

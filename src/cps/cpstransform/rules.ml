@@ -1,9 +1,9 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-(* This module handles the compilation of a set of \emph{rules}. A
-   \emph{rule} is composed of a pattern, matched against a value; and
-   an expression (the \emph{body} of the rule), to be executed if the
-   pattern succeeds in matching the value.
+(* This module compile the pattern matching of a set of \emph{rules}.
+   A \emph{rule} is composed of a pattern, matched against a value;
+   and an expression (the \emph{body} of the rule), to be executed if
+   the pattern succeeds in matching the value.
 
    The [match(expression){rules}] expression matches an expression
    against a set of rules; its behaviour is to evaluate the expression
@@ -388,7 +388,7 @@ module CaseMap = Cpsbase.CaseMap;;
 (* This module is mutually recursive with the module performing
    transformation into CPS of expressions, from which we require
    the [transform] function. *)
-open Cpstransform_base;;
+open Base;;
 
 (****************************************************************)
 (*s Identifying the structure of patterns; retrieving needed
@@ -641,12 +641,12 @@ module Make(Expression:EXPRESSION):RULES = struct
 
 	   If there are no [other] rule, execution jumps to the
 	   existing [defaultk] if the matching fails. *)
-	let change_defaultk_if_other f =
+	let change_defaultk_if_other g =
 	  if other == []
-	  then f env.defaultk
+	  then g env.defaultk
 	  else Build.let_cont
 	    (fun _ -> transform_rules other env)
-	    (fun k -> f k) in
+	    (fun k -> g k) in
 	change_defaultk_if_other (fun defaultk ->
 	  let v = List.hd env.remaining_vs in
 	  let new_env =
@@ -662,6 +662,7 @@ module Make(Expression:EXPRESSION):RULES = struct
         transform_rules_irrefutable v selected env)
 
       else split_rules is_refutable (fun v selected _ env ->
+        assert (env.defaultk != Obj.magic 0);
         match patt with
 
           (* Patterns refering to a specific variant, compiled into a case. *)
@@ -841,22 +842,30 @@ module Make(Expression:EXPRESSION):RULES = struct
     (* If there is only one rule (e.g. compiling [let]), keep the
        context. Else, create a "join" continuation, to avoid code
        duplication. *)
-    let maybe_change_kcontext f =
-      if List.tl l == [] then f kcontext
+    let maybe_change_kcontext k =
+      if List.tl l == [] then k kcontext
       else Build.let_cont
         (fun x -> kcontext x)
-        (fun kjoin -> f (fun x -> Build.apply_cont kjoin x)) in
+        (fun kjoin -> k (fun x -> Build.apply_cont kjoin x)) in
     maybe_change_kcontext (fun kcontext ->
 
-      let patts = List.map fst l in
+      let selected, others = split_firsts (fun (p,_) -> is_refutable p) l in
 
-      (* If there is an irrefutable rule, then [defaultk] is never
-         used. We avoid creating one by using [Obj.magic 0] to
-         represent an undefined value. *)
-      let irrefutable = List.exists is_irrefutable patts in
-      let maybe_create_match_failure f =
-        if irrefutable then f (Obj.magic 0) else Build.let_match_failure f in
-      maybe_create_match_failure (fun defaultk ->
+      (* If there is an irrefutable rule, then [match_failure] is
+         never raised. We avoid creating a [defaultk] continuation
+         using [Obj.magic 0]; we shorten [l] to ensure that [defaultk]
+         will never be used. *)
+      let maybe_create_match_failure k =
+        match others with
+        | [] -> Build.let_match_failure (fun kmf -> k kmf selected)
+        | other::rest ->
+          if rest != []
+          then Log.Pattern_matching.warning "There are unreachable rules";
+          k (Obj.magic 0) (selected @ [other]) in
+
+      maybe_create_match_failure (fun defaultk l ->
+
+        let patts = List.map fst l in
 
         (* Initialize pattern compilation.  *)
         let rules = List.map (fun (patt,body) ->
