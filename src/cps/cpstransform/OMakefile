@@ -1,0 +1,4 @@
+OCAMLINCLUDES[] = . .. ../.. ../../support ../../../next/ast
+
+base.cmi base.cmo: ../../../next/ast/astdef.cmi ../cpsbase.cmi ../../support/log.cmi
+
