@@ -1,0 +1,4 @@
+OCAMLINCLUDES = ../../support
+
+base.cmi base.cmo: ../../support/src_location.cmi ../../support/unique.cmi
+lexer.cmi lexer.cmo: base.cmi

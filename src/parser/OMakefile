@@ -1,0 +1,7 @@
+OCAMLINCLUDES = ../support
+
+.SUBDIRS: token
+
+OCamlPackage(tokenpack, $(addprefix token/, base lexer))
+
+token.cmo token.cmi: tokenpack.cmi
