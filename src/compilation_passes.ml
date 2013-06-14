@@ -46,7 +46,16 @@
    view, it means that the state in a pass, and its type, is hidden
    from the rest of the compiler; this makes the compiler more
    modular, and gives to compiler passes simpler interfaces. Using
-   explicit folds instead of streams would make the code less modular.
+   explicit folds instead of streams would make the code less modular:
+   even if the type of the internal state could have been hidden by
+   making it abstract, there would still be an abstract type and an
+   abstract initial value, that would have been part of the interface,
+   and would have been passed around.
+
+   \item Following state encapsulation, streams provide a simple
+   interface for passes. The only things exposed is the data type, a
+   stream transformer, and a printing function for the data type. This
+   make it easy to understand a pass, or to add a new pass.
 
    \end{itemize}*)
 
@@ -79,8 +88,20 @@ let process_file file =
   let llvm_stream = Cpsllvm.from_stream converted_stream in
   Stream.iter (fun elt -> Llvmexec.exec_nodef () elt) llvm_stream;;
 
-(*i TODO:
 
+(*i
+\(* Simple version without debug information. *\)
+let process_file file =
+  let parsetree_stream = Parser.make_stream file in
+  let ast_stream = Astfromsexp.from_stream parsetree_stream in
+  let cps_stream = Cpstransform.from_stream ast_stream in
+  let converted_stream =
+    Stream.iter_and_copy Cpsconvertclosures.in_definition cps_stream in
+  let llvm_stream = Cpsllvm.from_stream converted_stream in
+  Stream.iter (fun elt -> Llvmexec.exec_nodef () elt) llvm_stream;;
+i*)
+
+(*i TODO:
    - Hide CPS and all its sub-passes in a pack.
    - Return a stream of LLVM definitions, and print them.
    - Add some code to print the parsetree.
