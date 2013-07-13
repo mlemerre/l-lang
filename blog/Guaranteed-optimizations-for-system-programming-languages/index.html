@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Guaranteed optimizations for system programming languages</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="#">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+
+
+               
+
+               <li class="dropdown">
+                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Blog posts</li>
+      <hr>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>Guaranteed optimizations for system programming languages</h1>
+      <i>tags: optimization and system
+        &mdash; <span>01 May 2012</span></i>
+    </div>
+    <p>
+
+</p>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">A definition for "system programming language"</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+A system programming language is a language suitable for programming
+<b>system software</b>, like operating system kernels, drivers, or the
+runtime of a programming language. I think the most general definition
+for a system programming language is:
+</p>
+
+<blockquote>
+<p>
+Given any maximally-optimized assembly code, a system language allows
+to write a program which is compiled to be equivalent to that code.
+</p>
+</blockquote>
+
+<!-- end_excerpt -->
+
+<p>
+"Equivalent" depends on the language; in C it means that some
+instructions can be reordered or replaced (e.g. replacing
+multiplication by shifts and additions), that there can be some
+spillin on the stack, and register allocation may be different. But
+all memory accesses, and control flow is the same.
+</p>
+
+<p>
+So the language can be seen as a "portable assembler".  System
+programming is exactly this: when you write a piece of code, you know
+exactly how it could and should be compiled. That's why C is
+appreciated by system programmers.
+</p>
+
+<p>
+Here is a non-exhaustive list of specific things a system programming
+language must allow:
+</p>
+
+<dl class="org-dl">
+<dt> Control of memory allocation </dt><dd>The programmer should be able to
+choose whether an object is heap, static, or stack-allocated, is
+explicitly freed, reference-counted, or garbage collected,
+etc. Note however that control over whether a variable is stack-
+or register-allocated is not generally useful.
+</dd>
+
+<dt> Conformance to a binary interface </dt><dd>For instance, it is easy to
+write C structs and enums that conform to a network packet
+header, filesystem directory entry, MMIO maps of a driver, or ELF
+section header. In other language, you can conform to an
+interface using a library (e.g. OCaml's <code>bitstring</code>), but you
+need to write conversion functions from and to the interface,
+which makes the code more complex and inefficient.
+</dd>
+
+<dt> Control over compilation </dt><dd>Abstraction are practical for
+understandability and factorization, but create
+inefficiencies. For instance, a function call has an overhead
+that can be avoided when the function is inlined. A system
+language allows to write simple, concrete code that gets compiled
+exactly to the assembly output one wants.
+
+<p>
+For instance, GCC has a <code>always_inline</code> keyword that forces all
+calls to a function to be inlined. This allows things such as
+partial application of some arguments to a function, and in
+general a way to control the choice between code size and code
+efficiency, which is very important for embedded systems.
+</p>
+
+<p>
+The compiler's freedom of reordering/removing reads and writes
+can be controlled by the <code>volatile</code> keyword, or insertion of
+"fences", or the recent C11 standard for control over memory
+ordering for multithreaded environments.
+</p>
+</dd>
+</dl>
+
+<p>
+Note however that C is not a perfect system programming language. For
+instance:
+</p>
+
+<ul class="org-ul">
+<li>It does not allow to write "special" assembly instructions inline
+in a standard way (although most compilers allow this as an
+extension). The only compiler-agnostic way is to write separate
+functions for special instructions, which is inefficient.
+</li>
+
+<li>It does not allow to choose which registers are clobbered by a
+function, to force local variables to be allocated in a specific
+register, or to require that the stack must not be used for a
+function. There are specific pieces of system code which have
+these kind of requirements (like interrupt routines), and must be
+written in assembly because of this.
+</li>
+</ul>
+
+<p>
+Also note that the fact that a language can do system programming does
+not mean that it cannot be used for high-level programming. For
+instance you could have a mean to enforce how memory is allocated, but
+have a default choice of garbage collection when you do not care.
+</p>
+
+<p>
+Finally, note that the above features can be useful for applicatiion
+programming as well: conformance to a binary interface can be used for
+processing binary files; and control over compilation and memory
+allocation may be useful for the performance-critical parts of a
+program.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Guaranteed optimization</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+We consider the following piece of high-level code:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-l">def f(x,y) = 
+{ let a = g(x,y);
+  let b = h(x,y);
+  a + b 
+}
+</pre>
+</div>
+
+<p>
+A system programmer would expect this code to be compiled to something
+like this (in the following, <code>rx</code> are registers).
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-pseudo-asm">f: 
+// x and y are in r1 and r2
+r3 &lt;- r1
+call g 
+r4 &lt;- r1
+r1 &lt;- r3
+call h
+r1 &lt;- add r1,r4 
+return
+</pre>
+</div>
+
+<p>
+But if the language is compiled by a very naïve functional compiler,
+the following could happen instead:
+</p>
+
+<ul class="org-ul">
+<li>Every let is transformed to a lambda abstraction (that create a
+closure) + function call. I.e. the code is transformed to (<code>-&gt;</code>
+denotes lambda abstraction, i.e. function creation):
+</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-l">{ a -&gt; { b -&gt; a + b }( h(x,y)) }( g(x,y))
+</pre>
+</div>
+
+<p>
+Two functions are created, one is a closure (allocated to
+heap). This breaks control over compilation and control of memory
+allocation.
+</p>
+
+<ul class="org-ul">
+<li>The + could be a function that corresponds to a typeclass; an
+additional "typeclass" argument is passed to the function, and + is
+replaced by a function call. This breaks control over compilation
+and control of binary interface.
+</li>
+</ul>
+
+<p>
+However, if the compiler ensured that:
+</p>
+
+<ul class="org-ul">
+<li>let-bound variables do not create new functions and are stack- or
+register- allocated;
+</li>
+
+<li>When the return types of <code>g</code> and <code>h</code> is <code>Int</code>, then the <code>+</code> function
+is inlined
+</li>
+</ul>
+
+<p>
+Then compilation would look like the above assembly code. Thus,
+<i>guaranteed optimizations allow to combine high-level constructs and
+system programming</i>.
+</p>
+
+<p>
+Of course a modern functional compiler could produce native code
+similar to that of the above. But this would not be guaranteed, unless
+the optimization appeared in <b>specification</b> of the language. The
+classical example of such a guaranteed optimization is the tail-call
+optimization, that appeared in the specification of the Scheme
+programming language, and allowed to remove loops. I think it's time
+to take this idea further.
+</p>
+</div>
+</div>
+
+    <hr />
+    <div class="footer">
+      Ideas, comments? Just mail me at contact @@@ l-lang.org
+    </div>
+  </div>
+</div>
+ 
+     </div>
+          
+   <script src="http://code.jquery.com/jquery.js"></script>
+   <script src="/js/bootstrap.min.js"></script>
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

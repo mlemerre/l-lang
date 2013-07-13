@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>A framework for CPS transformation (and a Github account)</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="#">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+
+
+               
+
+               <li class="dropdown">
+                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Blog posts</li>
+      <hr>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>A framework for CPS transformation (and a Github account)</h1>
+      <i>tags: github, cps, and l
+        &mdash; <span>30 December 2012</span></i>
+    </div>
+    <p>
+
+</p>
+
+<p>
+I have implemented a framework for efficient transformation of CPS
+code. The code is too big to be presented in a blog post; I have set
+up a github account to put it (<a href="https://github.com/mlemerre/l-lang/">https://github.com/mlemerre/l-lang/</a>).
+It has been working for several months, but I have spent a long time
+to improve its structure, write commented interfaces, and document it
+to make it easily readable, as I have done with the previous modules.
+Do not hesitate to tell me about any comments you may have, on the
+code or documentation.
+</p>
+
+<p>
+The code is based on the paper "Compiling with continuations,
+continued" by Andrew Kennedy (which is very well written and easy to
+read), itself inspired by "Shrinking lambda expressions in linear
+time", by Andrew W. Appel and Trevor Jim.
+</p>
+
+<!-- end_excerpt -->
+
+<p>
+The CPS representation in Andrew Kennedy's paper provides many
+interesting features:
+</p>
+
+<ul class="org-ul">
+<li>It is efficiently compilable and can use a stack; see <a href="http://l-lang.blogspot.fr/2012/08/cps-to-llvm-ssa-conversion-in-literate_3067.html">the
+translation of this representation</a> to the SSA form of LLVM.
+</li>
+
+<li>The representation separates continuation from normal functions;
+this ensures that continuations do not require heap allocations and
+are compiled into jumps. This allows to express control flow, and
+control flow optimizations, in the representation.
+</li>
+
+<li>Appel and Jim, and Kennedy have developed a representation that
+allows efficient (in-place) rewrite of terms while maintaining the
+links between variables, their occurrences, and their binding sites.
+This allows to implement shrinking reductions (and other
+transformations, such as closure conversion) in linear time.
+
+<p>
+Shrinking reductions rules are very easy to understand, and can be
+used as a basis for expressing guaranteed optimizations. For
+instance, it should be easy to state that functions used only once
+are inlined, that tuples used only to pass information locally are
+not heap-allocated, etc.
+</p>
+</li>
+</ul>
+
+<p>
+The modules I have implemented provide means to access, print, or
+change terms in the CPS intermediary language. The main modules, are
+represented on the figure below.
+</p>
+
+
+<div class="figure">
+<p><img src="/img/cpsmodulesgraph.png" alt="Graph of CPS modules" title="Graph of CPS modules" style="margin:0px auto;display:block"/></p>
+</div>
+
+<p>
+The <code>Base</code> module is the entry point for accessing the CPS
+representation, and the first module if trying to understand my code.
+It provides read-only direct access to the CPS representation, and to
+the links between variables, occurrences, and their binding sites. It
+also gives access to the other modules that implement the CPS
+manipulation framework:
+</p>
+
+<ul class="org-ul">
+<li><code>Ast</code>: Really a part of <code>Base</code> representation, it provides access to
+the CPS representation using simple algebraic datatypes of syntax
+tree.
+</li>
+
+<li><code>Check</code>: Allows checking for some invariants of terms in the CPS
+representation. Some information in the representation is redundant,
+which allows fast access; this module checks that redundant
+information is in sync. For instance, if a term contains a variable,
+it checks that the variable's uplink also points to that term.
+</li>
+
+<li><code>Build</code>: Provides functions that allows to create new terms in the
+CPS representation, without worrying about the complexities of the
+representation. The API of this module is based on the idea of
+higher-order abstract syntax, i.e. where binding creations in the
+destination language (L) language correspond to creation of bindings
+in the source language (OCaml).
+</li>
+
+<li><code>Traverse</code>: Allows folding and iteration on the terms, variables,
+and occurrences of the CPS representation. Using this module allows,
+in particular, code to be independent of future changes to the CPS
+data structures, which will be gradually improved.
+</li>
+
+<li><code>Change</code>: Provides high-level functions to change CPS terms. This is
+how transformation passes modify terms in the CPS representation.
+</li>
+
+<li><code>Print</code>: Provides a human-readable representation of the CPS form. I
+have tried to come up with a representation that is "easy" to read;
+the representation looks more like SSA and/or assembly than
+classical lambda-calculus (which make it much easier to read on huge
+terms). This textual representation should also be easily parsable
+(although I did not write the parser).
+</li>
+
+<li><code>Def</code>: Implements and provides accessors and a first level of
+abstraction to the CPS data structures. It relies on <code>Var</code>, which
+implements the relationships between variables and their occurrences
+(itself based on the <code>Union_find</code> data structure described <a href="http://l-lang.blogspot.fr/2012/10/a-literate-union-find-data-structure.html">earlier
+on this blog</a>).
+</li>
+</ul>
+
+<p>
+The other modules on the figure are <code>Union_find</code> and <code>Unique</code>, which
+are "support" modules; and <code>Closure_conversion</code> and
+<code>Shrinking_reductions</code>, which are transformation passes on the CPS
+representation. These two passes are not yet in the github repository.
+</p>
+
+<p>
+I have a working closure conversion that gives me a complete basic
+working compiler for the L programming language, based on this CPS
+framework. I plan to document it and upload it to github very soon. I
+also have implemented some basic shrinking reductions.
+</p>
+
+<p>
+Next I will concentrate on the parser and the L abstract syntax tree,
+and I will be will be covering the syntax and semantics of L in a
+future blog post. But here is already an excerpt of test L code (that
+uses first-class functions) that can be compiled to LLVM:
+</p>
+
+<pre class="example">
+assert( { let true = { (x,y) -&gt; x }
+	  let false = { (x,y) -&gt; y }
+	  let pair = { (first,second) -&gt; boolean -&gt; boolean( first, second) }
+	  let first = { p -&gt; p( true)}
+	  let second = { p -&gt; p( false)}
+	  let p = pair( 7, 5)
+	  second( p) * (first( p) + second( p)) } == 60)
+</pre>
+
+    <hr />
+    <div class="footer">
+      Ideas, comments? Just mail me at contact @@@ l-lang.org
+    </div>
+  </div>
+</div>
+ 
+     </div>
+          
+   <script src="http://code.jquery.com/jquery.js"></script>
+   <script src="/js/bootstrap.min.js"></script>
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

@@ -1,0 +1,18 @@
+Test pour avoir un menu sous la forme de tableau, comme les docs de bootstrap. 
+Finalement peu concluant.x
+
+      {% comment %}
+      .sidenav > li > a { border: 1px solid #e0e0e0; 
+                          color: #222222;
+                        }
+      .sidenav > li:first-child > a { border-radius: 10px 10px 0 0; }
+      .sidenav > li:last-child > a { border-radius: 0 0 10px 10px; }
+      {% endcomment %}
+
+XXX: Quand je faisais une medle avec les resumes de chaque post. Pas genial finalement.
+
+
+      {% comment %} Headers in the listing appear smaller
+                    than in the usual text. {% endcomment %}
+      .list-posts h1 { font-size: 150% }
+      .list-posts h2 { font-size: 110% }

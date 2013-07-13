@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Compiling pattern matching</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="#">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+
+
+               
+
+               <li class="dropdown">
+                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Blog posts</li>
+      <hr>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>Compiling pattern matching</h1>
+      <i>tags: l, literateprogramming, and cps
+        &mdash; <span>28 May 2013</span></i>
+    </div>
+    <p>
+
+</p>
+
+<p>
+I have finished implementing the compilation of pattern matching for
+L. L source code can now use ML-style patterns, as used in the
+<code>match</code>, <code>let</code>, and <code>fun/function</code> operators of OCaml. See
+<a href="http://caml.inria.fr/pub/docs/oreilly-book/html/book-ora016.html">http://caml.inria.fr/pub/docs/oreilly-book/html/book-ora016.html</a> for
+an example in OCaml if you don't know about pattern matching.
+</p>
+
+<!-- end_excerpt -->
+
+<p>
+Compilation of pattern matching happens together with the CPS
+transformation phase of the compiler, which translates the "AST"
+language (used in particular to perform type inference) to the "CPS"
+language (in which jumps and order of computation is made explicit).
+CPS transformation fixes the order of evaluation, so it makes sense to
+perform pattern compilation during this phase.
+</p>
+
+<p>
+As the rest of the compiler, this module has been been written in
+literate programming style (or at least, it is heavily commented, so
+that it should be understandable by someone with no prior knowledge
+of the subject). I have extracted the header of the module at the
+bottom of this post.
+</p>
+
+<p>
+The next step is to finish cleaning the rest of the CPS transformation
+(which is much easier); with this the entire backend of the compiler
+will have been published.
+</p>
+
+<!--CUT DEF section 1 --><!--TOC section Module Cpstransform_rules-->
+<H3>Module Cpstransform_rules </H3>
+<A NAME="src/cps/cpstransform/cpstransform_rules.ml:0"></A>The Cpstransform_rules module handles the compilation of a set of <EM>rules</EM>. A
+<EM>rule</EM> is composed of a pattern, matched against a value; and
+an expression (the <EM>body</EM> of the rule), to be executed if the
+pattern succeeds in matching the value.</P><P>The <code><span style="color: #a020f0; ">match</span>(expression){rules}</code> expression matches an expression
+against a set of rules; its behaviour is to evaluate the expression
+once, and try to match the resulting value against the patterns in
+<code>rules</code> until one succeeds, in which case the corresponding body is
+executed.</P><P>The order of the rules is thus important: a value can be matched by
+the patterns of two rules, e.g. <code>(5,6)</code> is matched by <code>(5,_)</code> and
+<code>(_,6)</code>; but only the body of the first rule is executed. This
+implies that two successive rules in a <code><span style="color: #a020f0; ">match</span></code> can be reordered if,
+and only if, they are <EM>disjoint</EM>, i.e. they cannot match the
+same value.</P><P>But when allowed, reordering and factorizing the compilation of
+rules matching lead to more compact, faster code. Trying to produce
+the most efficient code for matching against a set of rules is a
+NP-complete problem (the complexity arise when compiling multiple
+independent patterns, for instance tuple patterns). Rather than
+attempting to solve this problem, L specifies how pattern matching
+is compiled, which allows the developper to visualize the costs of
+its pattern matching.</P><!--TOC subsubsection Pattern matching rewrites-->
+<H4 CLASS="subsubsection"><!--SEC ANCHOR -->Pattern matching rewrites</H4><!--SEC END --><P>The compiler maintains a list of patterns that remain to be matched
+for each rule, and a list of values against which each rule is
+matched. The list of the first pattern to be matched in each rules
+is the first column, and is matched against the first value.
+Several cases can occur (see in the book "The implementation of
+functional programming languages" by Simon Peyton Jones, the
+chapter 5: "Efficient compilation of pattern matching", by Philip
+Wadler):</P><!--TOC paragraph There is no more column-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->There is no more column</H5><!--SEC END --><P>When there are no remaining patterns to match, and no remaining
+values, it means that all the rules match. As pattern matching
+selects the first rule that matches, we execute the body of the
+first rule, and discard the other rules with a warning.</P><P>For instance in</P><P><div class="ocamlweb-src"><code><span style="color: #a020f0; ">match</span>(){</code><BR>
+ <code> () &#X2192; body1</code><BR>
+ <code> () &#X2192; body2</code><BR>
+ <code>}</code></div></P><P><code>body1</code> matches and is executed; <code>body2</code> also matches, but is
+superseded by <code>body1</code>, and is just discarded.</P><!--TOC paragraph The column contain only variables-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->The column contain only variables</H5><!--SEC END --><P> In this case, in
+each rule the variable is bound to the value, and matching
+continues. For instance in</P><P><div class="ocamlweb-src"><code><span style="color: #a020f0; ">match</span>(expr1,...){</code><BR>
+ <code> (a,...) &#X2192; body1</code><BR>
+ <code> (b,...) &#X2192; body2</code><BR>
+ <code>}</code></div></P><P><code>a</code> is bound to <code>v1</code> in the first rule, and <code>b</code> in the second rule;
+where <code>v1</code> is a CPS variable representing the result of computing
+<code>expr1</code> in the condition of the match (computation in the condition
+is thus not repeated). Matching then proceeds, starting from the
+second column.</P><P>This rule can be extended to incorporate wildcard (<code>_</code>) patterns
+(where nothing is bound), and all <EM>irrefutable</EM> patterns.
+A pattern is irrefutable if it does not contain any <EM>variant</EM>.</P><P>For instance, consider</P><P><div class="ocamlweb-src"><code><span style="color: #a020f0; ">match</span>((expr1,expr2),...){</code><BR>
+ <code> (a,...) &#X2192; body1</code><BR>
+ <code> (_,...) &#X2192; body2</code><BR>
+ <code> ((c,d),...) &#X2192; body3</code><BR>
+ <code>}</code></div></P><P>The column contains only irrefutable patterns. Let <code>v1</code> be a
+CPS variable containing the evaluation of <code>expr1</code>, and <code>v2</code>
+containing the evaluation of <code>expr2</code>. Then <code>a</code> is bound to
+<code>(v1,v2)</code>, <code>c</code> to <code>v1</code>, and <code>d</code> to <code>v2</code>.</P><!--TOC paragraph The column contains only calls to constructors-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->The column contains only calls to constructors</H5><!--SEC END --><P> A
+<EM>constructor</EM> is a specific version of a variant type; for
+instance <code>3</code> is a constructor of <code><span style="color: #228b22; ">Int</span></code>, <code><span style="color: #228b22; ">True</span></code> a constructor of
+<code><span style="color: #228b22; ">Bool</span></code>, and <code><span style="color: #228b22; ">Cons</span>(1,<span style="color: #228b22; ">Nil</span>)</code> a constructor of <code><span style="color: #228b22; ">List</span></code>&lt;<code><span style="color: #228b22; ">Int</span></code>&gt;.</P><P>Note that if the column contain a variant, then all the
+constructors that it contains are of the same type: this is
+necessary for the pattern matching to typecheck.</P><P>When two contiguous rules have different constructors at the same
+place, they cannot match the same value simultaneously: they are
+thus disjoint, and can be swapped. This allows to group the rules
+according to the constructor in their first column (the order of
+the rules within a group being preserved).</P><P>For instance,</P><P><div class="ocamlweb-src"><code><span style="color: #a020f0; ">match</span>(expr1, expr2){</code><BR>
+ <code> (<span style="color: #228b22; ">Cons</span>(a,<span style="color: #228b22; ">Cons</span>(b,<span style="color: #228b22; ">Nil</span>)),<span style="color: #228b22; ">Nil</span>) &#X2192; body1</code><BR>
+ <code> (<span style="color: #228b22; ">Nil</span>,<span style="color: #228b22; ">Nil</span>) &#X2192; body2</code><BR>
+ <code> (<span style="color: #228b22; ">Nil</span>,c) &#X2192; body3</code><BR>
+ <code> (<span style="color: #228b22; ">Cons</span>(d,e),_) &#X2192; body4 </code><BR>
+ <code>}</code></div></P><P>can be grouped as (preserving the order between rules 1 and 4, and
+2 and 3) :</P><P><div class="ocamlweb-src"><code><span style="color: #a020f0; ">match</span>(expr1, expr2){</code><BR>
+ <code> (<span style="color: #228b22; ">Cons</span>(a,<span style="color: #228b22; ">Cons</span>(b,<span style="color: #228b22; ">Nil</span>)),<span style="color: #228b22; ">Nil</span>) &#X2192; body1</code><BR>
+ <code> (<span style="color: #228b22; ">Cons</span>(d,e),_) &#X2192; body4</code><BR>
+ <code> (<span style="color: #228b22; ">Nil</span>,<span style="color: #228b22; ">Nil</span>) &#X2192; body2</code><BR>
+ <code> (<span style="color: #228b22; ">Nil</span>,c) &#X2192; body3</code><BR>
+ <code>}</code></div></P><P>Then, the matching of contiguous rules with the same constructor
+can be factorized out, as follow:</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> v1 = expr1 <span style="color: #0000ff; font-weight: bold;">and</span> v2 = expr2 <span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #a020f0; ">match</span>(v1){</code><BR>
+ <code> <span style="color: #228b22; ">Cons</span>(hd,tl) &#X2192; <span style="color: #a020f0; ">match</span>((hd,tl),v2){</code><BR>
+     <code> ((a,<span style="color: #228b22; ">Cons</span>(b,<span style="color: #228b22; ">Nil</span>)), <span style="color: #228b22; ">Nil</span>) &#X2192; body1 </code><BR>
+     <code> ((d,e),_) &#X2192; body4 </code><BR>
+ <code> }</code><BR>
+ <code> <span style="color: #228b22; ">Nil</span> &#X2192; <span style="color: #a020f0; ">match</span>(v2){</code><BR>
+     <code> <span style="color: #228b22; ">Nil</span> &#X2192; body2 </code><BR>
+     <code> c &#X2192; body3 </code><BR>
+ <code> }</code><BR>
+ <code>}</code></div></P><P>Note that the L compiler matches the values in the constructor
+before matching the other columns of the tuple, as was exemplified
+in the <code><span style="color: #228b22; ">Cons</span></code> rules.</P><P>The construct of matching only the constructors of a single variant
+type can be transformed directly into the CPS <code>case</code> expression. It
+is generally compiled very efficiently into a jump table, and
+dispatching to any rule is done in constant time. (Note that the
+compiler may not generate a jump table if the list of constructors
+to check is sparse).</P><!--TOC paragraph The first column contains both refutable and irrefutable
+patterns-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->The first column contains both refutable and irrefutable
+patterns</H5><!--SEC END --><P>If the first column contains both kind of patterns, the list of
+rules is split into groups such that the ordering between rules is
+preserved, and either all the rules in the group have their first
+pattern that is refutable, or they are all irrefutable.</P><P>For instance, the following match:</P><P><div class="ocamlweb-src"><code><span style="color: #a020f0; ">match</span>((v1,v2),v3){</code><BR>
+ <code> (_,1) &#X2192; 1</code><BR>
+ <code> ((a,b),2) &#X2192; a+b+2</code><BR>
+ <code> ((3,_),3) &#X2192; ...</code><BR>
+ <code> ((4,_),_) &#X2192; ...</code><BR>
+ <code> ((_,5),_) &#X2192; ...</code><BR>
+ <code> ((a,b),c) &#X2192; a+b+c</code><BR>
+ <code>}</code></div></P><P>is split into three groups, with respectively rules 1-2 (<code>_</code> and
+<code>(a,b)</code> are both irrefutable patterns), rules 3-5, and rule 6. Then
+the groups are matched successively, the next group being matched
+only if no rule matched in the first one. This amount to performing
+the following transformation:</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> c = ((v1,v2),v3) <span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #a020f0; ">match</span>(c){</code><BR>
+ <code> (_,1) &#X2192; 1</code><BR>
+ <code> ((a,b),2) &#X2192; a+b+2</code><BR>
+ <code> _ &#X2192; <span style="color: #a020f0; ">match</span>(c){</code><BR>
+     <code> ((3,_),3) &#X2192; ...</code><BR>
+     <code> ((4,_),_) &#X2192; ...</code><BR>
+     <code> ((_,5),_) &#X2192; ...</code><BR>
+     <code> _ &#X2192; <span style="color: #a020f0; ">match</span>(c){</code><BR>
+         <code> ((a,b),c) &#X2192; a+b+c</code><BR>
+         <code> }</code><BR>
+     <code> }</code><BR>
+ <code>}</code></div></P><P>Note that rules 3,4,5 also need to be split and transformed further
+using this method.</P><!--TOC subsubsection Compiling pattern matching-->
+<H4 CLASS="subsubsection"><!--SEC ANCHOR -->Compiling pattern matching</H4><!--SEC END --><!--TOC paragraph Compilation order-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Compilation order</H5><!--SEC END --><P>The order in which checking is made for a set of patterns is a
+choice, done by the compiler. L chooses to match the tuples from
+left to right, and the contents of the constructor as soon as they
+are matched; and to split rules according to the refutability of
+the pattern in their first remaining column. This choice may not be
+optimal in every case (but minimizing the number of matches is a
+NP-hard problem), but allows for a simple, visual analysis of the
+cost of pattern matching. The user is free to rearrange the set of
+patterns to improve performance (possibly guided by compiler
+hints).</P><!--TOC paragraph Element retrieval-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Element retrieval</H5><!--SEC END --><P>At the beginning of a match, all the components, needed by at least
+one rule, that can be retrieved (i.e. components in a tuple etc.,
+but not those that are under a specific constructor) are retrieved.
+When a constructor is matched, all the components that can be
+retrieved that were under this constructor are retrieved. This
+behaviour produces the most compact code (avoid duplicating
+retrieval of elements in the compilation of several rules), but
+maybe not the most efficient (sometimes elements are retrieved that
+are not used). Optimizations, such as shrinking reductions, are
+allowed to move down or even duplicate code performing retrieval of
+elements into the case.</P><!--TOC paragraph CPS-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->CPS</H5><!--SEC END --><P>Compilation of pattern matching is done during the CPS
+transformation, which transforms source code from the AST language
+to the CPS language. There are several reasons for that:</P><UL CLASS="itemize"><LI CLASS="li-itemize">The CPS transformation of expression fixes the order of their
+evaluation; compiling pattern matching fixes the order in which
+patterns are matched. So it makes sense to do both at the same
+time, to have a single pass that fixes all the order of evaluation.<P>As a side note, it makes sense to keep pattern matching in the AST
+language, because patterns are easy to type, and any typing error
+can be more easily returned to the user.</P></LI><LI CLASS="li-itemize">The CPS language provides continuations, which allows to
+express explicit join points in the control flow, something not
+possible in the AST language (without creating new functions).
+These joint points are necessary notably to factorize the
+compilation of pattern matching (this problem is similar to
+compilation of boolean expressions with the short-circuit operators
+<CODE>&amp;&amp;</CODE> and <CODE>||</CODE>). For instance, compiling:<P><div class="ocamlweb-src"><code><span style="color: #a020f0; ">match</span>(v){ (4,5) &#X2192; 1; _ &#X2192; 2 }</code></div></P><P>gives:</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> k_not4_5() = { kreturn(2) }</code><BR>
+ <code><span style="color: #a020f0; ">match</span>(#0(v)){</code><BR>
+ <code> 4 &#X2192; <span style="color: #a020f0; ">match</span>(#1(v)){</code><BR>
+   <code> 5 &#X2192; kreturn(1)</code><BR>
+   <code> _ &#X2192; k_not4_5()</code><BR>
+ <code> }</code><BR>
+ <code> _ &#X2192; k_not4_5()</code><BR>
+ <code>}</code></div></P><P>Matching against <code>(4,5)</code> can fail at two different steps, and the
+action to perform in these two cases are the same, so they should
+be factorized using the same continuation.</P><P>The L compiler does not yet allow it, but "or-patterns" (i.e. in
+<code><span style="color: #a020f0; ">match</span>(l){ <span style="color: #228b22; ">Cons</span>(<span style="color: #228b22; ">Nil</span>&#X2223;<span style="color: #228b22; ">Cons</span>(_,<span style="color: #228b22; ">Nil</span>)) &#X2192; 0 _ &#X2192; 1 }</code>) also need join
+points. Finally, there is also a joint point (in
+<code>expr_env.context</code>) to which the value of the bodies in each rule
+is returned.
+</P></LI></UL><P>All the functions that involve building CPS code are themselves in
+CPS style; see the <code><span style="color: #228b22; ">Cps_transform_expression</span></code> module for an
+explanation.</P><!--TOC paragraph A complete example-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->A complete example</H5><!--SEC END --><P>Here is a (contrived) exemple of a complete pattern matching:</P><P><IMG SRC="/img/cpstransform_rules.ml001.png"></P><P>This pattern is compiled as follows. We begin by creating a join
+continuation, which is where the result of the match is returned.
+This allows to factorize the following computation (the addition to
+17 in our case).</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> kfinal(x) = { <span style="color: #0000ff; font-weight: bold;">let</span> x17 = x + 17 <span style="color: #0000ff; font-weight: bold;">in</span> halt(x17) }</code></div></P><P>Then, the condition of the match <code>e</code> is evaluated, and its result
+stored in a temporary value.</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> v = ... eval e ...</code></div></P><P>Then, analysis of the patterns show that <code>v</code> contains a tuple.</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> v.0 = #0(v)</code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span> v.1 = #1(v)</code></div></P><P>Analysis of the patterns also show that <code>v.0</code> contain a tuple.
+<code>v.1</code> is a variant type, so its elements cannot be retrieved yet.</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> v.0.0 = #0(v.0)</code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span> v.0.1 = #1(v.0)</code></div></P><P>We begin by analysis the whole pattern (i.e. column <I>c</I><SUB>0</SUB>). All the
+rules are refutable, except the last one, so we split them into two
+contiguous blocks <I>b</I><SUB><I>i</I></SUB> and <I>b</I><SUB><I>ii</I></SUB>; <I>b</I><SUB><I>ii</I></SUB> is executed if
+matching against all the rules in <I>b</I><SUB><I>i</I></SUB> fail.</P><P><div class="ocamlweb-src"><code>decl kb_ii</code></div></P><P>All the rules in <I>b</I><SUB><I>i</I></SUB> are tuples, so we inspect them from left to
+right (i.e. we begin by column <I>c</I><SUB>1</SUB>, then proceed with <I>c</I><SUB>4</SUB>).
+Analysis of column <I>c</I><SUB>1</SUB> yields three contiguous blocks: the
+patterns in column <I>c</I><SUB>1</SUB> are all irrefutable for block <I>b</I><SUB><I>i</I>.<I>a</I></SUB>,
+refutable for block <I>b</I><SUB><I>i</I>.<I>b</I></SUB>, and irrefutable again for block
+<I>b</I><SUB><I>i</I>.<I>c</I></SUB>.</P><P><div class="ocamlweb-src"><code>decl kb_i.b, kb_i.c</code></div></P><P>As the patterns of column <I>c</I><SUB>1</SUB> in rules in <I>b</I><SUB><I>i</I>.<I>a</I></SUB> are all
+irrefutable, we just have to associate the variable <code>x</code> to <code>v.0.0</code>
+and <code>a</code> to <code>v.0.1</code> for the translation of the body of the rules.
+(<code>x</code> and <code>a</code> are unused in the rules of the example).</P><P>We can then proceed with the analysis of column <I>c</I><SUB>2</SUB> (still in
+block <I>b</I><SUB><I>i</I>.<I>a</I></SUB>). It is a variant, so we can regroup the rules
+according to the constructor, and perform a simple case analysis.</P><P><div class="ocamlweb-src"><code>decl kcons</code><BR>
+ <code><span style="color: #a020f0; ">match</span>(v.1){</code><BR>
+ <code> <span style="color: #228b22; ">Nil</span> &#X2192; { kfinal(2) }</code><BR>
+ <code> <span style="color: #228b22; ">Cons</span>(x) &#X2192; { kcons(x) } </code><BR>
+ <code>}</code></div></P><P>For the <code><span style="color: #228b22; ">Nil</span></code> constructor, we are already done. For <code><span style="color: #228b22; ">Cons</span></code>, we have
+to discriminate against the patterns inside the <code><span style="color: #228b22; ">Cons</span></code>. But first,
+we analyze these patterns to retrieve all the elements that are
+needed:</P><P><div class="ocamlweb-src"><code><span style="color: #0000ff; font-weight: bold;">let</span> kcons(x) = {</code><BR>
+ <code> <span style="color: #0000ff; font-weight: bold;">let</span> x.0 = #0(x)</code><BR>
+ <code> <span style="color: #0000ff; font-weight: bold;">let</span> x.1 = #1(x)</code><BR>
+ <code> <span style="color: #0000ff; font-weight: bold;">let</span> x.0.0 = #0(x.0)</code><BR>
+ <code> <span style="color: #0000ff; font-weight: bold;">let</span> x.0.1 = #1(x.0)</code></div></P><P>There are two contiguous blocks: one with rule 1 and 3 (since rule
+2 has been regrouped with the <code><span style="color: #228b22; ">Nil</span></code>), and one with rule 4. We begin
+with the 1-3 block:</P><P><div class="ocamlweb-src"><code> decl knext</code><BR>
+ <code> <span style="color: #a020f0; ">match</span>(x.0.0){</code><BR>
+   <code> 1 &#X2192; { kfinal(1)}</code><BR>
+   <code> 3 &#X2192; { kfinal(3)}</code><BR>
+   <code> _ &#X2192; { knext()}</code><BR>
+ <code> }</code></div></P><P>If matching against the 1-3 block fails, we match against rule 4.
+If this fails, then matching against all the rules in <I>b</I><SUB><I>i</I>.<I>a</I></SUB>
+failed, and we try to match against the rules in <I>b</I><SUB><I>i</I>.<I>b</I></SUB>.</P><P><div class="ocamlweb-src"><code> <span style="color: #0000ff; font-weight: bold;">let</span> knext() = {</code><BR>
+   <code> <span style="color: #a020f0; ">match</span>(x.0.1){</code><BR>
+     <code> 4 &#X2192; { kfinal(4)}</code><BR>
+     <code> _ &#X2192; { kb_i.b()}</code><BR>
+   <code> }</code><BR>
+ <code> }</code><BR>
+ <code>}</code></div></P><P>The rest of the matching is very similar. In <I>b</I><SUB><I>i</I>.<I>b</I>.1</SUB>, the
+matching against rules 5 and 7 is factorized, because there is a
+common constructor. (Note that there is no factorization on <code><span style="color: #228b22; ">Cons</span></code>
+between rules 4 and 5, because they are in different blocks). Then
+blocks <I>b</I><SUB><I>i</I>.<I>b</I>.2</SUB>, <I>b</I><SUB><I>i</I>.<I>b</I>.3</SUB>, <I>b</I><SUB><I>i</I>.<I>c</I></SUB> are tried successively.
+In <I>b</I><SUB><I>i</I>.<I>c</I></SUB>, the test of <code><span style="color: #228b22; ">Cons</span></code> is factorized, but not the test
+for <code><span style="color: #228b22; ">Nil</span></code>, because testing <code><span style="color: #228b22; ">Nil</span></code> is done after testing <code>10</code>.</P><P>Finally, the pattern matching always succeeds since rule 12 is
+irrefutable, so there is no need to introduce code that perform
+<code>match_failure</code> in case nothing succeeds in matching.</P><P>Note that the presentation would have been clearer if the patterns
+had been regrouped differently; in particular, grouping rules who
+share a constructor matched as the same time (e.g. exchanging rules
+1 and 2, and rule 5 and 6) would improve the presentation.</P><!--CUT END -->
+
+    <hr />
+    <div class="footer">
+      Ideas, comments? Just mail me at contact @@@ l-lang.org
+    </div>
+  </div>
+</div>
+ 
+     </div>
+          
+   <script src="http://code.jquery.com/jquery.js"></script>
+   <script src="/js/bootstrap.min.js"></script>
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

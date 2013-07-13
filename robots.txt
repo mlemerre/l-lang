@@ -1,0 +1,2 @@
+Sitemap: http://www.l-lang.org/sitemap.xml
+

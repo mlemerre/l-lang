@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Using OCaml packages with ocamlbuild: a recipe</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="#">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+
+
+               
+
+               <li class="dropdown">
+                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Blog posts</li>
+      <hr>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>Using OCaml packages with ocamlbuild: a recipe</h1>
+      <i>tags: ocaml and build
+        &mdash; <span>20 December 2012</span></i>
+    </div>
+    <p>
+
+</p>
+
+<p>
+Using OCaml packages with ocamlbuild can raise different error
+messages that are difficult to trace; there is a documentation (
+<a href="http://brion.inria.fr/gallium/index.php/Ocamlbuild_and_module_packs">http://brion.inria.fr/gallium/index.php/Ocamlbuild_and_module_packs</a> )
+that helps, but does not provide a step-by-step guide with common
+pitfalls, so here is one.
+</p>
+
+<!-- end_excerpt -->
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Compilation of bytecode files</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+First create a project with the following files:
+</p>
+
+<p>
+File: plu/bla.ml
+</p>
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">bla </span><span style="color: #a52a2a;">=</span> 3<span style="color: #a52a2a;">;;</span>
+</pre>
+</div>
+
+<p>
+File: plu/bli.ml
+</p>
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">bli </span><span style="color: #a52a2a;">=</span> <span style="color: #228b22;">Bla</span>.bla<span style="color: #a52a2a;">;;</span>
+</pre>
+</div>
+
+<p>
+File: plu.mlpack
+</p>
+<pre class="example">
+plu/Bla
+plu/Bli
+</pre>
+
+<p>
+File: use.ml
+</p>
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #228b22;">Plu</span>.<span style="color: #228b22;">Bli</span>.bli
+</pre>
+</div>
+
+<p>
+Note: all the files do not have to be in a directory named plu/; this
+is just my convention.
+</p>
+
+<p>
+Try to compile:
+</p>
+
+<pre class="example">
+ocamlbuild use.byte
+/usr/bin/ocamlc -c -o use.cmo use.ml
++ /usr/bin/ocamlc -c -o use.cmo use.ml
+File "use.ml", line 1, characters 0-11:
+Error: Unbound module Plu
+Command exited with code 2.
+</pre>
+
+<p>
+Compilation will not work, probably because by default Ocamlbuild does
+not traverse directories. It will work if you use the <code>-r</code> option to
+ocamlbuild, or create a (even empty) <code>_tags</code> file at the root of the
+project, that will allow ocamlbuild to traverse the directories:
+</p>
+
+<pre class="example">
+ocamlbuild use.byte
+/usr/bin/ocamldep -modules plu/bla.ml &gt; plu/bla.ml.depends
+/usr/bin/ocamldep -modules plu/bli.ml &gt; plu/bli.ml.depends
+/usr/bin/ocamlc -c -I plu -o plu/bla.cmo plu/bla.ml
+/usr/bin/ocamlc -c -I plu -o plu/bli.cmo plu/bli.ml
+/usr/bin/ocamlc -pack plu/bla.cmo plu/bli.cmo -o plu.cmo
+/usr/bin/ocamlc -c -o use.cmo use.ml
+/usr/bin/ocamlc plu.cmo use.cmo -o use.byte
+</pre>
+
+<p>
+Notice that ocamlbuild has added <code>-I plu</code> when compiling modules of
+the <code>Plu</code> package; so for instance, <code>Bli</code> can access <code>Bla</code>.
+</p>
+
+<p>
+This odd behaviour can be the cause of many headaches, so I prefer to
+document it here (and I filed a bug report about this issue <a href="http://caml.inria.fr/mantis/view.php?id=5851">here</a>).
+</p>
+
+<p>
+Also note that if you make a mistake in the <code>plu.mlpack</code> file, for
+instance an error in the name of the directory or in that of the
+module, ocamlbuild will fail without much warning. It will fail with a
+compile error, as before; it may also fail at the linking step, if you
+make a mistake in the <code>plu.mlpack</code> file, but you had successfully
+compiled a previous version. This problem can also be painful to
+track, so I hope this help someone.
+</p>
+
+<pre class="example">
+ocamlbuild use.byte
+/usr/bin/ocamlc use.cmo -o use.byte
++ /usr/bin/ocamlc use.cmo -o use.byte
+File "_none_", line 1, characters 0-1:
+Error: Error while linking use.cmo:
+Reference to undefined global `Plu'
+Command exited with code 2.
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Adding native compilation</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+You cannot pack a set of <code>.cmx</code> files (resulting from compilation of a
+file) if you did not specified that the <code>.cmx</code> can be packed when you
+compile the file. Failure to do that result in an error like this:
+</p>
+
+<pre class="example">
+ocamlbuild use.native
+/usr/bin/ocamldep -modules use.ml &gt; use.ml.depends
+/usr/bin/ocamldep -modules plu/bla.ml &gt; plu/bla.ml.depends
+/usr/bin/ocamldep -modules plu/bli.ml &gt; plu/bli.ml.depends
+/usr/bin/ocamlc -c -I plu -o plu/bla.cmo plu/bla.ml
+/usr/bin/ocamlc -c -I plu -o plu/bli.cmo plu/bli.ml
+/usr/bin/ocamlc -pack plu/bla.cmo plu/bli.cmo -o plu.cmo
+/usr/bin/ocamlc -c -o use.cmo use.ml
+/usr/bin/ocamlopt -c -I plu -o plu/bla.cmx plu/bla.ml
+/usr/bin/ocamlopt -c -I plu -o plu/bli.cmx plu/bli.ml
+touch plu.mli  ;\
+  if  /usr/bin/ocamlopt -pack -I plu plu/bla.cmx plu/bli.cmx -o plu.cmx  ;\
+  then  rm -f plu.mli  ; else  rm -f plu.mli  ; exit 1; fi
++ touch plu.mli  ;\
+  if  /usr/bin/ocamlopt -pack -I plu plu/bla.cmx plu/bli.cmx -o plu.cmx  ;\
+  then  rm -f plu.mli  ; else  rm -f plu.mli  ; exit 1; fi
+File "plu.cmx", line 1, characters 0-1:
+Error: File plu/bla.cmx
+was not compiled with the `-for-pack Plu' option
+Command exited with code 1.
+</pre>
+
+<p>
+The lines:
+</p>
+
+<pre class="example">
+/usr/bin/ocamlopt -c -I plu -o plu/bla.cmx plu/bla.ml
+/usr/bin/ocamlopt -c -I plu -o plu/bli.cmx plu/bli.ml
+</pre>
+
+<p>
+Need to be compiled with the <code>-for-pack Plu</code> option. This is achieved
+by a simple change in the <code>_tags</code> file: just fill it with
+</p>
+
+<pre class="example">
+&lt;plu/*.cmx&gt;: for-pack(Plu)
+</pre>
+
+<p>
+And now everything works:
+</p>
+
+<pre class="example">
+ocamlbuild use.native
+/usr/bin/ocamldep -modules use.ml &gt; use.ml.depends
+/usr/bin/ocamldep -modules plu/bla.ml &gt; plu/bla.ml.depends
+/usr/bin/ocamldep -modules plu/bli.ml &gt; plu/bli.ml.depends
+/usr/bin/ocamlc -c -I plu -o plu/bla.cmo plu/bla.ml
+/usr/bin/ocamlc -c -I plu -o plu/bli.cmo plu/bli.ml
+/usr/bin/ocamlc -pack plu/bla.cmo plu/bli.cmo -o plu.cmo
+/usr/bin/ocamlc -c -o use.cmo use.ml
+/usr/bin/ocamlopt -c -for-pack Plu -I plu -o plu/bla.cmx plu/bla.ml
+/usr/bin/ocamlopt -c -for-pack Plu -I plu -o plu/bli.cmx plu/bli.ml
+touch plu.mli  ;\
+  if  /usr/bin/ocamlopt -pack -I plu plu/bla.cmx plu/bli.cmx -o plu.cmx  ;\
+  then  rm -f plu.mli  ; else  rm -f plu.mli  ; exit 1; fi
+/usr/bin/ocamlopt -c -o use.cmx use.ml
+/usr/bin/ocamlopt plu.cmx use.cmx -o use.native
+</pre>
+
+<p>
+I will update this post if/when I find more weird error messages using
+packages with ocamlbuild; or if you find such error, just tell me!
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Update: linking problem when refering to modules outside of the package</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+I discovered a new problem with ocamlbuild. The problems occur when
+you put code in a library which is included, and referenced only
+inside of a package; in that case ocamlbuild forgets to link with the
+library. The problem is well described <a href="https://sympa.inria.fr/sympa/arc/caml-list/2010-06/msg00172.html">in this mail</a>. The author of
+that mail also provides a ocamlbuild plugin that works around the
+problem.
+</p>
+
+<p>
+This seems to be a classical bug, and there is a pending bug report
+for it <a href="http://caml.inria.fr/mantis/view.php?id=5752">here</a>.
+</p>
+</div>
+</div>
+
+    <hr />
+    <div class="footer">
+      Ideas, comments? Just mail me at contact @@@ l-lang.org
+    </div>
+  </div>
+</div>
+ 
+     </div>
+          
+   <script src="http://code.jquery.com/jquery.js"></script>
+   <script src="/js/bootstrap.min.js"></script>
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

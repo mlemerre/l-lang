@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Incorporating C code in an Ocaml project using Ocamlbuild</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="#">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+
+
+               
+
+               <li class="dropdown">
+                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Blog posts</li>
+      <hr>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>Incorporating C code in an Ocaml project using Ocamlbuild</h1>
+      <i>tags: ocaml and build
+        &mdash; <span>10 August 2012</span></i>
+    </div>
+    <p>
+
+</p>
+
+<p>
+I am currently developping the code generation phase of my L
+programming language, using <a href="http://llvm.org">LLVM</a>. LLVM provides Ocaml bindings for
+building LLVM code and executing them, but there are no easy way to
+inspect the result of execution when complex data structures are
+produced. 
+</p>
+
+<p>
+It turned out that writing these C stubs was not hard at all; and <a href="http://caml.inria.fr/pub/docs/manual-ocaml/manual033.html">the
+OCaml documentation</a> for doing that is quite good. The most difficult
+part was fighting Ocamlbuild to incorporate these C stubs into the
+project.
+</p>
+
+<!-- end_excerpt -->
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">A simple example project</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+To get started, here is a sample example project with two OCaml file
+and one C file. 
+</p>
+
+<ul class="org-ul">
+<li>File <code>toto_c.c</code>:
+</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-c"><span style="color: #483d8b;">#include</span> <span style="color: #8b2252;">&lt;stdio.h&gt;</span>
+<span style="color: #228b22;">void</span> <span style="color: #0000ff;">toto</span>(<span style="color: #228b22;">void</span>)
+{
+  printf(<span style="color: #8b2252;">"Hello from C\n"</span>);
+}
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>File <code>toto.ml</code>:
+</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #0000ff; font-weight: bold;">external</span> <span style="color: #a0522d;">toto_a</span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">unit </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> unit </span><span style="color: #a52a2a;">=</span> <span style="color: #8b2252;">"toto"</span><span style="color: #a52a2a;">;;</span>
+
+<span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #0000ff;">toto_b</span><span style="color: #a0522d;"> </span><span style="color: #a52a2a;">()</span><span style="color: #a0522d;"> </span><span style="color: #a52a2a;">=</span> toto_a<span style="color: #a52a2a;">();</span> toto_a<span style="color: #a52a2a;">();;</span>
+</pre>
+</div>
+
+<p>
+This file provides the "ocaml part" of the "toto" library: the
+additional definition <code>toto_b</code> is implemented in ml, not in C.
+</p>
+
+<p>
+In simpler implementations with no OCaml definition of the library, or
+to provide a separation, the <code>external</code> declarations could be put in a
+standalone .mli file (e.g. <code>toto.mli</code>).
+</p>
+
+<ul class="org-ul">
+<li>File <code>main.ml</code>:
+</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #228b22;">Test</span>.toto_a<span style="color: #a52a2a;">();;</span>
+<span style="color: #228b22;">Test</span>.toto_b<span style="color: #a52a2a;">();;</span>
+</pre>
+</div>
+
+<p>
+Notes:
+</p>
+
+<ul class="org-ul">
+<li>The <code>-custom</code> flag allows to build a custom runtime, i.e. to embed
+an OCaml interpreterin the <code>test.byte</code> file, linked with <code>toto.o</code>.
+</li>
+<li>Here I compiled the c file using <code>gcc</code>, but it may also be built
+using ocamlc (the benefit being that ocamlc passes the correct
+include path options to gcc).
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Using ocamlbuild flags</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+A very simple solution can be obtained by passing flags to ocamlbuild:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-bash">ocamlbuild toto_c.o
+ocamlbuild main.byte -lflags -custom,toto_c.o
+</pre>
+</div>
+
+<p>
+This solution could be used, for instance, in a solution that would
+use a "Makefile" driver together with ocamlbuild. 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">My current "pure ocamlbuild" solution</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+You will not be able to compile this with Ocamlbuild alone
+without a custom plugin, which is OCaml code (with regular syntax) to
+put in a <code>myocamlbuild.ml</code> file, that is automatically compiled by
+ocamlbuild.
+</p>
+
+<p>
+Note: the user manual of ocamlbuild does not explain how to write a
+plugin, but the wiki
+<a href="http://brion.inria.fr/gallium/index.php/Ocamlbuild">http://brion.inria.fr/gallium/index.php/Ocamlbuild</a> has several pages
+that help.
+</p>
+
+<p>
+After trying complicated alternatives, the solution I found consisted
+in writing a simple plugin adding a "linkdep" parameterized tag. When
+the operation is a link, this tag:
+</p>
+<ul class="org-ul">
+<li>adds the file to the dependency list (so that it is also built)
+</li>
+<li>adds it to the list of files to be linked (for some reason, when the
+"link" tag is active, i.e. the command is a link command, then
+Ocamlbuild add the files in the dependency list to list of input
+files to be linked).
+</li>
+</ul>
+
+<p>
+The ocamlbuild plugin is rather small: just put the following in the
+<code>myocamlbuild.ml</code> file.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #0000ff; font-weight: bold;">open</span> <span style="color: #228b22;">Ocamlbuild_plugin</span><span style="color: #a52a2a;">;;</span>
+
+dispatch <span style="color: #a52a2a;">(</span><span style="color: #a020f0;">function</span>
+ <span style="color: #a0522d;"> </span><span style="color: #a52a2a;">|</span> After_rules <span style="color: #a52a2a;">-&gt;</span>
+    pdep <span style="color: #a52a2a;">[</span><span style="color: #8b2252;">"link"</span><span style="color: #a52a2a;">]</span> <span style="color: #8b2252;">"linkdep"</span> <span style="color: #a52a2a;">(</span><span style="color: #a020f0;">fun</span> <span style="color: #a0522d;">param </span><span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">[</span>param<span style="color: #a52a2a;">])</span>
+  <span style="color: #a52a2a;">|</span> _ <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">())</span>
+</pre>
+</div>
+
+<p>
+What this plugin does is "register that whenever the
+link and linkdep plugins are set, add the file passed as a parameter
+to the linkdep tag to the list of dependencies".
+</p>
+
+<p>
+Then the <code>_tags</code> file only has to contain this:
+</p>
+
+<pre class="example">
+&lt;*.byte&gt;: linkdep(toto_c.o), custom
+&lt;*.native&gt;: linkdep(toto_c.o)
+</pre>
+
+<p>
+And the whole application can be simply built with:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">ocamlbuild main.byte
+ocamlbuild main.native
+</pre>
+</div>
+
+<p>
+When the <code>main.byte</code> or <code>main.native</code> files are built (i.e. linked),
+the <code>toto_c.o</code> file is added as a dependency (and to the list of files
+that are linked). Additionally, the <code>custom</code> tag add the <code>-custom</code>
+option to the OCaml linker.
+</p>
+</div>
+
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">Linking with a .a library</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+If there is a need to link with several C object files, the solution
+also allows to use a library as follow:
+</p>
+
+<ul class="org-ul">
+<li>Create a file name libname.clib containing the list of object files:
+for instance my <code>libtoto.clib</code> contains <code>toto_c.o</code>
+</li>
+
+<li>Change the tag file to require <code>libtoto.a</code> instead of <code>toto_c.o</code>:
+the <code>_tags</code> file become:
+</li>
+</ul>
+
+<pre class="example">
+&lt;*.byte&gt;: linkdep(libtoto.a), custom
+&lt;*.native&gt;: linkdep(libtoto.a)
+</pre>
+
+<p>
+And that's all. Ocamlbuild knows how to build <code>.a</code> files from <code>.clib</code>
+files, and will add the contents of the <code>.clib</code> file as dependencies
+from the <code>.a</code> file.
+</p>
+
+<p>
+Note that it is important that the library file begins
+by "lib", or the ocamlbuild rules will not work. The command
+<code>ocamlbuild -documentation</code> provides the list of rules.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Possible enhancements</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+There are several possible enhancements that could be brought:
+</p>
+
+<ul class="org-ul">
+<li>The scheme presented here is sufficent for simple C stubs, but
+compiling more complex c files would require to change <code>CFLAGS</code> of
+the C compiler (in particular the include directories), and add new
+libraries to the
+lflags. <a href="http://mancoosi.org/~abate/ocamlbuild-stubs-and-dynamic-libraries">http://mancoosi.org/~abate/ocamlbuild-stubs-and-dynamic-libraries</a>
+and
+<a href="http://brion.inria.fr/gallium/index.php/Ocamlbuild_example_with_C_stubs">http://brion.inria.fr/gallium/index.php/Ocamlbuild_example_with_C_stubs</a>
+deal with this problem by changing the plugin to add an
+"include_name" flag. I think this idea could be generalized to add a
+parametrized include tag.
+</li>
+
+<li>I think it is a pity that one has to tag the final executable with
+the linkdep. It would have been cleaner to tag the ml files that
+depended on them, such that linking the final executable is
+independent on whether one of the module uses a C stub or not. OCaml
+<a href="http://caml.inria.fr/pub/docs/manual-ocaml/manual033.html#toc142">provide</a> a mean to record the list of C library needed for an ocaml
+library (.cma), but not with individual (.cmo) objects, so there is
+no simple way to do that.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">Conclusion</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+After spending some time fighting with ocamlbuild, I managed to have a
+working, but less-than-satisfactory result: library added to all
+targets for instance. And I remember that I had a similar fight to
+handle building custom Camlp4 extensions. 
+</p>
+
+<p>
+I usually like using Ocamlbuild, that allows building medium-sized
+ocaml projects with no or minimum configuration; especially with the
+recent support for findlib packages. But I am not a fan of having to
+write OCaml code to build my project properly. I think that Ocamlbuild
+could get better if more default parametrized tags would be provided,
+such as for adding dependencies, compile flags, and so on. But maybe
+the <code>_tags</code> file format is not sufficient for that.
+</p>
+
+<p>
+So maybe I should keep the dual make/ocamlbuild solution. It may be
+the simplest to maintain, as it does not require a knowledge of the
+internals of ocamlbuild that I am likely to forget.
+</p>
+
+<p>
+Maybe I should also try using <a href="http://omake.metaprl.org/index.html">OMake</a> instead, that would allow a
+unifying solution. And Ocamlbuild will not be the adequate tool for
+building L projects anyway, when I will start bootstrapping the
+compiler. But OMake seems not to be maintained anymore&#x2026;
+</p>
+</div>
+</div>
+
+    <hr />
+    <div class="footer">
+      Ideas, comments? Just mail me at contact @@@ l-lang.org
+    </div>
+  </div>
+</div>
+ 
+     </div>
+          
+   <script src="http://code.jquery.com/jquery.js"></script>
+   <script src="/js/bootstrap.min.js"></script>
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

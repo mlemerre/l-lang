@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>A typecast with many uses</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="#">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+
+
+               
+
+               <li class="dropdown">
+                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Blog posts</li>
+      <hr>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>A typecast with many uses</h1>
+      <i>tags: l
+        &mdash; <span>22 June 2012</span></i>
+    </div>
+    <p>
+
+</p>
+
+<p>
+I just finished implementing a new version of a typecast operator for
+the L programming language I'm working on. 
+</p>
+
+<!-- end_excerpt -->
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">The problem of the regular cast implementation</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Typecast is an operator or function, that allows conversion from any
+type to any type. From the point of view of evaluation, it acts as the
+identity function; it is useful only for typechecking and type
+inference. It allows writing things that the type system does not
+(yet) support: increasing the expressivity of the type system means
+reducing the number of casts.
+</p>
+
+<p>
+Note: in some languages (such as C), cast also perform <i>coercion</i>,
+i.e. convert the value to match the requested type. This is not the
+case here.
+</p>
+
+<p>
+My first implementation of cast consisted in a <code>cast</code> function which
+did nothing but return its argument, and had for type: <code>forall&lt;a,b&gt; a
+-&gt; b</code>. This means that this function can take arguments of any type,
+and does not constrain the return type. For instance, <code>cast( 'a') + 1</code>
+converted 'a' to type <code>Int</code>: <code>cast( 'a')</code> converts 'a' to some type,
+and <code>+</code> requires a <code>Int</code> argument.
+</p>
+
+<p>
+Other languages have this approach, for instance the OCaml cast
+function, named <code>magic</code> is defined by:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #0000ff; font-weight: bold;">external</span> <span style="color: #a0522d;">magic </span><span style="color: #a52a2a;">:</span> <span style="color: #a52a2a;">'</span><span style="color: #228b22;">a </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> </span><span style="color: #a52a2a;">'</span><span style="color: #228b22;">b </span><span style="color: #a52a2a;">=</span> <span style="color: #8b2252;">"%identity"</span>
+</pre>
+</div>
+
+<p>
+With <code>identity</code> being a C function that returns its argument. 
+</p>
+
+<p>
+The problem with this definition is that it is not possible to express
+the result type according to the argument type directly.
+</p>
+
+<p>
+For instance, suppose that I want to create a function <code>make_triple:
+forall&lt;t&gt; (t,t,t) -&gt; Triple&lt;t&gt;</code>. The <code>(t,t,t)</code> and <code>Triple&lt;t&gt;</code> have
+the same machine representation, but they must appear different to the
+type system (to implement some <a href="http://en.wikipedia.org/wiki/nominal_typing">nominal typing</a>).
+</p>
+
+<p>
+The problem is that this function is <i>polymorphic</i>:
+<code>make_triple(2,3,4)</code> has type <code>Triple&lt;Int&gt;</code>, while
+<code>make_triple("a","b","c")</code> has type <code>Triple&lt;String&gt;</code>. Without
+polymorphism, the problem would be easy to solve. For instance a
+<code>make_triple_int</code> function that works only with <code>Int</code> is easy to write
+with a regular cast (here I used the C notation for cast, (to_type)
+expr :
+</p>
+
+<p>
+<code>def make_triple(a:Int,b:Int,c:Int) = { (Triple&lt;Int&gt;) (a,b,c) }</code>
+</p>
+
+<p>
+But for a polymorphic function, the result type <code>Triple&lt;t&gt;</code> depends on
+the source type <code>(t,t,t)</code>. 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Cast is an identity function with a given type</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+The solution I found is to have a cast operator in the language, that
+acts as an identity function wrt. evaluation, but whose type is given
+has an argument. The syntax is <code>cast( exp, type )</code>, and does as if
+<code>exp</code> was applied to a function, whose type is <code>type</code>, which does
+nothing but returns its argument.
+</p>
+
+<p>
+This cast operator solves the problem:
+</p>
+
+<p>
+<code>def make_triple(a,b,c) = cast( (a,b,c), forall&lt;t&gt; (t,t,t) -&gt; Triple&lt;t&gt;)</code>
+</p>
+
+<p>
+Notice that the classical cast can still be obtained:
+</p>
+
+<p>
+<code>def my_cast_function(x) = cast( x, forall&lt;a,b&gt; a -&gt; b)</code>
+</p>
+
+<p>
+Even more interesting is that this new function also allows to
+implement <i>type annotation</i> (that allows to enforce that a given
+expression has a certain type, or reduce its generality). For
+instance, <code>cast( 3+2, Int -&gt; Int)</code> allows to check that <code>3+2</code> has type
+Int, without changing its type. In L, type annotation is written
+<code>exp:t</code> (for instance: <code>(3+2):Int</code>), and is now implemented using this
+cast operator.
+</p>
+
+<p>
+The implementation is straightforward, being just a special case of
+function application.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Alternative implementations</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">Using standard cast + type annotation</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+On the contrary, it is also possible to implement this cast operator
+using standard cast + type annotation. For instance in OCaml:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #a52a2a;">#</span> <span style="color: #0000ff; font-weight: bold;">type</span> <span style="color: #a52a2a;">'</span><span style="color: #228b22;">a triple</span><span style="color: #a52a2a;">;;</span>
+<span style="color: #a52a2a;">#</span> <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #0000ff;">make_triple</span><span style="color: #a0522d;"> a b c </span><span style="color: #a52a2a;">=</span>
+    <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">my_cast</span><span style="color: #a52a2a;">:('</span><span style="color: #228b22;">a </span><span style="color: #a52a2a;">*</span><span style="color: #228b22;"> </span><span style="color: #a52a2a;">'</span><span style="color: #228b22;">a </span><span style="color: #a52a2a;">*</span><span style="color: #228b22;"> </span><span style="color: #a52a2a;">'</span><span style="color: #228b22;">a</span><span style="color: #a52a2a;">)</span><span style="color: #228b22;"> </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> </span><span style="color: #a52a2a;">'</span><span style="color: #228b22;">a triple </span><span style="color: #a52a2a;">=</span> <span style="color: #228b22;">Obj</span>.magic <span style="color: #a52a2a;">(</span><span style="color: #a020f0;">fun</span> <span style="color: #a0522d;">x </span><span style="color: #a52a2a;">-&gt;</span> x<span style="color: #a52a2a;">)</span> <span style="color: #0000ff; font-weight: bold;">in</span>
+    my_cast <span style="color: #a52a2a;">(</span>a<span style="color: #a52a2a;">,</span>b<span style="color: #a52a2a;">,</span>c<span style="color: #a52a2a;">);;</span>
+<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> <span style="color: #0000ff; font-weight: bold;">val</span><span style="color: #228b22;"> </span><span style="color: #a0522d;">make_triple </span><span style="color: #a52a2a;">:</span> <span style="color: #a52a2a;">'</span>a <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">'</span>a <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">'</span>a <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">'</span>a triple <span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #a020f0;">fun</span><span style="color: #a52a2a;">&gt;</span>
+<span style="color: #a52a2a;">#</span> make_triple 1 2 3<span style="color: #a52a2a;">;;</span>
+<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">int triple </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span>abstr<span style="color: #a52a2a;">&gt;</span>
+<span style="color: #a52a2a;">#</span> make_triple <span style="color: #8b2252;">"toto"</span> <span style="color: #8b2252;">"tata"</span> <span style="color: #8b2252;">"tutu"</span><span style="color: #a52a2a;">;;</span>
+<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">string triple </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span>abstr<span style="color: #a52a2a;">&gt;</span>
+</pre>
+</div>
+
+<p>
+Still, I found that it was simpler to implement this cast operator
+than annotation + the standard cast. Plus, <code>cast</code> being a special form
+in the language, it can be removed at compile time, which is not the
+case if it has to call an external identity function.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">Using a special "cast" variable</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Another possibility would be to implement cast as a special variable.
+Instead of writing <code>cast( exp, t1 -&gt; t2)</code>, one would write:
+</p>
+
+<p>
+<code>(cast( t))( exp)</code> (i.e. apply the "cast variable" to exp).
+</p>
+
+<p>
+<code>cast( t)</code> would be an identity function of type <code>t</code> (<code>t</code> should thus
+be a function type).
+</p>
+
+<p>
+This implementation would then be even simpler, being just a special case
+of variable (e.g. type variable instantation should be performed
+here).
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Using this cast operator for implementing isorecursive sum types</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Implementing <a href="http://en.wikipedia.org/wiki/Recursive_data_type#Isorecursive_types">isorecursive data types</a> need such type casts (called
+"roll" and "unroll" in standard terminology).
+</p>
+
+<p>
+For instance, if I define the <code>List</code> type as follows:
+</p>
+
+<p>
+<code>type List&lt;a&gt; = { Nil | Cons(a, List&lt;a&gt;) }</code>
+</p>
+
+<p>
+The internal representation of <code>Nil</code> is <code>(0, ())</code>, the one of
+<code>Cons(hd,tl)</code> is <code>(1, (hd,tl))</code>. The first element is a <i>tag</i> allowing
+to identify which variant is a given value. The <i>roll</i> and <i>unroll</i>
+functions are used for type conversion between these internal
+representations and the List&lt;a&gt; type.
+</p>
+
+<p>
+So here is how the type constructors can be implemented using my new
+cast operator:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-l">def Nil = cast((0,()), forall&lt;a&gt; (Int,())-&gt;List&lt;a&gt;)
+def Cons = { (hd,tl) -&gt; cast( (1, (hd,tl)), forall&lt;a&gt; (Int,(a,List&lt;a&gt;))-&gt;List&lt;a&gt;) }
+</pre>
+</div>
+
+<p>
+The destructors can be implemented by reversing the cast:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-l">def ifisNil = { (list, then_, else_) -&gt; 
+  let (num, _) = cast( list, forall&lt;a&gt; List&lt;a&gt; -&gt; (Int, ()));
+  if( num == 0) then_() else else_() 
+}
+
+def ifisCons = { (list, then_, else_) -&gt; 
+  let (num, _) = cast( list, forall&lt;a&gt; List&lt;a&gt; -&gt; (Int, (a, List&lt;a&gt;)));
+  if( num == 1) 
+   {
+      let (_, (hd,tl)) = cast( list, forall&lt;a&gt; List&lt;a&gt; -&gt; (Int, (a, List&lt;a&gt;)));
+      then_(hd,tl)       
+   }
+ else else_() 
+}
+</pre>
+</div>
+
+<p>
+This tests that it works correctly:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-l">ifisCons( Nil, { (hd,tl) -&gt; hd }, { () -&gt; 0 }) // returns 0
+ifisCons( Cons( 3,Nil), { (hd,tl) -&gt; hd }, { () -&gt; 0 }) // returns 3
+ifisCons( Cons( 5, Cons( 3, Nil)), { (hd,tl) -&gt; hd }, { () -&gt; 0 }) // returns 5
+</pre>
+</div>
+
+<p>
+This illustrates the purpose of cast: it allows implementing things
+not yet available in the type system. Actually the real implementation
+of the type constructors/destructor in L will likely rely on this new
+cast function.
+</p>
+</div>
+</div>
+
+    <hr />
+    <div class="footer">
+      Ideas, comments? Just mail me at contact @@@ l-lang.org
+    </div>
+  </div>
+</div>
+ 
+     </div>
+          
+   <script src="http://code.jquery.com/jquery.js"></script>
+   <script src="/js/bootstrap.min.js"></script>
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

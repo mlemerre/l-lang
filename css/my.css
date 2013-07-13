@@ -1,0 +1,60 @@
+/*  */
+body { padding:60px }
+
+/*  */
+
+.sidenav  { 
+     
+    text-align: right;
+}
+
+@media (min-width: 1200px) {
+    .sidenav { width: 226px; }
+}
+
+@media (min-width: 980px and max-width:1199px) {
+    .sidenav { width: 186px; }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .sidenav { width: 136px; }
+}
+
+@media (max-width: 767px) {
+    
+    .sidenav { text-align:left; width: 100%; }
+}
+
+.sidenav hr { margin-top: 0; 
+              margin-bottom: 0;
+            }
+
+.post-title { margin-bottom: 2.5em; margin-left:-1em; padding-left:1em; padding-bottom:0.5em;
+              border-bottom: 2px solid gray;
+            }
+
+
+.post-title > h1 { color: #555555; margin-bottom: 0.2em; }
+
+/*  */
+
+.ocamlweb-src, pre  {
+    border: solid 1px gray;
+    background-color:#eeeeee;
+    padding: 0.5em 1em 0.5em 1em;
+    margin: 0.5em 1em 0.5em 1em;
+    -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
+}
+
+/* 
+*/
+
+pre {
+    word-break: break-all; /* webkit */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre;
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: pre-wrap;      /* css-3 */
+}

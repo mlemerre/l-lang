@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Structuring the compiler</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="#">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+
+
+               
+
+               <li class="dropdown">
+                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Blog posts</li>
+      <hr>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>Structuring the compiler</h1>
+      <i>tags: l and ocaml
+        &mdash; <span>30 June 2013</span></i>
+    </div>
+    <p>
+
+</p>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Simple is difficult</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+In the implementation of the L compiler, the focus was put on the
+readability and simplicity of the source code. As often in computer
+science, it is difficult to make things simple: I had a complete,
+working prototype, with parser, typing, cps transformation and
+compilation to LLVM when I started this blog; I spent all this time
+cleaning, documenting, and especially simplifying the compiler,
+publishing the progress along the way.
+</p>
+
+<!-- end_excerpt -->
+
+<p>
+I believe that the result is worth the work: a simpler compiler is
+easier to extend, both for myself and future contributors. The
+challenge will be to keep things easy as more features are added; this
+is possible only if we wait for things to be well structured before
+adding the non-essential features (for now, I just keep a huge
+todo-list with those); and if we do not hesitate to perform a local
+redesign occasionally.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Implementation of the toplevel of the compiler</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+The toplevel of the compiler, that link all the passes together, is a
+good example of the results of such a redesign. A design goal of this
+toplevel is to make each pass communicate with a minimal interface. I
+had written a first attempt, using a record updated functionally, with
+each field containing the internal state of one pass. The toplevel
+consisted in a giant function with nested loops &#x2013; one loop per pass.
+This structure was inelegant for a number of reasons:
+</p>
+
+<ul class="org-ul">
+<li>Even if the type of the state could be made abstract, the abstract
+type was still part of the interface. Moreover, the initial value
+for this type also had to be provided by the passes.
+</li>
+
+<li>Updating the environment functionally introduced a lot of
+boilerplate code; even if imperative updates might have helped a
+little. 
+</li>
+
+<li>There was also some boilerplate code to handle the case where a
+single input could return multiple output (e.g. a datatype
+declaration in ML defines both a type and some constructors).
+</li>
+
+<li>The nested loop pattern was not really readable. 
+</li>
+</ul>
+
+<p>
+After a while, I came up with a much simpler design using streams of
+definitions. The code for a toplevel is then dead-simple:
+</p>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span> <span style="color: #228b22; ">Stream</span> = <span style="color: #228b22; ">Extensions.Stream</span></P><P><A NAME="src/compilation_passes.ml:3738"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span> process_file file =<BR>  
+<span style="color: #0000ff; font-weight: bold;">let</span> parsetree_stream = <span style="color: #228b22; ">Parser.</span>make_stream file <span style="color: #0000ff; font-weight: bold;">in</span><BR>  
+<span style="color: #0000ff; font-weight: bold;">let</span> ast_stream = <span style="color: #228b22; ">Astfromsexp.</span>from_stream parsetree_stream <span style="color: #0000ff; font-weight: bold;">in</span><BR>  
+<span style="color: #0000ff; font-weight: bold;">let</span> cps_stream = <span style="color: #228b22; ">Cpstransform.</span>from_stream ast_stream <span style="color: #0000ff; font-weight: bold;">in</span><BR>  
+<span style="color: #0000ff; font-weight: bold;">let</span> converted_stream =<BR>    
+<span style="color: #228b22; ">Stream.</span>iter_and_copy <span style="color: #228b22; ">Cpsconvertclosures.</span>in_definition cps_stream <span style="color: #0000ff; font-weight: bold;">in</span><BR>  
+<span style="color: #0000ff; font-weight: bold;">let</span> llvm_stream = <span style="color: #228b22; ">Cpsllvm.</span>from_stream converted_stream <span style="color: #0000ff; font-weight: bold;">in</span><BR>  
+<span style="color: #228b22; ">Stream.</span>iter (<span style="color: #a020f0; ">fun</span> elt &#X2192; <span style="color: #228b22; ">Llvmexec.</span>exec_nodef () elt) llvm_stream<BR></code></div>
+
+<p>
+The actual implementation also interposes optional printer to see the
+contents of the stream, which is very useful when debugging the
+compiler. 
+</p>
+
+<p>
+The stream interface make it easy to add new passes, completely remove
+the state from the interface, factorize the pattern when a pass can
+produce several elements at once, retain the minimal memory
+consumption of the nested loop design, and can be easily updated to a
+parallel pipelining implementation.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Interface to the passes and modular implementation</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">Interface of each pass</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+The interface of each pass is made minimal. Each pass only declares:
+</p>
+
+<ul class="org-ul">
+<li>The type of the elements in the stream (e.g. tokens, typed AST
+definitions, CPS definitions&#x2026;). The type is not abstract: it is
+used by the following pass to convert them to its own representation
+(e.g. the CPS pass use the AST type to perform CPS transformation,
+the LLVM pass use the CPS type to compile to LLVM).
+</li>
+
+<li>A function mapping an input stream to an output stream.
+</li>
+
+<li>Possibly, a function to print elements in the stream, used for
+debugging the compiler.
+</li>
+</ul>
+
+<p>
+And that is all. The interface of each pass clear is minimal, which
+allows to study or change it independently.
+</p>
+
+<p>
+Note: this way of structuring things imply that transformation from
+one pass to the next is done in the second pass. (This implies that
+the second pass depends on the first one).
+</p>
+
+<p>
+An alternative is to expose functions to build elements in the second
+pass, and move the transformation code from the beginning of the
+second pass to the end of the first pass. In this case, the first pass
+depends on the second pass. One advantage is that the first pass does
+not have to expose the type of its internal format. I am considering
+using this structure for the parser, where a "parsetree" is produced,
+but whose type is not very interesting outside of the parsing phase;
+while the building functions for the AST are more interesting.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">Modules inside each pass</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Inside each pass, the code is structured around a hierarchy of modules
+and interfaces. The idea is that each interface progressively hides
+more details about the implementation of the pass, until the top where
+we get the minimal interface presented earlier. Intermediate levels
+show up when we manage to group a complex piece of code into a simple
+interface. For instance in the CPS pass, there are four intermediary
+modules:
+</p>
+
+<ul class="org-ul">
+<li>CPStransform, performing AST to CPS transformation. Its
+implementation consist of 4 sub-modules, that include the
+compilation of pattern matching; its interface only consists of a
+single function.
+</li>
+
+<li>CPSconvertclosure is a slightly less complex algorithm; its
+interface also consists in a single function.
+</li>
+
+<li>CPSshrink will perform shrinking reductions and optimizations. I
+have not yet implemented the cleaned version of this module.
+</li>
+
+<li>CPSbase provides general functions for creating and updating CPS
+terms; the interface of this module is more complex, but hides many
+details about the internal CPS data structure (which is quite
+complex), and prevents direct writes to this structure.
+</li>
+</ul>
+
+<p>
+Structuring the code around hierarchical, modular interfaces and
+implementations thus allow intermediate levels of abstractions; when
+completing a task one is provided with just the needed information,
+the right degree of abstraction; this helps to focus. The hierarchy
+also decrease, and thus simplifies, the size of the interfaces. OCaml
+was perfect for this job, but C, to a lesser extent, also allows this
+kind of modular programming.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">Comparison with object orientation</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Note that this design is not at all object-oriented. I think that when
+providing a new abstract type, packing it with all the methods
+allowing to access or update objects of this type is an excellent
+idea. However by using <span class="underline">only</span> object-oriented interfaces, the tendency
+is to to present all methods of an object in a flat manner, and
+implement all of them in the same class and file. This is problematic
+when there are many methods (which should be grouped by themes), or
+that some methods are lengthy algorithms (the algorithm should be set
+in a separate file). Modules allow such grouping and separation of
+methods, while creating a new usual object-oriented classes would not
+work (because we operate on an object defined in another class). Of
+course there are object-oriented work-arounds; but I think that
+modules and interfaces with abstract types solve the problem more
+elegantly (while still allowing "type + methods"-style interfaces). I
+hope that the code for the L compiler, written in OCaml, shows my
+point.
+</p>
+</div>
+</div>
+</div>
+
+    <hr />
+    <div class="footer">
+      Ideas, comments? Just mail me at contact @@@ l-lang.org
+    </div>
+  </div>
+</div>
+ 
+     </div>
+          
+   <script src="http://code.jquery.com/jquery.js"></script>
+   <script src="/js/bootstrap.min.js"></script>
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>
