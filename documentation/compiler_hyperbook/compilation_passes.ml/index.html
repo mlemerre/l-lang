@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>compilation_passes.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>compilation_passes.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Compilation_passes-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Compilation_passes</H2><!--SEC END --><P>
+<A NAME="src/compilation_passes.ml:0"></A>The compiler is organized into <EM>passes</EM>. Each pass converts
+definitions of the language from a previous representation,
+performs some changes and/or optimization, and outputs definition
+in the newer, lower-level representation.</P><P>The definitions are organized into <EM>streams</EM>, i.e. a lazy
+infinite sequence of elements. A pass is just a <EM>stream
+transformer</EM>, that transforms data from one stream to another.
+Transformations need not be one-to-one: i.e. a single element from
+the previous language can be translated to no, or several,
+elements. Also, a pass can keep an internal state (to record
+translation information).</P><P>There are several ways to write a compilation pass as a stream
+transformer. In a lexer and a parser, the internal state is kept
+mainly in the stack, and the lexer and parser will repeatedly
+request new elements of the stream from various points in the code.
+In later passes, when the language is more structured into a
+succession of definitions, is is more natural to have the code
+handle one definition at a time, using a <code>filter</code> (a function that
+maps an element of the input stream to zero, one or several
+elements in the output stream; and can update its internal state).</P><P>There are many advantages to using streams to model compilation
+passes:</P><UL CLASS="itemize"><LI CLASS="li-itemize">Minimal memory usage (on a uniprocessor implementation).
+Using lazy streams means that elements are produced just when they
+are about to be consumed, so they never stay for long in the system</LI><LI CLASS="li-itemize">Easy switch to a parallel version. By using stream
+transformers, it is easy to create a parallel version using a
+pipeline. You just have to create one thread per compilation pass,
+and transform the streams to be a simple parallel consumer/producer
+buffer. Almost no change to the compiler would be necessary
+(ignoring OCaml poor support for parallel compilation).</LI><LI CLASS="li-itemize">State encapsulation. A stream is really the encapsulation of
+a state; the state is hidden, and the only thing that you can see
+is the list of elements coming from the stream (this definition is
+called a catamorphism in mathematics). From a programming point of
+view, it means that the state in a pass, and its type, is hidden
+from the rest of the compiler; this makes the compiler more
+modular, and gives to compiler passes simpler interfaces. Using
+explicit folds instead of streams would make the code less modular:
+even if the type of the internal state could have been hidden by
+making it abstract, there would still be an abstract type and an
+abstract initial value, that would have been part of the interface,
+and would have been passed around.</LI><LI CLASS="li-itemize">Following state encapsulation, streams provide a simple
+interface for passes. The only things exposed is the data type, a
+stream transformer, and a printing function for the data type. This
+make it easy to understand a pass, or to add a new pass.</LI></UL><P>
+<BR><A NAME="src/compilation_passes.ml:3087"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Stream</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Extensions.Stream</span></P><P></code></div>
+Prints elements in a stream each time they are requested. 
+<BR><A NAME="src/compilation_passes.ml:3188"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;print_stream&nbsp;cond&nbsp;printf&nbsp;print_elt&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;cond<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #228b22; ">Stream.</span>iter_and_copy<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;elt&nbsp;&#X2192;&nbsp;printf&nbsp;(format_of_string&nbsp;<span style="color: #8b2252; ">"@.%a"</span>)&nbsp;print_elt&nbsp;elt)&nbsp;stream<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;stream</P><P><A NAME="src/compilation_passes.ml:3360"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;process_file&nbsp;file&nbsp;=</P><P><A NAME="src/compilation_passes.ml:3385"></A>&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.</span>tmp&nbsp;<span style="color: #8b2252; ">"================&nbsp;File&nbsp;%s================"</span>&nbsp;file;</P><P><A NAME="src/compilation_passes.ml:3445"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parsetree_stream&nbsp;=&nbsp;<span style="color: #228b22; ">Parser.</span>make_stream&nbsp;file&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/compilation_passes.ml:3498"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;ast_stream&nbsp;=&nbsp;<span style="color: #228b22; ">Astfromsexp.</span>from_stream&nbsp;parsetree_stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;ast_stream&nbsp;=&nbsp;print_stream&nbsp;(<span style="color: #228b22; ">Log.Ast_elaboration.</span>is_output&nbsp;<span style="color: #228b22; ">Log.Debug</span>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.Ast_elaboration.</span>debug&nbsp;<span style="color: #228b22; ">Astprint.</span>definition&nbsp;ast_stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/compilation_passes.ml:3700"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cps_stream&nbsp;=&nbsp;<span style="color: #228b22; ">Cpstransform.</span>from_stream&nbsp;ast_stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cps_stream&nbsp;=&nbsp;print_stream&nbsp;(<span style="color: #228b22; ">Log.Cps_transformation.</span>is_output&nbsp;<span style="color: #228b22; ">Log.Debug</span>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.Cps_transformation.</span>debug&nbsp;<span style="color: #228b22; ">Cpsbase.Print.</span>definition&nbsp;cps_stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/compilation_passes.ml:3908"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;converted_stream&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Stream.</span>iter_and_copy&nbsp;<span style="color: #228b22; ">Cpsconvertclosures.</span>in_definition&nbsp;cps_stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;converted_stream&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+print_stream&nbsp;(<span style="color: #228b22; ">Log.Closure_conversion.</span>is_output&nbsp;<span style="color: #228b22; ">Log.Debug</span>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.Closure_conversion.</span>debug&nbsp;<span style="color: #228b22; ">Cpsbase.Print.</span>definition&nbsp;converted_stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/compilation_passes.ml:4173"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;llvm_stream&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsllvm.</span>from_stream&nbsp;converted_stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Stream.</span>iter&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;elt&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Llvmexec.</span>exec_nodef&nbsp;()&nbsp;elt)&nbsp;llvm_stream<BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

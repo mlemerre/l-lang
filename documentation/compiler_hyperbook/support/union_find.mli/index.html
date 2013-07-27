@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>support/union_find.mli</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>support/union_find.mli</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Interface for module Union_find-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Interface for module Union_find</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/support/union_find.mli:0"></A><A NAME="src/support/union_find.mli:42"></A>A union-find data structure maintains a partition of elements into
+disjoint sets.</P><P>It allows to add new elements in new partitions, perform the union
+of two partitions, and retrieve the partition in which is an
+element. Moreover it allows to attach a description to a partition,
+which is generally the point of using such a structure.</P><P>This module has side effects: adding an element to a union-find
+data structure changes that element, and the union operation merges
+the partitions destructively. This make it easy to use this module
+incorrectly. To that end, a number of protections (using types and
+dynamic checks) are set that detect such incorrect uses of the
+module. </P><P>Note on the name: there are other data structures that maintain
+disjoint sets with other operations, such as partition refinement,
+so "union-find" is a more accurate name for this data structure
+than "disjoint set". 
+<BR><A NAME="src/support/union_find.mli:969"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">S</span>&nbsp;=<BR>
+<span style="color: #0000ff; font-weight: bold;">sig</span></P><P></code></div>&nbsp;&nbsp;
+The t type represents the whole union-find data structure. A
+partition always belong to some t; elements belong to a t once
+there has been a "singleton" operation on them. </P><P>All the functions (except <code>create</code>) take a <code>t</code> argument; in their
+safe version this argument is used to checks that other
+<code>element</code> and <code>partition</code> arguments indeed belong to the <code>t</code>
+argument. 
+<BR><A NAME="src/support/union_find.mli:1395"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;partition<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;element<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;description</P><P></code></div>&nbsp;&nbsp;
+<code>create()</code> returns a new empty union find data structure. 
+<BR><A NAME="src/support/union_find.mli:1522"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;create&nbsp;:&nbsp;<span style="color: #228b22; ">unit</span>&nbsp;&#X2192;&nbsp;t</P><P></code></div>&nbsp;&nbsp;
+<code>singleton&nbsp;t&nbsp;e&nbsp;d</code> adds a new element <code>e</code> to <code>t</code>, and create and
+returns a new partition <code>p</code> in <code>t</code>, such that <code>e</code> is the only
+element of <code>p</code>. It also attach the description <code>d</code> to <code>p</code>.</P><P>The safe version checks that <code>e</code> was not previously added to
+another union-find data structure (with the same link). 
+<BR><A NAME="src/support/union_find.mli:1879"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;singleton&nbsp;:&nbsp;t&nbsp;&#X2192;&nbsp;element&nbsp;&#X2192;&nbsp;description&nbsp;&#X2192;&nbsp;partition</P><P></code></div>&nbsp;&nbsp;
+<code>find&nbsp;t&nbsp;e</code> returns the partition <code>p</code> of <code>t</code> that contains <code>e</code>. 
+<BR><A NAME="src/support/union_find.mli:2010"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;find&nbsp;:&nbsp;t&nbsp;&#X2192;&nbsp;element&nbsp;&#X2192;&nbsp;partition</P><P></code></div>&nbsp;&nbsp;
+<code>union&nbsp;t&nbsp;p1&nbsp;p2&nbsp;d</code> creates a new partition <code>p3</code>, with description
+<code>d</code>, that contains the union of all the elements in <code>p1</code> and
+<code>p2</code>. The <code>p1</code> and <code>p2</code> arguments are consumed, i.e. must not be
+used after they were passed to <code>union</code>. <code>p1</code> and <code>p2</code> must be
+different partitions. 
+<BR><A NAME="src/support/union_find.mli:2353"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;union&nbsp;:&nbsp;t&nbsp;&#X2192;&nbsp;partition&nbsp;&#X2192;&nbsp;partition&nbsp;&#X2192;&nbsp;description&nbsp;&#X2192;&nbsp;partition</P><P></code></div>&nbsp;&nbsp;
+<code>description&nbsp;t&nbsp;p</code> returns the description associated to <code>p</code>. 
+<BR><A NAME="src/support/union_find.mli:2493"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;description&nbsp;:&nbsp;t&nbsp;&#X2192;&nbsp;partition&nbsp;&#X2192;&nbsp;description</P><P></code></div>&nbsp;&nbsp;
+<code>description&nbsp;t&nbsp;p</code> changes the description associated to <code>p</code>. 
+<BR><A NAME="src/support/union_find.mli:2613"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;set_description&nbsp;:&nbsp;t&nbsp;&#X2192;&nbsp;partition&nbsp;&#X2192;&nbsp;description&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR></code></div><B>2.</B>&nbsp;
+<A NAME="src/support/union_find.mli:2682"></A>We defined two types of "union-find makers": Fast and Safe. Both
+propose a <code>link</code> type, and each element of a union-find structure
+must be "associated" to one different link (generally the link is a
+mutable field in the element type). Initially, the link value is
+<code>empty_link</code>.</P><P>The <code><span style="color: #228b22; ">Make</span></code> functor, once told how access the link of an element,
+returns a module complying to <code><span style="color: #228b22; ">S</span></code>. Below we given an exemple of
+usage.</P><P>Note: It is possible for an element to be present in two different
+union-find data structures; it must just have different links. </P><P>If the link in an element must be re-used for another union-find
+data structure, then it must be set to <code>empty_link</code>, and one must
+stop using the union-find data structure that contained the element
+(even with other elements). 
+<BR><A NAME="src/support/union_find.mli:3488"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">UNION_FIND</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;(&#X3B1;,&nbsp;&#X3B2;)&nbsp;link<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;empty_link:(&#X3B1;,&#X3B2;)&nbsp;link</P><P><A NAME="src/support/union_find.mli:3569"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">LINK</span>&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;element<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;description<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;get&nbsp;:&nbsp;element&nbsp;&#X2192;&nbsp;(description,&nbsp;element)&nbsp;link<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;set&nbsp;:&nbsp;element&nbsp;&#X2192;&nbsp;(description,&nbsp;element)&nbsp;link&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/support/union_find.mli:3755"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Make</span>(<span style="color: #228b22; ">Link</span>&nbsp;:&nbsp;<span style="color: #228b22; ">LINK</span>):<span style="color: #228b22; ">S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;description&nbsp;=&nbsp;<span style="color: #228b22; ">Link.</span>description&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;element&nbsp;=&nbsp;<span style="color: #228b22; ">Link.</span>element<BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P></code></div>
+The difference between the fast and safe version is that safe
+performs additional checks. The performance difference is small, so
+the Safe version should be prefered. 
+<BR><A NAME="src/support/union_find.mli:4041"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Fast</span>:<span style="color: #228b22; ">UNION_FIND</span></P><P><A NAME="src/support/union_find.mli:4066"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Safe</span>:<span style="color: #228b22; ">UNION_FIND</span><BR></code></div><B>3.</B>&nbsp;
+<A NAME="src/support/union_find.mli:4094"></A>Exemple of usage:</P><P><code><span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;test&nbsp;=&nbsp;{&nbsp;x:<span style="color: #228b22; ">int</span>;&nbsp;<span style="color: #a020f0; ">mutable</span>&nbsp;z:(<span style="color: #228b22; ">string</span>,&nbsp;test)&nbsp;<span style="color: #228b22; ">Union_find</span>.<span style="color: #228b22; ">Safe</span>.link&nbsp;};;</code></P><P><code><span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Test</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span>
+&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;description&nbsp;=&nbsp;<span style="color: #228b22; ">string</span>
+&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;element&nbsp;=&nbsp;test
+&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;get_link&nbsp;t&nbsp;=&nbsp;t.z
+&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_link&nbsp;t&nbsp;z&nbsp;=&nbsp;t.z&nbsp;&#X2190;&nbsp;z
+&nbsp;<span style="color: #0000ff; font-weight: bold;">end</span></code></P><P><code><span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">A</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Union_find</span>.<span style="color: #228b22; ">Safe</span>.<span style="color: #228b22; ">Make</span>(<span style="color: #228b22; ">Test</span>)</code></P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;uf&nbsp;=&nbsp;<span style="color: #228b22; ">A</span>.create()&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>
+&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;elt1&nbsp;=&nbsp;{x=1;&nbsp;z=<span style="color: #228b22; ">Safe</span>.empty_link}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>
+&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;part1&nbsp;=&nbsp;<span style="color: #228b22; ">A</span>.singleton&nbsp;t&nbsp;elt1&nbsp;<span style="color: #8b2252; ">"1"</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>
+&nbsp;<span style="color: #a020f0; ">assert</span>(<span style="color: #228b22; ">A</span>.description&nbsp;t&nbsp;(<span style="color: #228b22; ">A</span>.find&nbsp;t&nbsp;elt1)&nbsp;=&nbsp;<span style="color: #8b2252; ">"1"</span>)</code> 
+<BR></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

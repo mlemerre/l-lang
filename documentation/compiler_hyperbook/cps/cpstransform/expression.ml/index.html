@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpstransform/expression.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpstransform/expression.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Expression-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Expression</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/cps/cpstransform/expression.ml:0"></A><A NAME="src/cps/cpstransform/expression.ml:40"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Base</span></P><P><A NAME="src/cps/cpstransform/expression.ml:52"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">List</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Extensions.List</span></P><P><A NAME="src/cps/cpstransform/expression.ml:84"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">AstVarMap</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Ast.Variable.Map</span></P><P><A NAME="src/cps/cpstransform/expression.ml:123"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Rules_Make</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Rules.Make</span></P><P><A NAME="src/cps/cpstransform/expression.ml:156"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;<span style="color: #228b22; ">Rules</span>&nbsp;:&nbsp;<span style="color: #228b22; ">RULES</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Rules_Make</span>(<span style="color: #228b22; ">Expression</span>)<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;<span style="color: #228b22; ">Expression</span>:&nbsp;<span style="color: #228b22; ">EXPRESSION</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P></code></div>&nbsp;&nbsp;
+<code>transform&nbsp;?v&nbsp;exp&nbsp;map&nbsp;kcontext</code> returns a CPS expression
+obtained from the AST expression <code>exp</code>. <code>map</code> contains a map
+from AST variables to CPS variables (several AST variables can
+correspond to the same CPS variables). The CPS expression is
+"returned" as a CPS (normal) variable <code>var</code>, such that if the CPS
+expression and the AST expression were both evaluated, <code>var</code>
+would contain the result of the evaluation of <code>exp</code>.</P><P>CPS transformation is written itself in CPS style, so it takes a
+continuation argument <code>kcontext</code> to which <code>var</code> is returned.
+<code>kcontext</code> represents the context that will use the result of the
+transformation.</P><P>When a <code>v</code> argument is given, then this <code>v</code> is the <code>var</code> bound to
+the result of the CPS expression and is returned. This is used
+when compiling recursive occurrences. 
+<BR><A NAME="src/cps/cpstransform/expression.ml:1115"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;transform&nbsp;?v&nbsp;exp&nbsp;map&nbsp;kcontext&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(exp_,_)&nbsp;=&nbsp;exp&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Only lambda is handled when given an explicit <code>v</code> for now. We could
+also handle data structures with a pointer indirection, such as
+injections. 
+<BR><A NAME="src/cps/cpstransform/expression.ml:1352"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>(&nbsp;v&nbsp;&#X2261;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2228;&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;exp_&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.Lambda</span>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">false</span>);</P><P><A NAME="src/cps/cpstransform/expression.ml:1451"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;exp_&nbsp;<span style="color: #a020f0; ">with</span><BR></code></div><B>2.</B>&nbsp;
+<A NAME="src/cps/cpstransform/expression.ml:1478"></A>Base cases. Note that the implementation takes advantage of
+the higher-order abstract syntax (CPS-style friendly) interface
+of the <code><span style="color: #228b22; ">Cpsbuild</span></code> module: often it suffices to pass <code>kcontext</code>
+as the continuation argument of the <code><span style="color: #228b22; ">Cpsbuild</span></code> functions. 
+<BR><A NAME="src/cps/cpstransform/expression.ml:1747"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.Variable</span>(var)&nbsp;&#X2192;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v&nbsp;=&nbsp;<span style="color: #a020f0; ">try</span>&nbsp;<span style="color: #228b22; ">AstVarMap.</span>find&nbsp;var&nbsp;map<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Should not happen: any unbound variable error should have
+been already caught by the type checker.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #228b22; ">Not_found</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Log.Cps_transformation.</span>raise_compiler_error<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #8b2252; ">"Unbound&nbsp;variable&nbsp;%s"</span>&nbsp;(<span style="color: #228b22; ">Ast.Variable.</span>to_string&nbsp;var)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+kcontext&nbsp;v</P><P><A NAME="src/cps/cpstransform/expression.ml:2103"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.Constant</span>(c)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Build.</span>let_constant&nbsp;c&nbsp;kcontext<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.External</span>(name,&nbsp;_)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Build.</span>let_external&nbsp;name&nbsp;kcontext<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.Injection</span>(j,n,x)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform&nbsp;x&nbsp;map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;injectedv&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_inj&nbsp;j&nbsp;n&nbsp;injectedv&nbsp;kcontext)</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Casts are just forgotten for now; if the transformation was
+typed, we would have to change the type too. 
+<BR><A NAME="src/cps/cpstransform/expression.ml:2494"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.Cast</span>(_,x)&nbsp;&#X2192;&nbsp;transform&nbsp;x&nbsp;map&nbsp;kcontext</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Fold on all elements in the tuple, CPS-style. 
+<BR><A NAME="src/cps/cpstransform/expression.ml:2610"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.Tuple</span>(l)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;accu&nbsp;exp&nbsp;k&nbsp;=&nbsp;transform&nbsp;exp&nbsp;map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;expv&nbsp;&#X2192;&nbsp;k&nbsp;(expv::accu))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>foldk&nbsp;f&nbsp;[&nbsp;]&nbsp;l&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;vs&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_tuple&nbsp;(<span style="color: #228b22; ">List.</span>rev&nbsp;vs)&nbsp;kcontext)<BR></code></div><B>3.</B>&nbsp;
+<A NAME="src/cps/cpstransform/expression.ml:2808"></A>Detection of primitive operations. 
+<BR><A NAME="src/cps/cpstransform/expression.ml:3547"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Expression.Apply</span>(((<span style="color: #228b22; ">Ast.Expression.Constant</span>&nbsp;c),_),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[(<span style="color: #228b22; ">Ast.Expression.Tuple</span>([a;b]),_)])&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform&nbsp;a&nbsp;map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;av&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform&nbsp;b&nbsp;map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;bv&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;buildf&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;c&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Constant.Integer_binary_operation</span>(op)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_integer_binary_operation&nbsp;op<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Constant.Integer_binary_predicate</span>(pred)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_integer_binary_predicate&nbsp;pred&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+buildf&nbsp;av&nbsp;bv&nbsp;kcontext))</P><P><A NAME="src/cps/cpstransform/expression.ml:7234"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpstransform/expression.ml:7240"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;transform&nbsp;=&nbsp;<span style="color: #228b22; ">Expression.</span>transform<BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

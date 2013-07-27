@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpsfree.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpsfree.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Cpsfree-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Cpsfree</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/cps/cpsfree.ml:0"></A>The <code><span style="color: #228b22; ">Cpsfree</span></code> module computes a map associating each lambda with the set
+of free variables used in the body of this lambda. 
+<BR><A NAME="src/cps/cpsfree.ml:173"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Cpsbase</span></P><P><A NAME="src/cps/cpsfree.ml:189"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">VarSet</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Var.Set</span></P><P><A NAME="src/cps/cpsfree.ml:219"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">VarMap</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Var.Map</span></P><P></code></div>
+A doubleton is a set with two elements. 
+<BR><A NAME="src/cps/cpsfree.ml:296"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;doubleton&nbsp;x&nbsp;y&nbsp;=&nbsp;<span style="color: #228b22; ">VarSet.</span>add&nbsp;x&nbsp;(<span style="color: #228b22; ">VarSet.</span>singleton&nbsp;y)</P><P></code></div>
+Merge maps, while checking that keys of <code>m1</code> and <code>m2</code> are
+disjoint. 
+<BR><A NAME="src/cps/cpsfree.ml:430"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;merge_map&nbsp;m1&nbsp;m2&nbsp;=&nbsp;<span style="color: #228b22; ">VarMap.</span>fold&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;key&nbsp;value&nbsp;map&nbsp;&#X2192;<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>(&nbsp;¬(&nbsp;<span style="color: #228b22; ">VarMap.</span>mem&nbsp;key&nbsp;map));<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">VarMap.</span>add&nbsp;key&nbsp;value&nbsp;map)&nbsp;m1&nbsp;m2</P><P><A NAME="src/cps/cpsfree.ml:560"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;var&nbsp;occ&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Occur.</span>binding_variable&nbsp;occ<BR></code></div><B>2.</B>&nbsp;
+<A NAME="src/cps/cpsfree.ml:610"></A><code>expression&nbsp;t</code> returns a pair:</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+The first element is set of free variables for <code>t</code>
+</LI><LI CLASS="li-itemize">The second is a map from variables that bind a <code><span style="color: #228b22; ">Lambda</span></code>
+to the free variables in the lambda.
+</LI></UL><P>The expression is traverse using a depth-first traversal (that enter into
+<code><span style="color: #228b22; ">Lambda</span></code>s), and the set and the map are built bottom-up.</P><P>In the case of a recursive or mutually recursive values (lambdas,
+injections, tuples), the recursive bindings are considered to
+be free in the value (and especially in the lambda). 
+<BR><A NAME="src/cps/cpsfree.ml:1167"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;expression&nbsp;t&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;t&nbsp;<span style="color: #a020f0; ">with</span></P><P><A NAME="src/cps/cpsfree.ml:1219"></A>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(x,<span style="color: #228b22; ">Value</span>(<span style="color: #228b22; ">Lambda</span>(_,_,vl,bodylambda)),body)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(set,map)&nbsp;=&nbsp;(expression&nbsp;bodylambda)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Remove arguments from the free variables of <code>bodylambda</code>.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>fold_left&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;set&nbsp;v&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>remove&nbsp;v&nbsp;set)&nbsp;set&nbsp;vl&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.Free_variables.</span>debug&nbsp;<span style="color: #8b2252; ">"Free&nbsp;variables&nbsp;for&nbsp;%s:&nbsp;[%a]&nbsp;\n"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Var.Var.</span>to_string&nbsp;x)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Make_printer.</span>list&nbsp;~sep:<span style="color: #8b2252; ">",&nbsp;"</span>&nbsp;(<span style="color: #228b22; ">Make_printer.</span>from_string&nbsp;<span style="color: #228b22; ">Var.Var.</span>to_string))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">VarSet.</span>elements&nbsp;set);<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  <code>x</code> is still considered free in <code>bodylambda</code>: it is removed from
+<code>set</code>, but after being added to <code>map</code>.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;map&nbsp;=&nbsp;<span style="color: #228b22; ">VarMap.</span>add&nbsp;x&nbsp;set&nbsp;map&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(set_body,&nbsp;map_body)&nbsp;=&nbsp;expression&nbsp;body&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;<span style="color: #228b22; ">VarSet.</span>remove&nbsp;x&nbsp;(<span style="color: #228b22; ">VarSet.</span>union&nbsp;set&nbsp;set_body)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;map&nbsp;=&nbsp;merge_map&nbsp;map_body&nbsp;map&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(set,map)</P><P><A NAME="src/cps/cpsfree.ml:1990"></A>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(x,p,body)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_prim&nbsp;=&nbsp;prim&nbsp;p&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(set_body,&nbsp;map_body)&nbsp;=&nbsp;expression&nbsp;body&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;<span style="color: #228b22; ">VarSet.</span>remove&nbsp;x&nbsp;(<span style="color: #228b22; ">VarSet.</span>union&nbsp;set_prim&nbsp;set_body)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;map&nbsp;=&nbsp;map_body&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(set,map)</P><P><A NAME="src/cps/cpsfree.ml:2202"></A>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(_,x,t,body)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(set_t,&nbsp;map_t)&nbsp;=&nbsp;expression&nbsp;t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(set_body,&nbsp;map_body)&nbsp;=&nbsp;expression&nbsp;body&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;(<span style="color: #228b22; ">VarSet.</span>union&nbsp;set_body&nbsp;(<span style="color: #228b22; ">VarSet.</span>remove&nbsp;x&nbsp;set_t))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;map&nbsp;=&nbsp;merge_map&nbsp;map_body&nbsp;map_t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(set,map)</P><P><A NAME="src/cps/cpsfree.ml:2443"></A>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply_cont</span>(_,x)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>singleton&nbsp;(var&nbsp;x),&nbsp;<span style="color: #228b22; ">VarMap.</span>empty<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Case</span>(o,_,default)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;<span style="color: #228b22; ">VarSet.</span>singleton&nbsp;(var&nbsp;o)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+set,&nbsp;<span style="color: #228b22; ">VarMap.</span>empty</P><P><A NAME="src/cps/cpsfree.ml:2595"></A>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply</span>(_,f,_,xl)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>fold_left<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;set&nbsp;x&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>add&nbsp;(var&nbsp;x)&nbsp;set)&nbsp;<span style="color: #228b22; ">VarSet.</span>empty&nbsp;xl&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">VarSet.</span>add&nbsp;(var&nbsp;f)&nbsp;set,&nbsp;<span style="color: #228b22; ">VarMap.</span>empty</P><P><A NAME="src/cps/cpsfree.ml:2752"></A>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Halt</span>(x)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>singleton&nbsp;(var&nbsp;x),&nbsp;<span style="color: #228b22; ">VarMap.</span>empty<BR></code></div><B>3.</B>&nbsp;
+<A NAME="src/cps/cpsfree.ml:2809"></A>Prim and value return only a set (they would always return an
+empty map, because the <code><span style="color: #228b22; ">Lambda</span></code> case is already handled above). 
+<BR><A NAME="src/cps/cpsfree.ml:2942"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;prim&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_operation</span>(_,&nbsp;a,b)<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_predicate</span>(_,&nbsp;a,b)&nbsp;&#X2192;&nbsp;doubleton&nbsp;(var&nbsp;a)&nbsp;(var&nbsp;b)<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Projection</span>(_,x)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>singleton&nbsp;(var&nbsp;x)<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Value</span>&nbsp;v&nbsp;&#X2192;&nbsp;value&nbsp;v</P><P><A NAME="src/cps/cpsfree.ml:3137"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;value&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Constant</span>(_)&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">External</span>(_)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>empty<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>(l)&nbsp;&#X2192;&nbsp;(<span style="color: #228b22; ">List.</span>fold_left<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;set&nbsp;occ&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>add&nbsp;(var&nbsp;occ)&nbsp;set)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">VarSet.</span>empty&nbsp;l&nbsp;)<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Lambda</span>(_,_,vl,bodylambda)&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  This case is already handled.  &#X2217;)</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Injection</span>(_,_,x)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">VarSet.</span>singleton&nbsp;(var&nbsp;x)<BR><BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

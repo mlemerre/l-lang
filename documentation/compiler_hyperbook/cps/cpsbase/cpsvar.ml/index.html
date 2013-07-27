@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpsbase/cpsvar.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpsbase/cpsvar.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Cpsvar-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Cpsvar</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:0"></A><A NAME="src/cps/cpsbase/cpsvar.ml:41"></A>This file implements links between variables, following the
+"Compiling with continuations, continued" paper by Andrew Kennedy,
+and "Shrinking lambda expressions in linear time", by Andrew Appel
+and Trevor Jim.</P><P>Occurrences are linked to one another into a doubly-linked list,
+such that the doubly-linked list represents the set of all
+occurrences of a variable. A variable is linked to one of its
+occurrence (and thus to the set of all occurrences of the
+variable). This allows adding occurrence, removing occurence, and
+knowing if there is 0,1, or more occurrence to a variable, in O(1)
+time.</P><P>The set of all occurrences of all variables is partitionned into
+same-binder equivalence classes using a union-find data structure,
+i.e. all the members of a partition are occurrences of the same
+variable. The description of the partition is the binding variable
+itself. This allows near-constant time access to the binding
+variable, and merging of occurrence sets.</P><P>We chose to keep normal occurrences, and recursive occurrences, in
+two separate equivalence classes. Not merging them:
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+allows to replace the binding variable for only the normal
+occurrences, or only the recursive occurrences;
+</LI><LI CLASS="li-itemize">simplifies the implementation of <code>replace_with</code>;
+</LI><LI CLASS="li-itemize">makes each equivalence class smaller (and thus slightly more
+efficient).
+</LI></UL><P> 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:1457"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Union_find</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Union_find.Safe</span></P><P></code></div>
+Note: a minor problem here is that the unique id is shared between
+all applications of Cpsvar.Make, but this is not a huge issue. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:1635"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">UniqueId</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Unique.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">end</span>)<BR></code></div><B>2.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:1682"></A>Variables link to their description, to one occurrence and one
+recursive occurrence (if there is one). We also add a unique id to
+allow variable comparison. Also, unique variables remove any need
+for alpha conversion. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:1911"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;(&#X3B1;,&#X3B2;)&nbsp;variable&nbsp;=<BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #a020f0; ">mutable</span>&nbsp;var_desc:&nbsp;&#X3B1;&nbsp;initialized;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">mutable</span>&nbsp;occurrences:(&#X3B1;,&nbsp;&#X3B2;)&nbsp;occurrence&nbsp;<span style="color: #228b22; ">option</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">mutable</span>&nbsp;recursive_occurrences:&nbsp;(&#X3B1;,&nbsp;&#X3B2;)&nbsp;occurrence&nbsp;<span style="color: #228b22; ">option</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+var_id:&nbsp;<span style="color: #228b22; ">UniqueId.</span>t;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">mutable</span>&nbsp;occur_nb:&nbsp;<span style="color: #228b22; ">int</span>&nbsp;}</P><P></code></div>
+Occurrences need a description; a "union-find link" (to retrieve
+the binding variable, which is the description of the union-find
+partition); and the links of the doubly-linked lists. We also
+number the occurrences of a variable, to help in debugging and ease
+comparison between occurrences. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:2451"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;(&#X3B1;,&#X3B2;)&nbsp;occurrence&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;<span style="color: #a020f0; ">mutable</span>&nbsp;occur_desc:&nbsp;&#X3B2;&nbsp;initialized;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">mutable</span>&nbsp;link_var:&nbsp;((&#X3B1;,&nbsp;&#X3B2;)&nbsp;variable,(&#X3B1;,&nbsp;&#X3B2;)&nbsp;occurrence)&nbsp;<span style="color: #228b22; ">Union_find.</span>link;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">mutable</span>&nbsp;next_occurrence:(&#X3B1;,&nbsp;&#X3B2;)&nbsp;occurrence;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">mutable</span>&nbsp;previous_occurrence:(&#X3B1;,&nbsp;&#X3B2;)&nbsp;occurrence;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occur_id:&nbsp;<span style="color: #228b22; ">int</span>&nbsp;}</P><P></code></div>
+We have to check that the user does not retrieve the description
+until the variable is initialized, or that it does not overwrite an
+already initialized description. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:2907"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;&#X3B1;&nbsp;initialized&nbsp;=&nbsp;<span style="color: #228b22; ">Undef</span>&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Initialized_to</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;&#X3B1;<BR></code></div><B>3.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:2962"></A><code>occur_type</code> distinguish between normal and recursive occurrences.
+The following functions allows code factorisation. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:3087"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_type&nbsp;=&nbsp;<span style="color: #228b22; ">Recursive</span>&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Non_recursive</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:3134"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;get_occurrences&nbsp;var&nbsp;(ot:occur_type)&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;ot&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Recursive</span>&nbsp;&#X2192;&nbsp;var.occurrences<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Non_recursive</span>&nbsp;&#X2192;&nbsp;var.recursive_occurrences</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:3273"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_occurrences&nbsp;var&nbsp;(ot:occur_type)&nbsp;value&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;ot&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Recursive</span>&nbsp;&#X2192;&nbsp;(var.occurrences&nbsp;&#X2190;&nbsp;value)<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Non_recursive</span>&nbsp;&#X2192;&nbsp;(var.recursive_occurrences&nbsp;&#X2190;&nbsp;value)<BR></code></div><B>4.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:3442"></A>The CPSVar functor takes a DESCRIPTION argument as explained in the interface. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:3527"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">DESCRIPTION</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;variable_description<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occurrence_description<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;var_prefix:<span style="color: #228b22; ">string</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:3645"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Make</span>(<span style="color: #228b22; ">Desc</span>:<span style="color: #228b22; ">DESCRIPTION</span>)&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:3685"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var_desc&nbsp;=&nbsp;<span style="color: #228b22; ">Desc.</span>variable_description<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_desc&nbsp;=&nbsp;<span style="color: #228b22; ">Desc.</span>occurrence_description<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var&nbsp;=&nbsp;(var_desc,&nbsp;occur_desc)&nbsp;variable<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur&nbsp;=&nbsp;(var_desc,&nbsp;occur_desc)&nbsp;occurrence<BR></code></div><B>5.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:3876"></A>Occurrences contain a link variable, used by the union-find
+functor. The description of a partition of an occurrence <code>occur</code>
+is the variable <code>var</code> for which <code>occur</code> is an occurrence. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:4072"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var_union_find</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Union_find.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;description&nbsp;=&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;element&nbsp;=&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;f&nbsp;v&nbsp;=&nbsp;f.link_var&nbsp;&#X2190;&nbsp;v<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;get&nbsp;f&nbsp;=&nbsp;f.link_var<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P></code></div>&nbsp;&nbsp;
+The Union-find module requires a "union-find data structure"
+(ufds) as its first argument. Ideally, we should have one such
+ufds per CPS term, as a variable and all its occurrences cannot
+be shared between several terms. However, using a single ufds for
+all terms in a global variable is more practical (no need to pass
+an additional argument). Moreover, confusion between partitions
+of several terms should be relatively easy to avoid, so checking
+that with several ufds is not absolutely necessary. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:4786"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;ufds&nbsp;=&nbsp;<span style="color: #228b22; ">Var_union_find.</span>create()</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:4826"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR></code></div><B>6.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:4855"></A>The tryptic make/description/set_description allows building
+circular structures without simultaneous definitions.
+<code>var_counter</code> provides unique identifiers when displaying
+variables. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:5063"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;make()&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;var_desc&nbsp;=&nbsp;<span style="color: #228b22; ">Undef</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occurrences&nbsp;=&nbsp;<span style="color: #228b22; ">None</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+recursive_occurrences&nbsp;=&nbsp;<span style="color: #228b22; ">None</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var_id&nbsp;=&nbsp;<span style="color: #228b22; ">UniqueId.</span>fresh();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occur_nb&nbsp;=&nbsp;0&nbsp;}&nbsp;</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:5234"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;description&nbsp;b&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;b.var_desc&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Initialized_to</span>(d)&nbsp;&#X2192;&nbsp;d<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Undef</span>&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  Trying to access an uninitialized description.  &#X2217;)</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:5396"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_description&nbsp;b&nbsp;d&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;b.var_desc&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Initialized_to</span>(d)&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  Description already initialized.  &#X2217;)</span>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Undef</span>&nbsp;&#X2192;&nbsp;b.var_desc&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">Initialized_to</span>(d)<BR></code></div><B>7.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:5590"></A>Occurrence number can return in O(1) whether a variable has
+no, one, or more than one occurrence. For that we must not
+return the list of occurrence if there are several; instead the
+user must then use the <code>fold_on_occurrences</code> function. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:5851"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;number_of_occurrences&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">No_occurrence</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">One_occurrence</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Several_occurrences</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:5967"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;number_of_occurrences_&nbsp;ot&nbsp;var&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;get_occurrences&nbsp;var&nbsp;ot&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">No_occurrence</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(occ)&nbsp;&#X2192;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;occ.previous_occurrence&nbsp;&#X2261;&nbsp;occ<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">begin</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(occ.next_occurrence&nbsp;&#X2261;&nbsp;occ);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">One_occurrence</span>&nbsp;occ<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;<span style="color: #228b22; ">Several_occurrences</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:6300"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;number_of_occurrences&nbsp;=&nbsp;number_of_occurrences_&nbsp;<span style="color: #228b22; ">Non_recursive</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:6370"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;fold_on_occurrences_&nbsp;ot&nbsp;var&nbsp;init&nbsp;f&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;get_occurrences&nbsp;var&nbsp;ot&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;init<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(occ)&nbsp;&#X2192;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;loop&nbsp;value&nbsp;cur&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;cur&nbsp;&#X2261;&nbsp;occ<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;f&nbsp;value&nbsp;cur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;loop&nbsp;(f&nbsp;value&nbsp;cur)&nbsp;cur.next_occurrence<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;loop&nbsp;init&nbsp;occ.next_occurrence</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:6694"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;fold_on_occurrences&nbsp;var&nbsp;init&nbsp;f&nbsp;=&nbsp;fold_on_occurrences_&nbsp;<span style="color: #228b22; ">Non_recursive</span>&nbsp;var&nbsp;init&nbsp;f<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;fold_on_recursive_occurrences&nbsp;var&nbsp;init&nbsp;f&nbsp;=&nbsp;fold_on_occurrences_&nbsp;<span style="color: #228b22; ">Recursive</span>&nbsp;var&nbsp;init&nbsp;f<BR></code></div><B>8.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:6882"></A>This function allows "merging" of variables in O(1) time:
+merging the doubly-linked lists is a O(1) operation, and so is
+performing union in the union-find algorithm. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:7066"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;replace_with_&nbsp;ot&nbsp;old&nbsp;new_&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;get_occurrences&nbsp;old&nbsp;ot&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  If there were already no occurrences of <code>old</code>, there is
+nothing to do.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(occ_old)&nbsp;<span style="color: #a020f0; ">as</span>&nbsp;some_occ_old&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+((<span style="color: #a020f0; ">match</span>&nbsp;get_occurrences&nbsp;new_&nbsp;ot&nbsp;<span style="color: #a020f0; ">with</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+If new_ had no occurrences, there is no need for full
+list merge and union-find: we can just update the
+partition description. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:7503"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+set_occurrences&nbsp;new_&nbsp;ot&nbsp;some_occ_old;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;part_old&nbsp;=&nbsp;<span style="color: #228b22; ">Var_union_find.</span>find&nbsp;ufds&nbsp;occ_old&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var_union_find.</span>set_description&nbsp;ufds&nbsp;part_old&nbsp;new_</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The non-trivial case: merge the two circular
+doubly-linked lists into one big circular doubly-linked
+list. Also works on single-elements lists. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:7871"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(occ_new)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occ_old.next_occurrence.previous_occurrence&nbsp;&#X2190;&nbsp;occ_new.previous_occurrence;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occ_new.previous_occurrence.next_occurrence&nbsp;&#X2190;&nbsp;occ_old.next_occurrence;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occ_old.next_occurrence&nbsp;&#X2190;&nbsp;occ_new;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occ_new.previous_occurrence&nbsp;&#X2190;&nbsp;occ_old;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(part_old,part_new)&nbsp;=&nbsp;(<span style="color: #228b22; ">Var_union_find.</span>find&nbsp;ufds&nbsp;occ_old,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var_union_find.</span>find&nbsp;ufds&nbsp;occ_new)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ignore(<span style="color: #228b22; ">Var_union_find.</span>union&nbsp;ufds&nbsp;part_old&nbsp;part_new&nbsp;new_));</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<code>old</code> can be reused if needed. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:8423"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+set_occurrences&nbsp;old&nbsp;ot&nbsp;<span style="color: #228b22; ">None</span>)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:8464"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;replace_with&nbsp;old&nbsp;new_&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+replace_with_&nbsp;<span style="color: #228b22; ">Recursive</span>&nbsp;old&nbsp;new_;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+replace_with_&nbsp;<span style="color: #228b22; ">Non_recursive</span>&nbsp;old&nbsp;new_</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:8582"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;replace_all_non_recursive_occurrences_of_with&nbsp;old&nbsp;new_&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+replace_with_&nbsp;<span style="color: #228b22; ">Non_recursive</span>&nbsp;old&nbsp;new_<BR></code></div><B>9.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:8701"></A>Utility functions. Comparison is done using the unique ids;
+this allows faster comparisons, and avoid looping indefinitely
+when there are cyclic references between a <code>var</code> and its
+<code>description</code>.
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:8918"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;to_string&nbsp;bv&nbsp;=&nbsp;<span style="color: #228b22; ">Desc.</span>var_prefix&nbsp;^&nbsp;(<span style="color: #228b22; ">UniqueId.</span>to_string&nbsp;bv.var_id)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:8993"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Ord</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;compare&nbsp;a&nbsp;b&nbsp;=&nbsp;compare&nbsp;a.var_id&nbsp;b.var_id<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:9095"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Map</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Map.Make</span>(<span style="color: #228b22; ">Ord</span>)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:9128"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Set</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Set.Make</span>(<span style="color: #228b22; ">Ord</span>)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:9162"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:9171"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Occur</span>&nbsp;=&nbsp;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">struct</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:9199"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;maker&nbsp;=&nbsp;var&nbsp;×&nbsp;occur_type</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:9236"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;maker&nbsp;v&nbsp;=&nbsp;(v,<span style="color: #228b22; ">Non_recursive</span>)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:9274"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rec_maker&nbsp;v&nbsp;=&nbsp;(v,<span style="color: #228b22; ">Recursive</span>)<BR></code></div><B>10.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsvar.ml:9319"></A>Create a new occurrence of VAR, i.e. add it to the
+doubly-linked list of all the occurrences of VAR, and to the
+union-find partition of the occurrences of VAR. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:9496"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;make&nbsp;(var,ot)&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Create an initial self-linked occurrence of var.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;self_linked_occur&nbsp;var&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var.occur_nb&nbsp;&#X2190;&nbsp;var.occur_nb&nbsp;+&nbsp;1;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;occur&nbsp;=&nbsp;{&nbsp;occur_desc&nbsp;=&nbsp;<span style="color: #228b22; ">Undef</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+link_var&nbsp;=&nbsp;<span style="color: #228b22; ">Union_find.</span>empty_link;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+next_occurrence&nbsp;=&nbsp;occur;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+previous_occurrence&nbsp;=&nbsp;occur;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occur_id&nbsp;=&nbsp;var.occur_nb;&nbsp;}&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;get_occurrences&nbsp;var&nbsp;ot&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  If this is the first occurrence of var.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;new_occur&nbsp;=&nbsp;self_linked_occur&nbsp;var&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ignore(<span style="color: #228b22; ">Var_union_find.</span>singleton&nbsp;ufds&nbsp;new_occur&nbsp;var);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+set_occurrences&nbsp;var&nbsp;ot&nbsp;(<span style="color: #228b22; ">Some</span>(new_occur));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+new_occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Else there are already some occurrences of var.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(existing_occur)&nbsp;&#X2192;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;new_occur&nbsp;=&nbsp;self_linked_occur&nbsp;var&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Insert new between existing and existing.next.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;following_occur&nbsp;=&nbsp;existing_occur.next_occurrence&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;new_occur&nbsp;=&nbsp;{&nbsp;new_occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">with</span>&nbsp;next_occurrence&nbsp;=&nbsp;following_occur;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+previous_occurrence&nbsp;=&nbsp;existing_occur&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+existing_occur.next_occurrence&nbsp;&#X2190;&nbsp;new_occur;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+following_occur.previous_occurrence&nbsp;&#X2190;&nbsp;new_occur;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Merge new to the partition of occurrences of var.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;new_part&nbsp;=&nbsp;<span style="color: #228b22; ">Var_union_find.</span>singleton&nbsp;ufds&nbsp;new_occur&nbsp;var&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;existing_part&nbsp;=&nbsp;(<span style="color: #228b22; ">Var_union_find.</span>find&nbsp;ufds&nbsp;existing_occur)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ignore(<span style="color: #228b22; ">Var_union_find.</span>union&nbsp;ufds&nbsp;new_part&nbsp;existing_part&nbsp;var);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+new_occur</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Returns the variable of which <code>occur</code> is an occurrence. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:11194"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;binding_variable&nbsp;occur&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;part&nbsp;=&nbsp;<span style="color: #228b22; ">Var_union_find.</span>find&nbsp;ufds&nbsp;occur&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var_union_find.</span>description&nbsp;ufds&nbsp;part</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Delete <code>occur</code> from the doubly-linked list of occurrences.
+Following Andrew Kennedy, the union-find data structure is not
+changed. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:11479"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;delete&nbsp;occur&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;next&nbsp;=&nbsp;occur.next_occurrence&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;prev&nbsp;=&nbsp;occur.previous_occurrence&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;var&nbsp;=&nbsp;binding_variable&nbsp;occur&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;(occur&nbsp;&#X2261;&nbsp;next)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  One-variable case.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">begin</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(occur&nbsp;&#X2261;&nbsp;prev);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;(var.occurrences,&nbsp;var.recursive_occurrences)&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;(<span style="color: #228b22; ">Some</span>(a),_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;a&nbsp;&#X2261;&nbsp;occur&nbsp;&#X2192;&nbsp;var.occurrences&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">None</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;(_,<span style="color: #228b22; ">Some</span>(a))&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;a&nbsp;&#X2261;&nbsp;occur&nbsp;&#X2192;&nbsp;var.recursive_occurrences&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">None</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">begin</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(occur&nbsp;&#X2262;&nbsp;prev);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+prev.next_occurrence&nbsp;&#X2190;&nbsp;next;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+next.previous_occurrence&nbsp;&#X2190;&nbsp;prev;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">match</span>&nbsp;var.occurrences&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(a)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;a&nbsp;&#X2261;&nbsp;occur&nbsp;&#X2192;&nbsp;var.occurrences&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">Some</span>(prev)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">match</span>&nbsp;var.recursive_occurrences&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(a)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;a&nbsp;&#X2261;&nbsp;occur&nbsp;&#X2192;&nbsp;var.recursive_occurrences&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">Some</span>(prev)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;()))</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:12378"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Similarly to <code><span style="color: #228b22; ">Var</span></code>, description can be get and set only once. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:12464"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;description&nbsp;b&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;b.occur_desc&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Initialized_to</span>(d)&nbsp;&#X2192;&nbsp;d<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Undef</span>&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  Trying to access an uninitialized description.  &#X2217;)</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:12628"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_description&nbsp;b&nbsp;d&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;b.occur_desc&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Initialized_to</span>(d)&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  Description already initialized.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Undef</span>&nbsp;&#X2192;&nbsp;b.occur_desc&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">Initialized_to</span>(d)</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+We suffix the name of the variable by the occurrence number,
+which may be useful to follow code transformations steps. 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:12955"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;to_string&nbsp;occur&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;bv&nbsp;=&nbsp;binding_variable&nbsp;occur&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Var.</span>to_string&nbsp;bv)&nbsp;^&nbsp;<span style="color: #8b2252; ">"_"</span>&nbsp;^&nbsp;(string_of_int&nbsp;occur.occur_id)</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+We compare occurrences by lexical order of (var_id, occur_id).
+We must not use the generic "compare" function, because
+Variables and Occurrences can be part of a circular chain of
+pointers, and "compare" could loop indefinitely 
+<BR><A NAME="src/cps/cpsbase/cpsvar.ml:13354"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Ord</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;compare&nbsp;a&nbsp;b&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;unique_id&nbsp;o&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x&nbsp;=&nbsp;binding_variable&nbsp;o&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(x.var_id,&nbsp;o.occur_id)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+compare&nbsp;(unique_id&nbsp;a)&nbsp;(unique_id&nbsp;b)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:13572"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:13581"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Map</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Map.Make</span>(<span style="color: #228b22; ">Ord</span>)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:13614"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Set</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Set.Make</span>(<span style="color: #228b22; ">Ord</span>)</P><P><A NAME="src/cps/cpsbase/cpsvar.ml:13647"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsvar.ml:13654"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

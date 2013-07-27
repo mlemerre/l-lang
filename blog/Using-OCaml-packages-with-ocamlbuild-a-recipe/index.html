@@ -28,7 +28,7 @@
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
            </button>
-           <a class="brand" href="#">The L language</a>
+           <a class="brand" href="/">The L language</a>
            <div class="nav-collapse collapse">
              <ul class="nav">
                
@@ -38,12 +38,19 @@
                
 
                
-
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
 
                
 
                <li class="dropdown">
-                 <a href="http://www.l-lang.org/blog" class="dropdown-toggle"
+                 <a href="/blog" class="dropdown-toggle"
                     data-toggle="dropdown"> Blog <b class="caret"></b> </a>
                  <ul class="dropdown-menu">
                    <li class="nav-header">Recent posts</li>
@@ -69,10 +76,11 @@
                    <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
                    
                    <li class="divider"></li>
-                   <li><a href="http://www.l-lang.org/blog">More blog entries...</a></li>
+                   <li><a href="/blog">More blog entries...</a></li>
                  </ul>
                </li>
 
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
 
              </ul>
 
@@ -386,8 +394,12 @@ for it <a href="http://caml.inria.fr/mantis/view.php?id=5752">here</a>.
  
      </div>
           
-   <script src="http://code.jquery.com/jquery.js"></script>
+   
+   <script src="/js/jquery.js"></script>
+   
    <script src="/js/bootstrap.min.js"></script>
+
+   
    <script>
      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

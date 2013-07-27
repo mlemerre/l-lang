@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpsconvertclosures.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpsconvertclosures.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Cpsconvertclosures-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Cpsconvertclosures</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/cps/cpsconvertclosures.ml:0"></A>This module performs <EM>closure conversion</EM>, i.e. removes the
+<EM>free variables</EM> from <code><span style="color: #228b22; ">Lambda</span></code> constructs. For a general
+introduction to closure conversion in CPS form, see the book
+"Compiling with continuations", by Andrew Appel.</P><!--TOC paragraph Closure conversion: removing free variables-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Closure conversion: removing free variables</H5><!--SEC END --><P>The <code><span style="color: #228b22; ">Lambda</span></code> construct allows dynamic creation of nested functions
+with <EM>free</EM> variables. A variable <I>v</I> is <EM>free</EM> in an
+term if it is not <EM>bound</EM> in that term. A variable
+<code>x</code> is bound if it appears below a <code><span style="color: #228b22; ">Lambda</span></code>, <code><span style="color: #228b22; ">Let_cont</span></code>, or
+<code><span style="color: #228b22; ">Let_prim</span></code> expression that binds <code>x</code>, or it is a global variable
+(i.e. it has been previously bound by <code><span style="color: #228b22; ">Def</span></code>).</P><P>For instance if we considered only the expression <I>e</I> =  <code>halt(z)</code>,
+then <code>z</code> is free in <I>e</I> (there is no operator that binds it in
+<I>e</I>). However if we consider an enclosing expression <I>e</I>&#X2032;: <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;z&nbsp;=
+&nbsp;x&nbsp;+&nbsp;y&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;halt(z)</code>, then <code>z</code> is bound in <I>e</I>&#X2032;, while <code>x</code> and <code>y</code> are
+free. Thus, the fact that a variable is bound or free depends on
+the expression we consider.</P><P>An expression is said to be closed if it contains no free variable.
+For instance, the expression</P><P><code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;{&nbsp;k&nbsp;(x,y)&nbsp;&#X2192;&nbsp;k(x)&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;halt(f)&nbsp;</code></P><P>is closed. The goal of closure conversion is to close all expressions
+defining a <code><span style="color: #228b22; ">Lambda</span></code>, because those expressions cannot be compiled as is.
+It is achieved by transforming the code so that variables free in a
+<code><span style="color: #228b22; ">Lambda</span></code> variables are passed as arguments, in structures known as
+<EM>environments</EM>. A <EM>closure</EM> is the combination of a
+function and its environment.</P><P>Closure conversion is an important pass towards machine-code
+compilation: machine code allows to define functions, but does not
+allow nested functions nor free variables. Closure conversion
+performs three kinds of transformations:</P><UL CLASS="itemize"><LI CLASS="li-itemize"><B>Creating the environment</B>: Given a <code><span style="color: #228b22; ">Lambda</span></code> construct <code>l</code>, make a
+tuple containing every variable needed by the <code><span style="color: #228b22; ">Lambda</span></code> (the
+<EM>environment</EM>), together with the Lambda. I.e. transforms<P>"<code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;{&nbsp;k&nbsp;&#X2192;&nbsp;x&nbsp;&#X2192;&nbsp;...&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;...&nbsp;</code>"<BR>
+into</P><P>"<code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;{&nbsp;k&nbsp;&#X2192;&nbsp;x&nbsp;&#X2192;&nbsp;...&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;env&nbsp;=&nbsp;(...&nbsp;free&nbsp;variables&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f&nbsp;...)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&#X2019;&nbsp;=&nbsp;(f,env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;...&nbsp;(code&nbsp;using&nbsp;f&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f)...</code>"</P><P>Note that if the body of <code>l</code> also defines a <code><span style="color: #228b22; ">Lamdba</span></code> construct that
+refers to a variable <code>x</code>, and <code>x</code> is free in <code>l</code>, then the
+environment for <code>l</code> must include <code>x</code>; and <code>l</code> will need to pass the
+variables to the inner <code><span style="color: #228b22; ">Lambdas</span></code>.</P></LI><LI CLASS="li-itemize"><B>Passing the environment</B>: As lambdas have been replaced by pairs,
+<code><span style="color: #228b22; ">Apply</span></code> is transformed to retrieve the function from the pair, and
+pass the environment as an extra argument. I.e. it transforms<P>"<code>f&#X2019;(k,x)</code>" into</P><P>"<code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(f,env)&nbsp;=&nbsp;f&#X2019;&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;</code><BR>
+ <code>&nbsp;f(k,env,x)</code>"</P><P>The choice to pass <code>env</code> as an extra argument, rather than
+replacing the <code>x</code> argument by a <code>(env,x)</code> pair (as was done in an
+earlier design), simplifies closure conversion. For instance if
+<code>body</code> contains another <code><span style="color: #228b22; ">Lambda</span></code> construct <code>l</code> which uses <code>x</code> (i.e.
+<code>x</code> is free in <code>l</code>), then when creating the environnement for <code>l</code>,
+one should not use <code>x</code>, but <code>#1(p)</code>, where <code>p</code> is the new argument
+of <code>f</code> containing the <code>(env,x)</code> pair.</P></LI><LI CLASS="li-itemize"><B>Using the environment</B>: The last transformation retrieves the
+environment given as an argument (together with the actual
+argument), and uses variables of the environment instead of the
+free variables they represent. I.e. it transforms<P><code>&nbsp;{&nbsp;k&nbsp;&#X2192;&nbsp;x&nbsp;&#X2192;&nbsp;...&nbsp;}&nbsp;</code> into</P><P><code>&nbsp;{&nbsp;k&nbsp;&#X2192;&nbsp;(env,x)&nbsp;&#X2192;&nbsp;
+&nbsp;...&nbsp;use&nbsp;variables&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;env&nbsp;rather&nbsp;than&nbsp;free&nbsp;variables&nbsp;...&nbsp;}&nbsp;</code></P></LI></UL><!--TOC paragraph Closure conversion and direct recursion-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Closure conversion and direct recursion</H5><!--SEC END --><P>The algorithm above is sufficient to handle recursion through the
+use of a fixpoint combinator. However, some extra steps are
+necessary to handle direct recursive and mutually-recursive
+functions: recursive occurrences are handled differently than other
+free occurrences.</P><P>When a function <code>f</code> is recursive, <code>f</code> is considered as a free
+variable in <code>f</code>. If we followed the algorithm above, then <code>f</code>
+should be passed with the environment; actually, so that <code>f</code> can be
+called in <code>f</code>, we should pass "<code>f</code> + the environment of <code>f</code>" in the
+environment of <code>f</code>. It is possible, but requires handling of
+mutually-recursive values:</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;{&nbsp;(env,arg)&nbsp;&#X2192;&nbsp;</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&#X2019;&nbsp;=&nbsp;#i(env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;...use&nbsp;f&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f...}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;env&nbsp;=&nbsp;(...,&nbsp;f&#X2019;,&nbsp;...)</code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;f&#X2019;&nbsp;=&nbsp;(f,&nbsp;env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>...use&nbsp;f&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f...</code></P><P>A simpler alternative is to recreate the closure for <code>f</code> inside
+<code>f</code>, using the environment given as an argument:</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;{&nbsp;(env,arg)&nbsp;&#X2192;&nbsp;</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&#X2019;&nbsp;=&nbsp;(f,env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;...use&nbsp;f&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f...}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;env&nbsp;=&nbsp;(...&nbsp;without&nbsp;f&#X2019;&nbsp;...)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&#X2019;&nbsp;=&nbsp;(f,&nbsp;env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>...use&nbsp;f&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f...</code></P><P>This is the approach we chose. It has several advantages; the
+environment is smaller, and the backend need only to support
+recursive closed functions; it does not need to support recursive
+values. Typing is simplified: there is no need for things like
+equirecursive types. Shrinking reductions of tuples can further
+optimize recursive calls. Finally, the approach extends simply to
+mutually recursive functions, as described below.</P><P>(Note: mutual recursion is not yet implemented by the CPS AST, nor
+the backend).</P><P>Mutually recursive functions will share the same environment:</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;{&nbsp;(env,arg)&nbsp;&#X2192;&nbsp;</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&#X2019;&nbsp;=&nbsp;(f,env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;g&#X2019;&nbsp;=&nbsp;(g,env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;...use&nbsp;f&#X2019;&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;g&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;g...}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;g&nbsp;=&nbsp;{&nbsp;(env,arg)&nbsp;&#X2192;&nbsp;</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&#X2019;&nbsp;=&nbsp;(f,env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;g&#X2019;&nbsp;=&nbsp;(g,env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>&nbsp;...use&nbsp;f&#X2019;&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;g&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;g...}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;env&nbsp;=&nbsp;(...&nbsp;variables&nbsp;free&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;f&nbsp;&#X2228;&nbsp;g&nbsp;...)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&#X2019;&nbsp;=&nbsp;(f,&nbsp;env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;g&#X2019;&nbsp;=&nbsp;(g,&nbsp;env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code>...&nbsp;use&nbsp;f&#X2019;&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;g&#X2019;&nbsp;instead&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;f&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;g&nbsp;...</code></P><!--TOC paragraph Closure representation-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Closure representation</H5><!--SEC END --><!--TOC subparagraph Closure-passing vs environment passing-->
+<H6 CLASS="subparagraph"><!--SEC ANCHOR -->Closure-passing vs environment passing</H6><!--SEC END --><P>We have chosen the environment-passing variant of closure
+conversion: the environment is a separate block, to which the
+closure points. Another alternative is the closure-passing variant,
+where the closure and the environment are in the same memory block
+(i.e. the same tuple definition).</P><P>The advantage of the environment-passing is simplicity, in
+particular regarding environment sharing when there is mutual
+recursion, and regarding the types of the translation (e.g. there
+is no need for equirecursive types).</P><P>The closure-passing variant is more efficient, but requires more
+machinery. The book "Compiling with continuations", by Andrew Appel
+describes a closure-passing variant where closures are shared using
+a simple addition to the CPS language.</P><!--TOC subparagraph Flat and linked closures-->
+<H6 CLASS="subparagraph"><!--SEC ANCHOR -->Flat and linked closures</H6><!--SEC END --><P>When lambdas are nested, there are two ways of arranging free variables
+in an environment:</P><UL CLASS="itemize"><LI CLASS="li-itemize">either the closure is <EM>flat</EM>, i.e. all the free
+variables for the function are directly in the tuple environment;</LI><LI CLASS="li-itemize">or the closure is <EM>linked</EM>, i.e. free variables that are
+also free in the enclosing lambda are not put directly in the
+environment; instead the environment points to the environment of
+the enclosing lambda.</LI></UL><P>We chose to implement flat closures, because they are simpler, have
+more predictable performance, especially wrt. garbage collection.
+However, it could be useful to have some closures linked in some
+cases (for instance when all the free variables in the enclosing
+closure are used in the enclosed closure).</P><!--TOC paragraph Closure conversion and CPS-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Closure conversion and CPS</H5><!--SEC END --><P>One of the advantage of performing closure conversion at the CPS
+level (rather than the AST level) is that some closures may have
+already been simplified (removed, inlined, or contified), some
+variables may have been simplified, so there are less closures to
+transform, with a smaller environment.</P><P>The representation of CPS of Andrew Kennedy is well-suited to many
+transformations, but closure conversion is not one of them. The
+main advantage of this representation is that it allows, in
+constant time, to make all occurrences of one variable refer to
+another variable instead. If this is very useful for the "Creating
+the environment" and "passing the environment" transformations, it
+does not suit the "using the environment pass": this pass changes
+the occurrences in the body of a Lambda <code>l</code> of a variable <code>v</code> free
+in <code>l</code> into occurrences of a variable in the environment. But there
+may be occurrences of <code>v</code> outside of the body of <code>l</code>, that must not
+be changed.</P><P>The CPS representation still works, but we cannot avoid traversing
+the expression to perform the replacements.</P><!--TOC paragraph Future improvements-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Future improvements</H5><!--SEC END --><!--TOC subparagraph Constant handling-->
+<H6 CLASS="subparagraph"><!--SEC ANCHOR -->Constant handling</H6><!--SEC END --><P>When a free variable is a bound to a constant, we should not need
+to pass it in the environment. We could re-create the binding in
+the lambda during closure conversion. But we could avoid doing that, by
+performing closure conversion after a "global constantization"
+pass, that would merge the constants and put them in global
+variables (to avoid duplication). Then there would be nothing
+special to do here to avoid passing constants in environment (as we
+handle global variables). 
+<BR><B>2.</B>&nbsp;
+<A NAME="src/cps/cpsconvertclosures.ml:9582"></A>Start of the algorithm. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:9613"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Cpsbase</span></P><P><A NAME="src/cps/cpsconvertclosures.ml:9629"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;top_convert&nbsp;t&nbsp;=</P><P></code></div>&nbsp;&nbsp;
+The algorithm uses two pass, and is thus linear on the size of
+the CPS AST. The first pass is only for analysis, and maps each lambda
+to the set of free variables it uses. Recursive occurrences of a
+function are considered free by this function. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:9920"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(_,free_map)&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsfree.</span>expression&nbsp;t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR></code></div><B>3.</B>&nbsp;
+<A NAME="src/cps/cpsconvertclosures.ml:9970"></A>The main conversion function. The <code>f</code> argument tells which
+variables are to be used in place of the free variables; <code>t</code> is
+the expression to convert. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:10133"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;convert&nbsp;f&nbsp;t&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;t&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply</span>(_,_,_,_)&nbsp;&#X2192;&nbsp;pass_environment&nbsp;t<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(x,(<span style="color: #228b22; ">Value</span>(<span style="color: #228b22; ">Lambda</span>(<span style="color: #228b22; ">Closure</span>,k,[arg],lambda_body))&nbsp;<span style="color: #a020f0; ">as</span>&nbsp;prim),body)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">begin</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The set of free vars returned by <code><span style="color: #228b22; ">Cpsfree</span></code> contains
+variables recursively used, and variables that are not.
+Only the non-recursive variables are passed in the
+environment. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:10540"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;free_vars_set&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Var.Map.</span>find&nbsp;x&nbsp;free_map&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;free_vars_list&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Var.Set.</span>elements&nbsp;free_vars_set&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;currently_defined_bindings&nbsp;=&nbsp;[x]&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(rec_free_vars,nonrec_free_vars)&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>partition&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;elt&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">List.</span>memq&nbsp;elt&nbsp;currently_defined_bindings)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+free_vars_list&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Note: the order of the variables in the environment is the
+one in <code>nonrec_free_vars</code>, and is not important; what is
+important is that the same order is used when the
+environment is created than when it is used. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:11129"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+create_environment&nbsp;x&nbsp;body&nbsp;nonrec_free_vars&nbsp;f;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+use_environment&nbsp;t&nbsp;rec_free_vars&nbsp;nonrec_free_vars<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;()<BR></code></div><B>4.</B>&nbsp;
+<A NAME="src/cps/cpsconvertclosures.ml:11269"></A>Transform <code><span style="color: #228b22; ">Apply</span></code> expressions to retrieve the function and pass the
+environment. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:11359"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;pass_environment&nbsp;t&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Retrieve the variables  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">Apply</span>(_,focc,kocc,[xocc])&nbsp;=&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Occur.</span>binding_variable&nbsp;focc&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;k&nbsp;=&nbsp;<span style="color: #228b22; ">Cont_var.Occur.</span>binding_variable&nbsp;kocc&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Occur.</span>binding_variable&nbsp;xocc&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Delete apply and its occurrences, and return a dangling expression  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;dangling_t&nbsp;=&nbsp;<span style="color: #228b22; ">Change.</span>delete_apply&nbsp;t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Insert <span style="color: #8b2252; ">"let&nbsp;(func,env)&nbsp;=&nbsp;f;&nbsp;apply&nbsp;func&nbsp;k&nbsp;env&nbsp;pair"</span>  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+ignore(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>match_pair&nbsp;~reconnect:dangling_t&nbsp;(<span style="color: #228b22; ">Var.Occur.</span>maker&nbsp;f)&nbsp;(&nbsp;<span style="color: #a020f0; ">fun</span>&nbsp;(func,env)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>apply_function&nbsp;func&nbsp;(<span style="color: #228b22; ">Cont_var.Occur.</span>maker&nbsp;k)&nbsp;[env;<span style="color: #228b22; ">Var.Occur.</span>maker&nbsp;x]))<BR></code></div><B>5.</B>&nbsp;
+<A NAME="src/cps/cpsconvertclosures.ml:11992"></A>Transform <code><span style="color: #228b22; ">Lambda</span></code> into pairs of <code><span style="color: #228b22; ">Lambda</span></code> without free variable,
+and environment. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:12083"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;create_environment&nbsp;x&nbsp;body&nbsp;nonrec_free_vars&nbsp;f&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(replace_body,reuse_body)&nbsp;=&nbsp;<span style="color: #228b22; ">Change.</span>disconnect&nbsp;body&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+<code>nonrec_free_vars</code> contains the list of variables that should
+be put in the environment. If we detected that a variable <code>x</code>
+should be in the environment, but <code>x</code> is being replaced by
+<code>f(x)</code>, then the environment should contain <code>f(x)</code> instead of
+<code>x</code>. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:12487"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;env_vars&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;free_var&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;f&nbsp;free_var&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Var.Occur.</span>maker&nbsp;free_var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(v)&nbsp;&#X2192;&nbsp;v&nbsp;)&nbsp;nonrec_free_vars&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsconvertclosures.ml:12645"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+ignore(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_tuple&nbsp;~reconnect:replace_body&nbsp;env_vars&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;env&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>with_var_in_expression&nbsp;(&nbsp;<span style="color: #a020f0; ">fun</span>&nbsp;pair&nbsp;&#X2192;</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+We create the <code>pair</code> variable, and make all non-recursive
+occurrences of <code>x</code> occurrences of <code>pair</code>. <code>pair</code> is bound
+by <code>let_pair</code> in a "let pair = (x,env); body" expression. This
+operation creates a new occurrence of <code>x</code>; therefore the
+<code>replace_all_non_recursive_occurrences_of_with</code> operation
+must be done before calling <code>let_pair</code> (else the
+occurrence of <code>x</code> would become an occurrence of <code>pair</code>,
+i.e. the expression would become "let pair = (pair,env); body",
+which would be incorrect.) 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:13386"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Change.</span>replace_all_non_recursive_occurrences_of_with&nbsp;x&nbsp;pair;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_pair&nbsp;~var:pair&nbsp;(<span style="color: #228b22; ">Var.Occur.</span>maker&nbsp;x,env)&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;pair&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+reuse_body))))<BR></code></div><B>6.</B>&nbsp;
+<A NAME="src/cps/cpsconvertclosures.ml:13562"></A>Replace the body of the lambda to use variables passed in the
+environments instead of the free variables. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:13677"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;use_environment&nbsp;expression&nbsp;rec_free_vars&nbsp;nonrec_free_vars&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">Let_prim</span>(x,(<span style="color: #228b22; ">Value</span>(<span style="color: #228b22; ">Lambda</span>(<span style="color: #228b22; ">Closure</span>,k,[arg],lambda_body))&nbsp;<span style="color: #a020f0; ">as</span>&nbsp;prim),_)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;expression&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsconvertclosures.ml:13858"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Add a new <code>env_arg</code> argument to the lambda.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+ignore(&nbsp;<span style="color: #228b22; ">Build.</span>with_var_in_expression&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;env_arg&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Change.</span>update_function_type_and_arguments<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+expression&nbsp;<span style="color: #228b22; ">No_environment</span>&nbsp;[env_arg;&nbsp;arg];</P><P><A NAME="src/cps/cpsconvertclosures.ml:14069"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Retrieve parameters from <code>env_arg</code>.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(lambda_body_reconnect,lambda_body_reuse)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp;<span style="color: #228b22; ">Change.</span>disconnect&nbsp;lambda_body&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;num_env_vars&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>length&nbsp;nonrec_free_vars&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>match_tuple&nbsp;~reconnect:lambda_body_reconnect<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+num_env_vars&nbsp;(<span style="color: #228b22; ">Var.Occur.</span>maker&nbsp;env_arg)&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;vars&nbsp;&#X2192;</P><P><A NAME="src/cps/cpsconvertclosures.ml:14390"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  We map free variables to their replacement of the
+environment using a simple association list. We could use
+another structure, as <code>num_env_vars</code> may be large.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;assoc_list&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>combine&nbsp;nonrec_free_vars&nbsp;vars&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsconvertclosures.ml:14648"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  For each function <code>x</code> being currently defined, we define a
+replacement for <code>x</code>, using <code>env_arg</code> as the environment.
+This assumes that all recursive functions use the same
+environment.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;g&nbsp;f&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;loop&nbsp;accu&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;[&nbsp;]&nbsp;&#X2192;&nbsp;f&nbsp;(<span style="color: #228b22; ">List.</span>rev&nbsp;accu)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;x::rest&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_pair&nbsp;(<span style="color: #228b22; ">Var.Occur.</span>rec_maker&nbsp;x,&nbsp;<span style="color: #228b22; ">Var.Occur.</span>maker&nbsp;env_arg)&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;p&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loop&nbsp;((x,p)::accu)&nbsp;rest)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;loop&nbsp;[&nbsp;]&nbsp;rec_free_vars<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;g&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rec_assocs&nbsp;&#X2192;</P><P><A NAME="src/cps/cpsconvertclosures.ml:15194"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Builds <code>f</code>, the replacement function.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;assoc_list&nbsp;=&nbsp;rec_assocs@assoc_list&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;var&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">try</span>&nbsp;<span style="color: #228b22; ">Some</span>&nbsp;(<span style="color: #228b22; ">List.</span>assq&nbsp;var&nbsp;assoc_list)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #228b22; ">Not_found</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsconvertclosures.ml:15411"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  We combine the replacement and the conversion in a
+single pass.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;do_on_expression&nbsp;t&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Change.</span>replace_some_occurrences_in_one_expression&nbsp;t&nbsp;f;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+convert&nbsp;f&nbsp;t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Traverse.</span>iter_on_expressions<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+~enter_lambdas:<span style="color: #a020f0; ">false</span>&nbsp;lambda_body_reuse&nbsp;do_on_expression;</P><P><A NAME="src/cps/cpsconvertclosures.ml:15742"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+lambda_body_reuse));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+expression))<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>&nbsp;&nbsp;
+Note that for top-level definitions, there are no occurrences to
+convert; hence <code>f</code> always return <code><span style="color: #228b22; ">None</span></code>, and we do not call the
+<code>replace_occurrence_in_one_expression</code> function. 
+<BR><A NAME="src/cps/cpsconvertclosures.ml:15994"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;=&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">None</span>)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Traverse.</span>iter_on_expressions&nbsp;~enter_lambdas:<span style="color: #a020f0; ">false</span>&nbsp;t&nbsp;(convert&nbsp;f)</P><P><A NAME="src/cps/cpsconvertclosures.ml:16092"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;in_expression&nbsp;exp&nbsp;=&nbsp;top_convert&nbsp;exp</P><P><A NAME="src/cps/cpsconvertclosures.ml:16135"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;in_definition&nbsp;def&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">Definition</span>(_,deftype)&nbsp;=&nbsp;def&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;deftype&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Static_value</span>(_)&nbsp;&#X2192;&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Dynamic_value</span>(t)&nbsp;&#X2192;&nbsp;in_expression&nbsp;t<BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

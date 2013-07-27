@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpstransform/rules.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpstransform/rules.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Rules-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Rules</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/cps/cpstransform/rules.ml:0"></A>This module compile the pattern matching of a set of <EM>rules</EM>.
+A <EM>rule</EM> is composed of a pattern, matched against a value;
+and an expression (the <EM>body</EM> of the rule), to be executed if
+the pattern succeeds in matching the value.</P><P>The <code><span style="color: #a020f0; ">match</span>(expression){rules}</code> expression matches an expression
+against a set of rules; its behaviour is to evaluate the expression
+once, and try to match the resulting value against the patterns in
+<code>rules</code> until one succeeds, in which case the corresponding body is
+executed.</P><P>The order of the rules is thus important: a value can be matched by
+the patterns of two rules, e.g. <code>(5,6)</code> is matched by <code>(5,_)</code> and
+<code>(_,6)</code>; but only the body of the first rule is executed. This
+implies that two successive rules in a <code><span style="color: #a020f0; ">match</span></code> can be reordered if,
+and only if, they are <EM>disjoint</EM>, i.e. they cannot match the
+same value.</P><P>But when allowed, reordering and factorizing the compilation of
+rules matching lead to more compact, faster code. Trying to produce
+the most efficient code for matching against a set of rules is a
+NP-complete problem (the complexity arise when compiling multiple
+independent patterns, for instance tuple patterns). Rather than
+attempting to solve this problem, L specifies how pattern matching
+is compiled, which allows the developer to visualize the costs of
+its pattern matching.</P><!--TOC subsubsection Pattern matching rewrites-->
+<H4 CLASS="subsubsection"><!--SEC ANCHOR -->Pattern matching rewrites</H4><!--SEC END --><P>The compiler maintains a list of patterns that remain to be matched
+for each rule, and a list of values against which each rule is
+matched. The list of the first pattern to be matched in each rules
+is the first column, and is matched against the first value.
+Several cases can occur (see in the book "The implementation of
+functional programming languages" by Simon Peyton Jones, the
+chapter 5: "Efficient compilation of pattern matching", by Philip
+Wadler):</P><!--TOC paragraph There is no more column-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->There is no more column</H5><!--SEC END --><P>When there are no remaining patterns to match, and no remaining
+values, it means that all the rules match. As pattern matching
+selects the first rule that matches, we execute the body of the
+first rule, and discard the other rules with a warning.</P><P>For instance in</P><P><code><span style="color: #a020f0; ">match</span>(){</code><BR>
+ <code>&nbsp;()&nbsp;&#X2192;&nbsp;body1</code><BR>
+ <code>&nbsp;()&nbsp;&#X2192;&nbsp;body2</code><BR>
+ <code>}</code></P><P><code>body1</code> matches and is executed; <code>body2</code> also matches, but is
+superseded by <code>body1</code>, and is just discarded.</P><!--TOC paragraph The column contain only variables-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->The column contain only variables</H5><!--SEC END --><P> In this case, in
+each rule the variable is bound to the value, and matching
+continues. For instance in</P><P><code><span style="color: #a020f0; ">match</span>(expr1,...){</code><BR>
+ <code>&nbsp;(a,...)&nbsp;&#X2192;&nbsp;body1</code><BR>
+ <code>&nbsp;(b,...)&nbsp;&#X2192;&nbsp;body2</code><BR>
+ <code>}</code></P><P><code>a</code> is bound to <code>v1</code> in the first rule, and <code>b</code> in the second rule;
+where <code>v1</code> is a CPS variable representing the result of computing
+<code>expr1</code> in the condition of the match (computation in the condition
+is thus not repeated). Matching then proceeds, starting from the
+second column.</P><P>This rule can be extended to incorporate wildcard (<code>_</code>) patterns
+(where nothing is bound), and all <EM>irrefutable</EM> patterns.
+A pattern is irrefutable if it does not contain any <EM>variant</EM>.</P><P>For instance, consider</P><P><code><span style="color: #a020f0; ">match</span>((expr1,expr2),...){</code><BR>
+ <code>&nbsp;(a,...)&nbsp;&#X2192;&nbsp;body1</code><BR>
+ <code>&nbsp;(_,...)&nbsp;&#X2192;&nbsp;body2</code><BR>
+ <code>&nbsp;((c,d),...)&nbsp;&#X2192;&nbsp;body3</code><BR>
+ <code>}</code></P><P>The column contains only irrefutable patterns. Let <code>v1</code> be a
+CPS variable containing the evaluation of <code>expr1</code>, and <code>v2</code>
+containing the evaluation of <code>expr2</code>. Then <code>a</code> is bound to
+<code>(v1,v2)</code>, <code>c</code> to <code>v1</code>, and <code>d</code> to <code>v2</code>.</P><!--TOC paragraph The column contains only calls to constructors-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->The column contains only calls to constructors</H5><!--SEC END --><P> A
+<EM>constructor</EM> is a specific version of a variant type; for
+instance <code>3</code> is a constructor of <code><span style="color: #228b22; ">Int</span></code>, <code><span style="color: #228b22; ">True</span></code> a constructor of
+<code><span style="color: #228b22; ">Bool</span></code>, and <code><span style="color: #228b22; ">Cons</span>(1,<span style="color: #228b22; ">Nil</span>)</code> a constructor of <code><span style="color: #228b22; ">List</span></code>&lt;<code><span style="color: #228b22; ">Int</span></code>&gt;.</P><P>Note that if the column contain a variant, then all the
+constructors that it contains are of the same type: this is
+necessary for the pattern matching to typecheck.</P><P>When two contiguous rules have different constructors at the same
+place, they cannot match the same value simultaneously: they are
+thus disjoint, and can be swapped. This allows to group the rules
+according to the constructor in their first column (the order of
+the rules within a group being preserved).</P><P>For instance,</P><P><code><span style="color: #a020f0; ">match</span>(expr1,&nbsp;expr2){</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Cons</span>(a,<span style="color: #228b22; ">Cons</span>(b,<span style="color: #228b22; ">Nil</span>)),<span style="color: #228b22; ">Nil</span>)&nbsp;&#X2192;&nbsp;body1</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Nil</span>,<span style="color: #228b22; ">Nil</span>)&nbsp;&#X2192;&nbsp;body2</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Nil</span>,c)&nbsp;&#X2192;&nbsp;body3</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Cons</span>(d,e),_)&nbsp;&#X2192;&nbsp;body4&nbsp;</code><BR>
+ <code>}</code></P><P>can be grouped as (preserving the order between rules 1 and 4, and
+2 and 3) :</P><P><code><span style="color: #a020f0; ">match</span>(expr1,&nbsp;expr2){</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Cons</span>(a,<span style="color: #228b22; ">Cons</span>(b,<span style="color: #228b22; ">Nil</span>)),<span style="color: #228b22; ">Nil</span>)&nbsp;&#X2192;&nbsp;body1</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Cons</span>(d,e),_)&nbsp;&#X2192;&nbsp;body4</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Nil</span>,<span style="color: #228b22; ">Nil</span>)&nbsp;&#X2192;&nbsp;body2</code><BR>
+ <code>&nbsp;(<span style="color: #228b22; ">Nil</span>,c)&nbsp;&#X2192;&nbsp;body3</code><BR>
+ <code>}</code></P><P>Then, the matching of contiguous rules with the same constructor
+can be factorized out, as follow:</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v1&nbsp;=&nbsp;expr1&nbsp;<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;v2&nbsp;=&nbsp;expr2&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #a020f0; ">match</span>(v1){</code><BR>
+ <code>&nbsp;<span style="color: #228b22; ">Cons</span>(hd,tl)&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">match</span>((hd,tl),v2){</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;((a,<span style="color: #228b22; ">Cons</span>(b,<span style="color: #228b22; ">Nil</span>)),&nbsp;<span style="color: #228b22; ">Nil</span>)&nbsp;&#X2192;&nbsp;body1&nbsp;</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;((d,e),_)&nbsp;&#X2192;&nbsp;body4&nbsp;</code><BR>
+ <code>&nbsp;}</code><BR>
+ <code>&nbsp;<span style="color: #228b22; ">Nil</span>&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">match</span>(v2){</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;<span style="color: #228b22; ">Nil</span>&nbsp;&#X2192;&nbsp;body2&nbsp;</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;c&nbsp;&#X2192;&nbsp;body3&nbsp;</code><BR>
+ <code>&nbsp;}</code><BR>
+ <code>}</code></P><P>Note that the L compiler matches the values in the constructor
+before matching the other columns of the tuple, as was exemplified
+in the <code><span style="color: #228b22; ">Cons</span></code> rules.</P><P>The construct of matching only the constructors of a single variant
+type can be transformed directly into the CPS <code>case</code> expression. It
+is generally compiled very efficiently into a jump table, and
+dispatching to any rule is done in constant time. (Note that the
+compiler may not generate a jump table if the list of constructors
+to check is sparse).</P><!--TOC paragraph The first column contains both refutable and irrefutable
+patterns-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->The first column contains both refutable and irrefutable
+patterns</H5><!--SEC END --><P>If the first column contains both kind of patterns, the list of
+rules is split into groups such that the ordering between rules is
+preserved, and either all the rules in the group have their first
+pattern that is refutable, or they are all irrefutable.</P><P>For instance, the following match:</P><P><code><span style="color: #a020f0; ">match</span>((v1,v2),v3){</code><BR>
+ <code>&nbsp;(_,1)&nbsp;&#X2192;&nbsp;1</code><BR>
+ <code>&nbsp;((a,b),2)&nbsp;&#X2192;&nbsp;a+b+2</code><BR>
+ <code>&nbsp;((3,_),3)&nbsp;&#X2192;&nbsp;...</code><BR>
+ <code>&nbsp;((4,_),_)&nbsp;&#X2192;&nbsp;...</code><BR>
+ <code>&nbsp;((_,5),_)&nbsp;&#X2192;&nbsp;...</code><BR>
+ <code>&nbsp;((a,b),c)&nbsp;&#X2192;&nbsp;a+b+c</code><BR>
+ <code>}</code></P><P>is split into three groups, with respectively rules 1-2 (<code>_</code> and
+<code>(a,b)</code> are both irrefutable patterns), rules 3-5, and rule 6. Then
+the groups are matched successively, the next group being matched
+only if no rule matched in the first one. This amount to performing
+the following transformation:</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;c&nbsp;=&nbsp;((v1,v2),v3)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></code><BR>
+ <code><span style="color: #a020f0; ">match</span>(c){</code><BR>
+ <code>&nbsp;(_,1)&nbsp;&#X2192;&nbsp;1</code><BR>
+ <code>&nbsp;((a,b),2)&nbsp;&#X2192;&nbsp;a+b+2</code><BR>
+ <code>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">match</span>(c){</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;((3,_),3)&nbsp;&#X2192;&nbsp;...</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;((4,_),_)&nbsp;&#X2192;&nbsp;...</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;((_,5),_)&nbsp;&#X2192;&nbsp;...</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">match</span>(c){</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;((a,b),c)&nbsp;&#X2192;&nbsp;a+b+c</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;}</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;}</code><BR>
+ <code>}</code></P><P>Note that rules 3,4,5 also need to be split and transformed further
+using this method.</P><!--TOC subsubsection Compiling pattern matching-->
+<H4 CLASS="subsubsection"><!--SEC ANCHOR -->Compiling pattern matching</H4><!--SEC END --><!--TOC paragraph Compilation order-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Compilation order</H5><!--SEC END --><P>The order in which checking is made for a set of patterns is a
+choice, done by the compiler. L chooses to match the tuples from
+left to right, and the contents of the constructor as soon as they
+are matched; and to split rules according to the refutability of
+the pattern in their first remaining column. This choice may not be
+optimal in every case (but minimizing the number of matches is a
+NP-hard problem), but allows for a simple, visual analysis of the
+cost of pattern matching. The user is free to rearrange the set of
+patterns to improve performance (possibly guided by compiler
+hints).</P><!--TOC paragraph Element retrieval-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->Element retrieval</H5><!--SEC END --><P>At the beginning of a match, all the components, needed by at least
+one rule, that can be retrieved (i.e. components in a tuple etc.,
+but not those that are under a specific constructor) are retrieved.
+When a constructor is matched, all the components that can be
+retrieved that were under this constructor are retrieved. This
+behaviour produces the most compact code (avoid duplicating
+retrieval of elements in the compilation of several rules), but
+maybe not the most efficient (sometimes elements are retrieved that
+are not used). Optimizations, such as shrinking reductions, are
+allowed to move down or even duplicate code performing retrieval of
+elements into the case.</P><!--TOC paragraph CPS-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->CPS</H5><!--SEC END --><P>Compilation of pattern matching is done during the CPS
+transformation, which transforms source code from the AST language
+to the CPS language. There are several reasons for that:</P><UL CLASS="itemize"><LI CLASS="li-itemize">The CPS transformation of expression fixes the order of their
+evaluation; compiling pattern matching fixes the order in which
+patterns are matched. So it makes sense to do both at the same
+time, to have a single pass that fixes all the order of evaluation.<P>As a side note, it makes sense to keep pattern matching in the AST
+language, because patterns are easy to type, and any typing error
+can be more easily returned to the user.</P></LI><LI CLASS="li-itemize">The CPS language provides continuations, which allows to
+express explicit join points in the control flow, something not
+possible in the AST language (without creating new functions).
+These joint points are necessary notably to factorize the
+compilation of pattern matching (this problem is similar to
+compilation of boolean expressions with the short-circuit operators
+<CODE>&amp;&amp;</CODE> and <CODE>||</CODE>). For instance, compiling:<P><code><span style="color: #a020f0; ">match</span>(v){&nbsp;(4,5)&nbsp;&#X2192;&nbsp;1;&nbsp;_&nbsp;&#X2192;&nbsp;2&nbsp;}</code></P><P>gives:</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;k_not4_5()&nbsp;=&nbsp;{&nbsp;kreturn(2)&nbsp;}</code><BR>
+ <code><span style="color: #a020f0; ">match</span>(#0(v)){</code><BR>
+ <code>&nbsp;4&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">match</span>(#1(v)){</code><BR>
+ &nbsp;&nbsp;<code>&nbsp;5&nbsp;&#X2192;&nbsp;kreturn(1)</code><BR>
+ &nbsp;&nbsp;<code>&nbsp;_&nbsp;&#X2192;&nbsp;k_not4_5()</code><BR>
+ <code>&nbsp;}</code><BR>
+ <code>&nbsp;_&nbsp;&#X2192;&nbsp;k_not4_5()</code><BR>
+ <code>}</code></P><P>Matching against <code>(4,5)</code> can fail at two different steps, and the
+action to perform in these two cases are the same, so they should
+be factorized using the same continuation.</P><P>The L compiler does not yet allow it, but "or-patterns" (i.e. in
+<code><span style="color: #a020f0; ">match</span>(l){&nbsp;<span style="color: #228b22; ">Cons</span>(<span style="color: #228b22; ">Nil</span>&#X2223;<span style="color: #228b22; ">Cons</span>(_,<span style="color: #228b22; ">Nil</span>))&nbsp;&#X2192;&nbsp;0&nbsp;_&nbsp;&#X2192;&nbsp;1&nbsp;}</code>) also need join
+points. Finally, there is also a joint point (in
+<code>expr_env.kcontext</code>) to which the value of the bodies in each rule
+is returned.
+</P></LI></UL><P>All the functions that involve building CPS code are themselves in
+CPS style; see the <code><span style="color: #228b22; ">Cps_transform_expression</span></code> module for an
+explanation.</P><!--TOC paragraph A complete example-->
+<H5 CLASS="paragraph"><!--SEC ANCHOR -->A complete example</H5><!--SEC END --><P>Here is a (contrived) example of a complete pattern matching:</P><P><IMG SRC="../cpstransform_rules.ml001.png"></P><P>This pattern is compiled as follows. We begin by creating a join
+continuation, which is where the result of the match is returned.
+This allows to factorize the following computation (the addition to
+17 in our case).</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;kfinal(x)&nbsp;=&nbsp;{&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x17&nbsp;=&nbsp;x&nbsp;+&nbsp;17&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;halt(x17)&nbsp;}</code></P><P>Then, the condition of the match <code>e</code> is evaluated, and its result
+stored in a temporary value.</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v&nbsp;=&nbsp;...&nbsp;eval&nbsp;e&nbsp;...</code></P><P>Then, analysis of the patterns show that <code>v</code> contains a tuple.</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v.0&nbsp;=&nbsp;#0(v)</code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v.1&nbsp;=&nbsp;#1(v)</code></P><P>Analysis of the patterns also show that <code>v.0</code> contain a tuple.
+<code>v.1</code> is a variant type, so its elements cannot be retrieved yet.</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v.0.0&nbsp;=&nbsp;#0(v.0)</code><BR>
+ <code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v.0.1&nbsp;=&nbsp;#1(v.0)</code></P><P>We begin by analysis the whole pattern (i.e. column <I>c</I><SUB>0</SUB>). All the
+rules are refutable, except the last one, so we split them into two
+contiguous blocks <I>b</I><SUB><I>i</I></SUB> and <I>b</I><SUB><I>ii</I></SUB>; <I>b</I><SUB><I>ii</I></SUB> is executed if
+matching against all the rules in <I>b</I><SUB><I>i</I></SUB> fail.</P><P><code>decl&nbsp;kb_ii</code></P><P>All the rules in <I>b</I><SUB><I>i</I></SUB> are tuples, so we inspect them from left to
+right (i.e. we begin by column <I>c</I><SUB>1</SUB>, then proceed with <I>c</I><SUB>4</SUB>).
+Analysis of column <I>c</I><SUB>1</SUB> yields three contiguous blocks: the
+patterns in column <I>c</I><SUB>1</SUB> are all irrefutable for block <I>b</I><SUB><I>i</I>.<I>a</I></SUB>,
+refutable for block <I>b</I><SUB><I>i</I>.<I>b</I></SUB>, and irrefutable again for block
+<I>b</I><SUB><I>i</I>.<I>c</I></SUB>.</P><P><code>decl&nbsp;kb_i.b,&nbsp;kb_i.c</code></P><P>As the patterns of column <I>c</I><SUB>1</SUB> in rules in <I>b</I><SUB><I>i</I>.<I>a</I></SUB> are all
+irrefutable, we just have to associate the variable <code>x</code> to <code>v.0.0</code>
+and <code>a</code> to <code>v.0.1</code> for the translation of the body of the rules.
+(<code>x</code> and <code>a</code> are unused in the rules of the example).</P><P>We can then proceed with the analysis of column <I>c</I><SUB>2</SUB> (still in
+block <I>b</I><SUB><I>i</I>.<I>a</I></SUB>). It is a variant, so we can regroup the rules
+according to the constructor, and perform a simple case analysis.</P><P><code>decl&nbsp;kcons</code><BR>
+ <code><span style="color: #a020f0; ">match</span>(v.1){</code><BR>
+ <code>&nbsp;<span style="color: #228b22; ">Nil</span>&nbsp;&#X2192;&nbsp;{&nbsp;kfinal(2)&nbsp;}</code><BR>
+ <code>&nbsp;<span style="color: #228b22; ">Cons</span>(x)&nbsp;&#X2192;&nbsp;{&nbsp;kcons(x)&nbsp;}&nbsp;</code><BR>
+ <code>}</code></P><P>For the <code><span style="color: #228b22; ">Nil</span></code> constructor, we are already done. For <code><span style="color: #228b22; ">Cons</span></code>, we have
+to discriminate against the patterns inside the <code><span style="color: #228b22; ">Cons</span></code>. But first,
+we analyze these patterns to retrieve all the elements that are
+needed:</P><P><code><span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;kcons(x)&nbsp;=&nbsp;{</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x.0&nbsp;=&nbsp;#0(x)</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x.1&nbsp;=&nbsp;#1(x)</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x.0.0&nbsp;=&nbsp;#0(x.0)</code><BR>
+ <code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x.0.1&nbsp;=&nbsp;#1(x.0)</code></P><P>There are two contiguous blocks: one with rule 1 and 3 (since rule
+2 has been regrouped with the <code><span style="color: #228b22; ">Nil</span></code>), and one with rule 4. We begin
+with the 1-3 block:</P><P><code>&nbsp;decl&nbsp;knext</code><BR>
+ <code>&nbsp;<span style="color: #a020f0; ">match</span>(x.0.0){</code><BR>
+ &nbsp;&nbsp;<code>&nbsp;1&nbsp;&#X2192;&nbsp;{&nbsp;kfinal(1)}</code><BR>
+ &nbsp;&nbsp;<code>&nbsp;3&nbsp;&#X2192;&nbsp;{&nbsp;kfinal(3)}</code><BR>
+ &nbsp;&nbsp;<code>&nbsp;_&nbsp;&#X2192;&nbsp;{&nbsp;knext()}</code><BR>
+ <code>&nbsp;}</code></P><P>If matching against the 1-3 block fails, we match against rule 4.
+If this fails, then matching against all the rules in <I>b</I><SUB><I>i</I>.<I>a</I></SUB>
+failed, and we try to match against the rules in <I>b</I><SUB><I>i</I>.<I>b</I></SUB>.</P><P><code>&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;knext()&nbsp;=&nbsp;{</code><BR>
+ &nbsp;&nbsp;<code>&nbsp;<span style="color: #a020f0; ">match</span>(x.0.1){</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;4&nbsp;&#X2192;&nbsp;{&nbsp;kfinal(4)}</code><BR>
+ &nbsp;&nbsp;&nbsp;&nbsp;<code>&nbsp;_&nbsp;&#X2192;&nbsp;{&nbsp;kb_i.b()}</code><BR>
+ &nbsp;&nbsp;<code>&nbsp;}</code><BR>
+ <code>&nbsp;}</code><BR>
+ <code>}</code></P><P>The rest of the matching is very similar. In <I>b</I><SUB><I>i</I>.<I>b</I>.1</SUB>, the
+matching against rules 5 and 7 is factorized, because there is a
+common constructor. (Note that there is no factorization on <code><span style="color: #228b22; ">Cons</span></code>
+between rules 4 and 5, because they are in different blocks). Then
+blocks <I>b</I><SUB><I>i</I>.<I>b</I>.2</SUB>, <I>b</I><SUB><I>i</I>.<I>b</I>.3</SUB>, <I>b</I><SUB><I>i</I>.<I>c</I></SUB> are tried successively.
+In <I>b</I><SUB><I>i</I>.<I>c</I></SUB>, the test of <code><span style="color: #228b22; ">Cons</span></code> is factorized, but not the test
+for <code><span style="color: #228b22; ">Nil</span></code>, because testing <code><span style="color: #228b22; ">Nil</span></code> is done after testing <code>10</code>.</P><P>Finally, the pattern matching always succeeds since rule 12 is
+irrefutable, so there is no need to introduce code that perform
+<code>match_failure</code> in case nothing succeeds in matching.</P><P>Note that the presentation would have been clearer if the patterns
+had been regrouped differently; in particular, grouping rules who
+share a constructor matched as the same time (e.g. exchanging rules
+1 and 2, and rule 5 and 6) would improve the presentation.</P><P><BR><A NAME="src/cps/cpstransform/rules.ml:14633"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">CaseMap</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbase.CaseMap</span></P><P></code></div>
+This module is mutually recursive with the module performing
+transformation into CPS of expressions, from which we require
+the <code>transform</code> function. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:14830"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Base</span><BR></code></div><B>2.</B>&nbsp;
+<A NAME="src/cps/cpstransform/rules.ml:14912"></A>Identifying the structure of patterns; retrieving needed
+components. 
+<BR>
+The <code><span style="color: #228b22; ">Structure</span></code> module allows to analyze a list of patterns, and
+build the code to retrieve all the components needed by at least
+one pattern. This ensures that (whenever possible) the components
+are retrieved only once, which makes the code more compact.</P><P>This code also checks that the components are compatible (e.g. that
+the matched tuples have the same arity), in case that type checking
+failed to do it. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:15423"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Structure</span>&nbsp;:&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span></P><P></code></div>&nbsp;&nbsp;
+The aim of this module is to produce a value of type <code>t</code>, which
+is a CPS variable together with the CPS variables for each of its
+sub-components. Note that structures do not go into variants,
+because we cannot: the contents in variants can be obtained only
+once they are matched. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:15755"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;&#X3B1;&nbsp;structure&nbsp;=&nbsp;&#X3B1;&nbsp;×&nbsp;&#X3B1;&nbsp;structure_<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;&#X3B1;&nbsp;structure_&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Any</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;&#X3B1;&nbsp;structure&nbsp;<span style="color: #228b22; ">list</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Fold</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Ast.Type_name.</span>t&nbsp;×&nbsp;&#X3B1;&nbsp;structure<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;structure</P><P></code></div>&nbsp;&nbsp;
+<code>build&nbsp;v&nbsp;patts&nbsp;k</code> analyze <code>patts</code> to create a <code>structure</code>
+containing all the CPS variables needed for compiling the
+rules, and "returns" (in CPS style) by calling <code>k</code> with that
+structure. <code>v</code> is the CPS variable against which the <code>patts</code>
+are matched. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:16231"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;build:<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Ast.Pattern.</span>t&nbsp;<span style="color: #228b22; ">list</span>&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(t&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Build.</span>fresh)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>fresh<BR>
+<span style="color: #0000ff; font-weight: bold;">end</span>&nbsp;=<BR>
+<span style="color: #0000ff; font-weight: bold;">struct</span></P><P><A NAME="src/cps/cpstransform/rules.ml:16357"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;&#X3B1;&nbsp;structure&nbsp;=&nbsp;&#X3B1;&nbsp;×&nbsp;&#X3B1;&nbsp;structure_<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;&#X3B1;&nbsp;structure_&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Any</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;&#X3B1;&nbsp;structure&nbsp;<span style="color: #228b22; ">list</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Fold</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Ast.Type_name.</span>t&nbsp;×&nbsp;&#X3B1;&nbsp;structure<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;structure</P><P></code></div>&nbsp;&nbsp;
+The implementation is done in two steps:
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+First we identify the structure (in normal style, by
+unification of the patterns);
+</LI><LI CLASS="li-itemize">Then we build the code to retrieve the CPS variables (in
+CPS style).
+</LI></UL><P> 
+<BR><A NAME="src/cps/cpstransform/rules.ml:16828"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;incompatible_patt&nbsp;patt&nbsp;str&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.Pattern_matching.</span>raise_compiler_error<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #8b2252; ">"Incompatible&nbsp;pattern&nbsp;%a,&nbsp;expected&nbsp;a&nbsp;%s"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Astprint.</span>pattern&nbsp;patt&nbsp;str<BR>&nbsp;&nbsp;
+</P><P></code></div>&nbsp;&nbsp;
+Identification works by first-order unification of all the
+patterns. The <code><span style="color: #228b22; ">unit</span>&nbsp;structure</code> type is a special representation
+of a pattern, containing the results of the previous
+unifications. We do not enter variant types, because we will not
+retrieve their components until they are matched (and we redo an
+identification when this happens). 
+<BR><A NAME="src/cps/cpstransform/rules.ml:17368"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;unify_patt&nbsp;(structure:<span style="color: #228b22; ">unit</span>&nbsp;structure)&nbsp;patt&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;patt&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Tuple</span>&nbsp;l&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;n,structures&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;snd&nbsp;structure&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Any</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">List.</span>length&nbsp;l,&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;&#X2192;&nbsp;(),&nbsp;<span style="color: #228b22; ">Any</span>)&nbsp;l<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Fold</span>&nbsp;_&nbsp;&#X2192;&nbsp;incompatible_patt&nbsp;patt&nbsp;<span style="color: #8b2252; ">"expected&nbsp;a&nbsp;tuple"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>(n,&nbsp;l&#X2019;)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;(<span style="color: #228b22; ">List.</span>length&nbsp;l&nbsp;&#X2262;&nbsp;n)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;incompatible_patt&nbsp;patt&nbsp;(<span style="color: #8b2252; ">"tuple&nbsp;of&nbsp;size&nbsp;"</span>&nbsp;^&nbsp;(string_of_int&nbsp;n))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;n,&nbsp;l&#X2019;&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(),&nbsp;<span style="color: #228b22; ">Tuple</span>&nbsp;(n,&nbsp;<span style="color: #228b22; ">List.</span>map2&nbsp;unify_patt&nbsp;structures&nbsp;l)</P><P><A NAME="src/cps/cpstransform/rules.ml:17859"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Fold</span>(tn,patt&#X2019;)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;subs&nbsp;=&nbsp;(<span style="color: #a020f0; ">match</span>&nbsp;snd&nbsp;structure&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Any</span>&nbsp;&#X2192;&nbsp;(),<span style="color: #228b22; ">Any</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>&nbsp;_&nbsp;&#X2192;&nbsp;incompatible_patt&nbsp;patt&nbsp;<span style="color: #8b2252; ">"fold"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Fold</span>(tn&#X2019;,&nbsp;_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;tn&#X2019;&nbsp;&#X2262;&nbsp;tn&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+incompatible_patt&nbsp;patt&nbsp;<span style="color: #8b2252; ">"fold&nbsp;with&nbsp;a&nbsp;different&nbsp;typename"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Fold</span>(_,s)&nbsp;&#X2192;&nbsp;s)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(),&nbsp;<span style="color: #228b22; ">Fold</span>(tn,&nbsp;unify_patt&nbsp;subs&nbsp;patt&#X2019;)</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+No new information about the structure, and we do not enter
+in variants. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:18282"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Wildcard</span>&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Variable</span>&nbsp;_<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Constant</span>(<span style="color: #228b22; ">Constant.Integer</span>&nbsp;_&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Constant.Bool</span>&nbsp;_)<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Injection</span>&nbsp;_&nbsp;&#X2192;&nbsp;structure<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Log.Pattern_matching.</span>raise_compiler_error&nbsp;<span style="color: #8b2252; ">"Pattern&nbsp;%a&nbsp;not&nbsp;handled"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Astprint.</span>pattern&nbsp;patt<BR>&nbsp;&nbsp;
+</P><P><A NAME="src/cps/cpstransform/rules.ml:18554"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;unify_patts&nbsp;patts&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>fold_left&nbsp;unify_patt&nbsp;((),<span style="color: #228b22; ">Any</span>)&nbsp;patts</P><P></code></div>&nbsp;&nbsp;
+Second step: build all the necessary CPS vars, in CPS style.
+Takes a CPS variable and its identified structure, and "return"
+(in CPS style, using the <code>k</code> argument) the structure completed
+with the CPS variable of its components. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:18878"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;build_structure&nbsp;v&nbsp;((),s)&nbsp;k&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;s&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Any</span>&nbsp;&#X2192;&nbsp;k&nbsp;(v,<span style="color: #228b22; ">Any</span>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Fold</span>(tn,&nbsp;subs)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+build_structure&nbsp;v&nbsp;subs&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;s&nbsp;&#X2192;&nbsp;k&nbsp;(v,&nbsp;<span style="color: #228b22; ">Fold</span>(tn,&nbsp;s)))<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>(n,l)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">array</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Array.</span>of_list&nbsp;l&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;loop&nbsp;i&nbsp;accu&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;i&nbsp;&lt;&nbsp;n<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #228b22; ">Build.</span>let_proj&nbsp;i&nbsp;v&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;v_i&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+build_structure&nbsp;v_i&nbsp;<span style="color: #228b22; ">array</span>.(i)&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;subs&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loop&nbsp;(i+1)&nbsp;(subs::accu)))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;k&nbsp;(v,&nbsp;<span style="color: #228b22; ">Tuple</span>(&nbsp;n,&nbsp;<span style="color: #228b22; ">List.</span>rev&nbsp;accu))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loop&nbsp;0&nbsp;[&nbsp;]</P><P></code></div>&nbsp;&nbsp;
+The main algorithm: first identify the structure, and then fill
+it with the CPS variables. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:19442"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;build&nbsp;v&nbsp;patts&nbsp;k&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;unit_s&nbsp;=&nbsp;unify_patts&nbsp;patts&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+build_structure&nbsp;v&nbsp;unit_s&nbsp;k<BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpstransform/rules.ml:19610"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Make</span>(<span style="color: #228b22; ">Expression</span>:<span style="color: #228b22; ">EXPRESSION</span>):<span style="color: #228b22; ">RULES</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P></code></div>&nbsp;&nbsp;
+The current status of pattern matching compilation is represented
+by a list of <code>rule</code>s and one <code>pattern_env</code>. <code>rule</code> contains
+information per rule being matched, while <code>pattern_env</code> contains
+information common to all the rules. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:19913"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;rule&nbsp;=&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Maps AST variables in the patterns compiled so far, to the CPS
+variables containing their value.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+map_addition:&nbsp;<span style="color: #228b22; ">Cpsbase.Var.</span>occur_maker&nbsp;<span style="color: #228b22; ">Ast.Variable.Map.</span>t;</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+The list of patterns that still have to be matched. Always
+have the same length than <code>env.remaining_vs</code>. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:20225"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+remaining_patts:&nbsp;<span style="color: #228b22; ">Ast.Pattern.</span>t&nbsp;<span style="color: #228b22; ">list</span>;</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+If all the elements in <code>env.remaining_vs</code> match
+<code>remaining_patts</code>, then this <code>body</code> is executed. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:20381"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+body:&nbsp;<span style="color: #228b22; ">Ast.Expression.</span>t;<BR>&nbsp;&nbsp;
+}</P><P><A NAME="src/cps/cpstransform/rules.ml:20416"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;pattern_env&nbsp;=&nbsp;{</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+The continuation to call if nothing matches: this continuation
+can raise a <code>match_failure</code> exception, or match another list of
+rules. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:20598"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+defaultk:&nbsp;<span style="color: #228b22; ">Cpsbase.Cont_var.</span>occur_maker;</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+The value against which the rules are matched (with their
+structures). 
+<BR><A NAME="src/cps/cpstransform/rules.ml:20731"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+remaining_vs:&nbsp;<span style="color: #228b22; ">Structure.</span>t&nbsp;<span style="color: #228b22; ">list</span>;</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+We are compiling a set of patterns in an expression: this is
+the environment corresponding to that expression. <code>expr_env</code> is
+used only when compiling the <code>body</code> of a <code>rule</code>. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:20966"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+expr_env:&nbsp;expr_env;<BR>&nbsp;&nbsp;
+}<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;expr_env&nbsp;=&nbsp;{</P><P></code></div>&nbsp;&nbsp;
+A mapping from AST variables to CPS variables. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:21069"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+map:&nbsp;<span style="color: #228b22; ">Cpsbase.Var.</span>occur_maker&nbsp;<span style="color: #228b22; ">Ast.Variable.Map.</span>t;</P><P></code></div>&nbsp;&nbsp;
+The continuation function, to which we "return" the result of
+executing the body of the rule.
+<BR><A NAME="src/cps/cpstransform/rules.ml:21229"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+kcontext:&nbsp;<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Build.</span>fresh<BR>&nbsp;&nbsp;
+}<BR><BR></code></div><B>3.</B>&nbsp;
+<A NAME="src/cps/cpstransform/rules.ml:21363"></A>Helper functions for transform_rules: define refutability,
+irrefutability, rules splitting by contiguous blocks. 
+<BR>&nbsp;&nbsp;
+A pattern is <EM>refutable</EM> if contains a specific
+<EM>variant</EM>. A <EM>variant</EM> is currently an integer, a
+boolean, or an injection (i.e. user-defined variant).</P><P>A pattern is <EM>irrefutable</EM> if it never refers to a specific
+variant. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:21756"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;is_refutable&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Wildcard</span>&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Variable</span>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">false</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Fold</span>(_,patt)&nbsp;&#X2192;&nbsp;is_refutable&nbsp;patt<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Tuple</span>(patts)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">List.</span>exists&nbsp;is_refutable&nbsp;patts<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Injection</span>&nbsp;_&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Constant</span>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span></P><P><A NAME="src/cps/cpstransform/rules.ml:22032"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_irrefutable&nbsp;patt&nbsp;=&nbsp;¬&nbsp;(is_refutable&nbsp;patt)</P><P></code></div>&nbsp;&nbsp;
+<code>split_firsts&nbsp;pred&nbsp;rules</code> returns two lists of rules,
+<code>(selected,other)</code>, with <code>selected</code> the first elements of <code>rules</code>
+that satisfy the predicate <code>pred</code>, and <code>other</code> the remaining
+elements (i.e. <code>other</code> is <code>[&nbsp;]</code> or so that <code>pred&nbsp;(<span style="color: #228b22; ">List</span>.hd&nbsp;other)&nbsp;=
+&nbsp;<span style="color: #a020f0; ">false</span></code>). 
+<BR><A NAME="src/cps/cpstransform/rules.ml:22371"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;split_firsts&nbsp;pred&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;[&nbsp;]&nbsp;&#X2192;&nbsp;[&nbsp;],[&nbsp;]<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;a::b&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;pred&nbsp;a&nbsp;&#X2192;&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(selected,&nbsp;other)&nbsp;=&nbsp;split_firsts&nbsp;pred&nbsp;b&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+a::selected,&nbsp;other<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;l&nbsp;&#X2192;&nbsp;[&nbsp;],&nbsp;l<BR>&nbsp;&nbsp;
+</P><P></code></div>&nbsp;&nbsp;
+<code>split_on_first_pattern&nbsp;pred&nbsp;l</code> returs two lists of rules, split
+according to whether their first pattern is satisfied by
+<code>pred</code>.
+<BR><A NAME="src/cps/cpstransform/rules.ml:22716"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;split_on_first_pattern&nbsp;pred&nbsp;rules&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+split_firsts&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;&nbsp;pred&nbsp;(<span style="color: #228b22; ">List.</span>hd&nbsp;rule.remaining_patts))&nbsp;rules<BR>&nbsp;&nbsp;
+<BR></code></div><B>4.</B>&nbsp;
+<A NAME="src/cps/cpstransform/rules.ml:22910"></A>Entry point to the pattern compilation loop. 
+<BR>&nbsp;&nbsp;
+Requires that <code>env.remaining_vs</code> and all <code>rule.remaining_patts</code>
+have the same length; and that the set of rules is not empty. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:23101"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;transform_rules&nbsp;rules&nbsp;env&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(rules&nbsp;&#X2262;&nbsp;[&nbsp;]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>(&nbsp;<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;n&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>length&nbsp;env.remaining_vs&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>for_all&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>length&nbsp;(rule.remaining_patts)&nbsp;&#X2261;&nbsp;n)&nbsp;rules);</P><P><A NAME="src/cps/cpstransform/rules.ml:23319"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;first&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>hd&nbsp;rules&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;first.remaining_patts&nbsp;<span style="color: #a020f0; ">with</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+No remaining pattern: we managed to match everything. Just
+execute the body of <code>first</code>, and discard the other rules. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:23524"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;[&nbsp;]&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(env.remaining_vs&nbsp;&#X2261;&nbsp;[&nbsp;]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;(<span style="color: #228b22; ">List.</span>tl&nbsp;rules&nbsp;&#X2262;&nbsp;[&nbsp;])<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #228b22; ">Log.Pattern_matching.</span>warning&nbsp;<span style="color: #8b2252; ">"There&nbsp;are&nbsp;unreachable&nbsp;rules"</span>;</P><P><A NAME="src/cps/cpstransform/rules.ml:23678"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;new_map&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Ast.Variable.Map.</span>add_map&nbsp;first.map_addition&nbsp;env.expr_env.map&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Expression.</span>transform&nbsp;first.body&nbsp;new_map&nbsp;env.expr_env.kcontext</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+At least one remaining pattern. If the pattern is refutable,
+select the rules beginning by a refutable pattern, else select
+the rules beginning by an irrefutable pattern. Try to match
+against these rules; if that fails, execute the other rules. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:24115"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;patt::other_patts&nbsp;&#X2192;</P><P><A NAME="src/cps/cpstransform/rules.ml:24143"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;split_rules&nbsp;pred&nbsp;f&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;selected,&nbsp;other&nbsp;=&nbsp;split_on_first_pattern&nbsp;pred&nbsp;rules&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  If there are <code>other</code> rules, and matching against <code>selected</code>
+	 fails, then matching continues against the rules in
+	 <code>other</code>: so we create a new continuation to be used as
+	 <code>defaultk</code>, that will call the previous <code>defaultk</code> if they
+	 fail to match too.</P><P>	 If there are no <code>other</code> rule, execution jumps to the
+	 existing <code>defaultk</code> if the matching fails.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;change_defaultk_if_other&nbsp;g&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;other&nbsp;&#X2261;&nbsp;[&nbsp;]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;g&nbsp;env.defaultk<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;<span style="color: #228b22; ">Build.</span>let_cont<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;&#X2192;&nbsp;transform_rules&nbsp;other&nbsp;env)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;k&nbsp;&#X2192;&nbsp;g&nbsp;k)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+change_defaultk_if_other&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;defaultk&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;v&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>hd&nbsp;env.remaining_vs&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;new_env&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;env&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_vs&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>tl&nbsp;env.remaining_vs;&nbsp;defaultk&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+f&nbsp;v&nbsp;selected&nbsp;other&nbsp;new_env)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpstransform/rules.ml:24975"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;is_irrefutable&nbsp;patt<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;split_rules&nbsp;is_irrefutable&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;v&nbsp;selected&nbsp;other&nbsp;env&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  The irrefutable patterns complete the matches, so <code>other</code>
+rules are useless.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;other_patts&nbsp;&#X2261;&nbsp;[&nbsp;]&nbsp;&#X2227;&nbsp;other&nbsp;&#X2262;&nbsp;[&nbsp;]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #228b22; ">Log.Pattern_matching.</span>warning&nbsp;<span style="color: #8b2252; ">"There&nbsp;are&nbsp;unreachable&nbsp;rules"</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules_irrefutable&nbsp;v&nbsp;selected&nbsp;env)</P><P><A NAME="src/cps/cpstransform/rules.ml:25343"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;split_rules&nbsp;is_refutable&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;v&nbsp;selected&nbsp;_&nbsp;env&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(env.defaultk&nbsp;&#X2262;&nbsp;<span style="color: #228b22; ">Obj.</span>magic&nbsp;0);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;patt&nbsp;<span style="color: #a020f0; ">with</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Patterns refering to a specific variant, compiled into a case. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:25554"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Injection</span>(_,n,_)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules_injection&nbsp;n&nbsp;v&nbsp;selected&nbsp;env<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Constant</span>(<span style="color: #228b22; ">Constant.Integer</span>&nbsp;_)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules_integer&nbsp;v&nbsp;selected&nbsp;env<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Constant</span>(<span style="color: #228b22; ">Constant.Bool</span>&nbsp;_)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules_boolean&nbsp;v&nbsp;selected&nbsp;env<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Constant</span>(_)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Log.Pattern_matching.</span>raise_compiler_error<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #8b2252; ">"arbitrary&nbsp;constants&nbsp;impossible"</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Structural patterns that increase the <code>remaining_patts</code>. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:26064"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Fold</span>(tn,_)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules_fold&nbsp;tn&nbsp;v&nbsp;selected&nbsp;env<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Tuple</span>&nbsp;l&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules_tuple&nbsp;(<span style="color: #228b22; ">List.</span>length&nbsp;l)&nbsp;v&nbsp;selected&nbsp;env</P><P><A NAME="src/cps/cpstransform/rules.ml:26254"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Log.Pattern_matching.</span>raise_compiler_error<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #8b2252; ">"refutable&nbsp;pattern&nbsp;expected"</span>&nbsp;)<BR></code></div><B>5.</B>&nbsp;
+<A NAME="src/cps/cpstransform/rules.ml:26430"></A>Irrefutable patterns. 
+<BR>&nbsp;&nbsp;
+As all values of the components of the tuple have already been
+retrieved (and are in <code>structv</code>), the only responsibility of this
+function is to update the <code>map_addition</code> of the <code>rules</code>. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:26662"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;transform_rules_irrefutable&nbsp;structv&nbsp;rules&nbsp;env&nbsp;=</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Jointly traverse a <code>pattern</code> (containing the AST variable
+names) and a <code>structure</code> (containing the CPS variables) to
+improve the <code>map_addition</code> (containing a map from AST
+variables to CPS variables). 
+<BR><A NAME="src/cps/cpstransform/rules.ml:26948"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;loop&nbsp;map&nbsp;pattern&nbsp;(v,structure)&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;pattern&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Wildcard</span>&nbsp;&#X2192;&nbsp;map<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Variable</span>&nbsp;var&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Ast.Variable.Map.</span>add&nbsp;var&nbsp;v&nbsp;map<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Tuple</span>&nbsp;l&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">Structure.Tuple</span>(_,structs)&nbsp;=&nbsp;structure&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>fold_left2&nbsp;loop&nbsp;map&nbsp;l&nbsp;structs<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Fold</span>(_,patt)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">Structure.Fold</span>(_,structure)&nbsp;=&nbsp;structure&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loop&nbsp;map&nbsp;patt&nbsp;structure<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  Not an irrefutable pattern.  &#X2217;)</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpstransform/rules.ml:27635"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rules&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;patt&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>hd&nbsp;rule.remaining_patts&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;rule&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;map_addition&nbsp;=&nbsp;loop&nbsp;rule.map_addition&nbsp;patt&nbsp;structv;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+remaining_patts&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>tl&nbsp;rule.remaining_patts&nbsp;})<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rules&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpstransform/rules.ml:27859"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules&nbsp;rules&nbsp;env<BR></code></div><B>6.</B>&nbsp;
+<A NAME="src/cps/cpstransform/rules.ml:27963"></A>Structural refutable patterns. 
+<BR>&nbsp;&nbsp;
+Replace the head of <code>remaining_patts</code> and <code>remaining_vs</code>, which
+is a Tuple, by the contents of this tuple. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:28120"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;transform_rules_tuple&nbsp;n&nbsp;v&nbsp;rules&nbsp;env&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rules&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;rule.remaining_patts&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;(<span style="color: #228b22; ">Ast.Pattern.Tuple</span>&nbsp;l)::matches&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(<span style="color: #228b22; ">List.</span>length&nbsp;l&nbsp;&#X2261;&nbsp;n);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;rule&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_patts&nbsp;=&nbsp;l&nbsp;@&nbsp;matches&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  Already checked by Structure and type checking.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+)&nbsp;rules&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpstransform/rules.ml:28461"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(_,<span style="color: #228b22; ">Structure.Tuple</span>(nt,vs))&nbsp;=&nbsp;v&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(nt&nbsp;&#X2261;&nbsp;n);<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules&nbsp;rules&nbsp;{&nbsp;env&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_vs&nbsp;=&nbsp;vs&nbsp;@&nbsp;env.remaining_vs&nbsp;}</P><P></code></div>&nbsp;&nbsp;
+Replace the head of <code>remaining_patts</code> and <code>remaining_vs</code>, which
+is a Fold, by the contents of the fold. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:28720"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;transform_rules_fold&nbsp;tn&nbsp;v&nbsp;rules&nbsp;env&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rules&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;rule.remaining_patts&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Fold</span>(t,patt)::matches&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(tn&nbsp;&#X2261;&nbsp;t);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;rule&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_patts&nbsp;=&nbsp;patt::matches&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;<span style="color: #b22222">(&#X2217;  Already checked by Structure and type checking.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+)&nbsp;rules&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpstransform/rules.ml:29048"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(_,<span style="color: #228b22; ">Structure.Fold</span>(tnf,v))&nbsp;=&nbsp;v&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;(tnf&nbsp;&#X2261;&nbsp;tn);<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules&nbsp;rules&nbsp;{&nbsp;env&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_vs&nbsp;=&nbsp;v::env.remaining_vs&nbsp;}<BR></code></div><B>7.</B>&nbsp;
+<A NAME="src/cps/cpstransform/rules.ml:29261"></A>Specific variants, that are compiled into a case. 
+<BR>&nbsp;&nbsp;
+<code>map_into_casemap</code> is similar to <code><span style="color: #228b22; ">List</span>.map</code>, except that rather
+than returning a linear list, it splits the list into a casemap
+according to the key returned by the <code>f</code> function. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:29514"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;map_into_casemap&nbsp;rules&nbsp;f&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;casemap&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>fold_left<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;accu&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(i,res)&nbsp;=&nbsp;f&nbsp;rule&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;previous&nbsp;=&nbsp;<span style="color: #a020f0; ">try</span>&nbsp;(<span style="color: #228b22; ">CaseMap.</span>find&nbsp;i&nbsp;accu)&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #228b22; ">Not_found</span>&nbsp;&#X2192;&nbsp;[&nbsp;]&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">CaseMap.</span>add&nbsp;i&nbsp;(res::previous)&nbsp;accu)&nbsp;<span style="color: #228b22; ">CaseMap.</span>empty&nbsp;rules<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">CaseMap.</span>map&nbsp;<span style="color: #228b22; ">List.</span>rev&nbsp;casemap</P><P></code></div>&nbsp;&nbsp;
+<code>build_rules_casemap</code> compiles the code that matches <code>v</code> against
+the rules in <code>rules_casemap</code>. To each key in the casemap
+corresponds a list of rules, which is compiled into a
+continuation using <code>transform_rules</code>; when all continuations are
+obtained, the actual <code>case</code> instruction can be built.</P><P>The <code>g</code> functional parameter allows to build code and change
+<code>env</code> before the list of rules are compiled. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:30252"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;build_rules_casemap&nbsp;(v,_)&nbsp;rules_casemap&nbsp;env&nbsp;g&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Compiles each list of rules in the casemap into a continuation,
+anc accumulate them into <code>map</code>.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;f&nbsp;map&nbsp;i&nbsp;rules_for_i&nbsp;nextf&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>let_cont<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;x&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+g&nbsp;x&nbsp;rules_for_i&nbsp;env&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;env&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules&nbsp;rules_for_i&nbsp;env))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;k&nbsp;&#X2192;&nbsp;nextf&nbsp;(<span style="color: #228b22; ">CaseMap.</span>add&nbsp;i&nbsp;k&nbsp;map))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">CaseMap.</span>foldk&nbsp;f&nbsp;<span style="color: #228b22; ">CaseMap.</span>empty&nbsp;rules_casemap&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;map&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Build.</span>case&nbsp;v&nbsp;~default:env.defaultk&nbsp;map)</P><P></code></div>&nbsp;&nbsp;
+Compilation of integers and boolean is straightforward: we just
+have to extract the integer number corresponding to the case. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:30865"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;transform_rules_integer&nbsp;v&nbsp;rules&nbsp;env&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rules_casemap&nbsp;=&nbsp;map_into_casemap&nbsp;rules&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;rule.remaining_patts&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Constant</span>(<span style="color: #228b22; ">Constant.Integer</span>&nbsp;i)::patts&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(i,&nbsp;{&nbsp;rule&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_patts&nbsp;=&nbsp;patts&nbsp;})<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+build_rules_casemap&nbsp;v&nbsp;rules_casemap&nbsp;env&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;_&nbsp;env&nbsp;k&nbsp;&#X2192;&nbsp;k&nbsp;env)</P><P><A NAME="src/cps/cpstransform/rules.ml:31209"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;transform_rules_boolean&nbsp;v&nbsp;rules&nbsp;env&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rules_casemap&nbsp;=&nbsp;map_into_casemap&nbsp;rules&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;rule.remaining_patts&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Constant</span>(<span style="color: #228b22; ">Constant.Bool</span>&nbsp;b)::patts&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;i&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;b&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #a020f0; ">false</span>&nbsp;&#X2192;&nbsp;0&nbsp;&#X2223;&nbsp;<span style="color: #a020f0; ">true</span>&nbsp;&#X2192;&nbsp;1&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(i,&nbsp;{&nbsp;rule&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_patts&nbsp;=&nbsp;patts&nbsp;})<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+build_rules_casemap&nbsp;v&nbsp;rules_casemap&nbsp;env&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;_&nbsp;env&nbsp;k&nbsp;&#X2192;&nbsp;k&nbsp;env)</P><P></code></div>&nbsp;&nbsp;
+In addition to extracting the number for the case, injection also
+add the pattern they contain to the head of <code>remaining_patts</code>. At
+the beginning of the continuation <code>k</code> corresponding to a set of
+rules that match a variant, the structure needed to these rules
+are identified and obtained against the CPS var argument of <code>k</code>,
+and added at the head of <code>remaining_vs</code>. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:32007"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;transform_rules_injection&nbsp;n&nbsp;v&nbsp;rules&nbsp;env&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(rules_casemap)&nbsp;=&nbsp;map_into_casemap&nbsp;rules&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;rule&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;rule.remaining_patts&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Pattern.Injection</span>(i,j,patt)::patts&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(i,&nbsp;{&nbsp;rule&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_patts&nbsp;=&nbsp;patt::patts&nbsp;})<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpstransform/rules.ml:32285"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+build_rules_casemap&nbsp;v&nbsp;rules_casemap&nbsp;env&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;x&nbsp;rules&nbsp;env&nbsp;k&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;patts&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;{&nbsp;remaining_patts&nbsp;=&nbsp;patt::_&nbsp;}&nbsp;&#X2192;&nbsp;patt&nbsp;)&nbsp;rules&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Structure.</span>build&nbsp;x&nbsp;patts&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;v&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;env&nbsp;=&nbsp;{&nbsp;env&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;remaining_vs&nbsp;=&nbsp;v::env.remaining_vs&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+k&nbsp;env))<BR>&nbsp;&nbsp;
+</P><P></code></div>&nbsp;&nbsp;
+Entry point of the module. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:32668"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;transform&nbsp;l&nbsp;v&nbsp;map&nbsp;kcontext&nbsp;=</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Note: we could directly call <code>match_failure</code>. But should we
+allow this degenerate case? For now we fail if this happens. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:32842"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;l&nbsp;&#X2261;&nbsp;[&nbsp;]<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"Pattern&nbsp;matching&nbsp;with&nbsp;no&nbsp;rules&nbsp;is&nbsp;not&nbsp;implemented"</span>;</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+If there is only one rule (e.g. compiling <code><span style="color: #0000ff; font-weight: bold;">let</span></code>), keep the
+context. Else, create a "join" continuation, to avoid code
+duplication. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:33084"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;maybe_change_kcontext&nbsp;k&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;<span style="color: #228b22; ">List.</span>tl&nbsp;l&nbsp;&#X2261;&nbsp;[&nbsp;]&nbsp;<span style="color: #a020f0; ">then</span>&nbsp;k&nbsp;kcontext<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;<span style="color: #228b22; ">Build.</span>let_cont<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;x&nbsp;&#X2192;&nbsp;kcontext&nbsp;x)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;kjoin&nbsp;&#X2192;&nbsp;k&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;x&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Build.</span>apply_cont&nbsp;kjoin&nbsp;x))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+maybe_change_kcontext&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;kcontext&nbsp;&#X2192;</P><P><A NAME="src/cps/cpstransform/rules.ml:33323"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;selected,&nbsp;others&nbsp;=&nbsp;split_firsts&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;(p,_)&nbsp;&#X2192;&nbsp;is_refutable&nbsp;p)&nbsp;l&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+If there is an irrefutable rule, then <code>match_failure</code> is
+never raised. We avoid creating a <code>defaultk</code> continuation
+using <code><span style="color: #228b22; ">Obj</span>.magic&nbsp;0</code>; we shorten <code>l</code> to ensure that <code>defaultk</code>
+will never be used. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:33637"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;maybe_create_match_failure&nbsp;k&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;others&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;[&nbsp;]&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Build.</span>let_match_failure&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;kmf&nbsp;&#X2192;&nbsp;k&nbsp;kmf&nbsp;selected)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;other::rest&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;rest&nbsp;&#X2262;&nbsp;[&nbsp;]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #228b22; ">Log.Pattern_matching.</span>warning&nbsp;<span style="color: #8b2252; ">"There&nbsp;are&nbsp;unreachable&nbsp;rules"</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+k&nbsp;(<span style="color: #228b22; ">Obj.</span>magic&nbsp;0)&nbsp;(selected&nbsp;@&nbsp;[other])&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpstransform/rules.ml:33947"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+maybe_create_match_failure&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;defaultk&nbsp;l&nbsp;&#X2192;</P><P><A NAME="src/cps/cpstransform/rules.ml:34000"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;patts&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;fst&nbsp;l&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Initialize pattern compilation. 
+<BR><A NAME="src/cps/cpstransform/rules.ml:34086"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rules&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>map&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;(patt,body)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;map_addition&nbsp;=&nbsp;<span style="color: #228b22; ">Ast.Variable.Map.</span>empty;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+remaining_patts&nbsp;=&nbsp;[patt];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+body&nbsp;=&nbsp;body&nbsp;})&nbsp;l&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;expr_env&nbsp;=&nbsp;{&nbsp;map;&nbsp;kcontext&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Structure.</span>build&nbsp;v&nbsp;patts&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;structure&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;env&nbsp;=&nbsp;{&nbsp;remaining_vs&nbsp;=&nbsp;[structure];&nbsp;defaultk;&nbsp;expr_env&nbsp;}&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transform_rules&nbsp;rules&nbsp;env&nbsp;)))</P><P><A NAME="src/cps/cpstransform/rules.ml:34465"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

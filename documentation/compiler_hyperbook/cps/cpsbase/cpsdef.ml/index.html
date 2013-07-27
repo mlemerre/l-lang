@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpsbase/cpsdef.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpsbase/cpsdef.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Cpsdef-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Cpsdef</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsdef.ml:0"></A><A NAME="src/cps/cpsbase/cpsdef.ml:106"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">CaseMap</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Extensions.Map.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">int</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;compare&nbsp;=&nbsp;<span style="color: #228b22; ">Pervasives.</span>compare<BR>
+<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:207"></A>
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;&#X3B1;&nbsp;case_map&nbsp;=&nbsp;&#X3B1;&nbsp;<span style="color: #228b22; ">CaseMap.</span>t</P><P></code></div>
+</P><!--TOC subsection Variables-->
+<H3 CLASS="subsection"><!--SEC ANCHOR -->Variables</H3><!--SEC END --><P> 
+<BR><B>2.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsdef.ml:275"></A>The definition or variables and occurrences originate from
+<code><span style="color: #228b22; ">Cpsvar</span></code>. Note that <code><span style="color: #228b22; ">Cpsvar</span></code> makes variables and occurrences
+unique, avoiding any need for alpha conversion. 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:453"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var&nbsp;=&nbsp;(var_desc,occur_desc)&nbsp;<span style="color: #228b22; ">Cpsvar.</span>variable<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;occur&nbsp;=&nbsp;(var_desc,occur_desc)&nbsp;<span style="color: #228b22; ">Cpsvar.</span>occurrence<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_var&nbsp;=&nbsp;(cont_var_desc,cont_occur_desc)&nbsp;<span style="color: #228b22; ">Cpsvar.</span>variable<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_occur&nbsp;=&nbsp;(cont_var_desc,cont_occur_desc)&nbsp;<span style="color: #228b22; ">Cpsvar.</span>occurrence</P><P></code></div>
+</P><!--TOC subsection Expressions-->
+<H3 CLASS="subsection"><!--SEC ANCHOR -->Expressions</H3><!--SEC END --><P> 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:720"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;expression_&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;×&nbsp;primitive&nbsp;×&nbsp;expression<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;cont_var&nbsp;×&nbsp;var&nbsp;×&nbsp;expression&nbsp;×&nbsp;expression<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply_cont</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;cont_occur&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;function_type&nbsp;×&nbsp;occur&nbsp;×&nbsp;cont_occur&nbsp;×&nbsp;occur&nbsp;<span style="color: #228b22; ">list</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Case</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur&nbsp;×&nbsp;cont_occur&nbsp;case_map&nbsp;×&nbsp;cont_occur&nbsp;<span style="color: #228b22; ">option</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Halt</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:1018"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;primitive&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Value</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;value<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Projection</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_operation</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Constant.Ibop.</span>t&nbsp;×&nbsp;occur&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_predicate</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Constant.Ibpred.</span>t&nbsp;×&nbsp;occur&nbsp;×&nbsp;occur</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:1601"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;value&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Constant</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Constant.</span>t<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur&nbsp;<span style="color: #228b22; ">list</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Injection</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Lambda</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;function_type&nbsp;×&nbsp;cont_var&nbsp;×&nbsp;var&nbsp;<span style="color: #228b22; ">list</span>&nbsp;×&nbsp;expression<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">External</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">string</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:1786"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;function_type&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Closure</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">No_environment</span></P><P></code></div>
+</P><!--TOC subsection Definitions-->
+<H3 CLASS="subsection"><!--SEC ANCHOR -->Definitions</H3><!--SEC END --><P> 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:1993"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;definition&nbsp;=&nbsp;<span style="color: #228b22; ">Definition</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;visibility&nbsp;×&nbsp;definition_type<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;visibility&nbsp;=&nbsp;<span style="color: #228b22; ">Public</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Private</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Unused</span><BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;definition_type&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Static_value</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;value<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Dynamic_value</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;expression<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;definitions&nbsp;=&nbsp;definition&nbsp;<span style="color: #228b22; ">list</span></P><P></code></div>
+</P><!--TOC subsection Backlinks and mutability for efficient operations-->
+<H3 CLASS="subsection"><!--SEC ANCHOR -->Backlinks and mutability for efficient operations</H3><!--SEC END --><P> 
+<BR><B>3.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsdef.ml:2298"></A>The <code>expression_</code> type defines the logical structure of an
+expression, and we insert this structure between any two
+<code>expression_</code>s, or between a <code>expression_</code> and its <code>definition</code>. It
+implements a mutable double-link between an expression and its
+parent, (which can be an expression or a top-level definition).</P><P>Note that an expression has only one parent, and thus can appear
+only once in a tree. 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:2713"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;expression&nbsp;=<BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #a020f0; ">mutable</span>&nbsp;enclosing:enclosing;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">mutable</span>&nbsp;expression:expression_&nbsp;<span style="color: #228b22; ">option</span>&nbsp;}</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:2808"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;enclosing&nbsp;=<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_definition</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;definition<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_expression</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;expression<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_uninitialized</span><BR></code></div><B>4.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpsdef.ml:2933"></A>For now we have only implemented uplinks from variables to their
+binding sites. We should hade uplinks from occurrences to the site
+that use them, and do the same for continuation variables. 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:3134"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;var_desc&nbsp;=&nbsp;{&nbsp;<span style="color: #a020f0; ">mutable</span>&nbsp;binding_site_var:enclosing;&nbsp;}<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;occur_desc&nbsp;=&nbsp;<span style="color: #228b22; ">unit</span><BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_var_desc&nbsp;=&nbsp;<span style="color: #228b22; ">unit</span><BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_occur_desc&nbsp;=&nbsp;<span style="color: #228b22; ">unit</span></P><P></code></div>
+</P><!--TOC subsection Instantiations of <code><span style="color: #228b22; ">Cpsvar</span></code>-->
+<H3 CLASS="subsection"><!--SEC ANCHOR -->Instantiations of <code><span style="color: #228b22; ">Cpsvar</span></code></H3><!--SEC END --><P> 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:3313"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_type&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsvar.</span>occur_type&nbsp;=&nbsp;<span style="color: #228b22; ">Recursive</span>&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Non_recursive</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:3378"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">VAR_RW</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_maker<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var</span>:&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;make&nbsp;:&nbsp;<span style="color: #228b22; ">unit</span>&nbsp;&#X2192;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;init:&nbsp;var&nbsp;&#X2192;&nbsp;enclosing&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;number_of_occurrences&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">No_occurrence</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">One_occurrence</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Several_occurrences</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;number_of_occurrences:&nbsp;var&nbsp;&#X2192;&nbsp;number_of_occurrences<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;fold_on_occurrences:&nbsp;var&nbsp;&#X2192;&nbsp;&#X3B1;&nbsp;&#X2192;&nbsp;(&#X3B1;&nbsp;&#X2192;&nbsp;occur&nbsp;&#X2192;&nbsp;&#X3B1;)&nbsp;&#X2192;&nbsp;&#X3B1;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;replace_with:&nbsp;var&nbsp;&#X2192;&nbsp;var&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;replace_all_non_recursive_occurrences_of_with:&nbsp;var&nbsp;&#X2192;&nbsp;var&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;to_string&nbsp;:&nbsp;var&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">string</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;binding_site:&nbsp;var&nbsp;&#X2192;&nbsp;enclosing<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;set_binding_site:&nbsp;var&nbsp;&#X2192;&nbsp;enclosing&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Map</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Map.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;key&nbsp;=&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Set</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Set.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;elt&nbsp;=&nbsp;var<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:4105"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Occur</span>:&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;maker&nbsp;=&nbsp;var&nbsp;×&nbsp;occur_type<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;maker:&nbsp;var&nbsp;&#X2192;&nbsp;maker<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;rec_maker:&nbsp;var&nbsp;&#X2192;&nbsp;maker<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;make&nbsp;:&nbsp;maker&nbsp;&#X2192;&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;delete:&nbsp;occur&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;binding_variable&nbsp;:&nbsp;occur&nbsp;&#X2192;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;to_string&nbsp;:&nbsp;occur&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">string</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Map</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Map.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;key&nbsp;=&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Set</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Set.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;elt&nbsp;=&nbsp;occur<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:4457"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var_</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsvar.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;variable_description&nbsp;=&nbsp;var_desc<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occurrence_description&nbsp;=&nbsp;occur_desc<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;var_prefix&nbsp;=&nbsp;<span style="color: #8b2252; ">"x"</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:4603"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Cont_var_</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsvar.Make</span>(<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;variable_description&nbsp;=&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occurrence_description&nbsp;=&nbsp;<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;var_prefix&nbsp;=&nbsp;<span style="color: #8b2252; ">"k"</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span>)</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:4744"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var&nbsp;=&nbsp;<span style="color: #228b22; ">Var_.</span>var<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_maker&nbsp;=&nbsp;var&nbsp;×&nbsp;occur_type</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:4826"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur&nbsp;=&nbsp;<span style="color: #228b22; ">Var_.</span>occur<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">include</span>&nbsp;<span style="color: #228b22; ">Var_.Var</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;binding_site&nbsp;v&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;desc&nbsp;=&nbsp;<span style="color: #228b22; ">Var_.Var.</span>description&nbsp;v&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+desc.binding_site_var</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:4994"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;init&nbsp;v&nbsp;e&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var_.Var.</span>set_description&nbsp;v&nbsp;{&nbsp;binding_site_var=e}</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Note that <code>set_binding_site</code> requies that
+<code><span style="color: #228b22; ">Var_</span>.<span style="color: #228b22; ">Var</span>.description</code> exists, i.e. that <code>init</code> was called. 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:5190"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_binding_site&nbsp;v&nbsp;e&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;desc&nbsp;=&nbsp;<span style="color: #228b22; ">Var_.Var.</span>description&nbsp;v&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+desc.binding_site_var&nbsp;&#X2190;&nbsp;e</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:5300"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Occur</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Var_.Occur</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:5339"></A>
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_maker&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Occur.</span>maker</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:5377"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Cont_var</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var&nbsp;=&nbsp;<span style="color: #228b22; ">Cont_var_.</span>var<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_maker&nbsp;=&nbsp;var&nbsp;×&nbsp;occur_type<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur&nbsp;=&nbsp;<span style="color: #228b22; ">Cont_var_.</span>occur<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">include</span>&nbsp;<span style="color: #228b22; ">Cont_var_.Var</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;binding_site&nbsp;v<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"binding_site&nbsp;for&nbsp;continuation&nbsp;variables&nbsp;not&nbsp;implemented"</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:5649"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_binding_site&nbsp;v&nbsp;e<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+=&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"binding_site&nbsp;for&nbsp;continuation&nbsp;variables&nbsp;not&nbsp;implemented"</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:5758"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;init&nbsp;v&nbsp;e&nbsp;=&nbsp;()</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:5783"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Occur</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cont_var_.Occur</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:5827"></A>
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;cont_occur_maker&nbsp;=&nbsp;<span style="color: #228b22; ">Cont_var.Occur.</span>maker</P><P></code></div>
+</P><!--TOC subsection The <code><span style="color: #228b22; ">Expression</span></code>, <code><span style="color: #228b22; ">Empty</span></code>, and <code><span style="color: #228b22; ">Fresh</span></code> modules-->
+<H3 CLASS="subsection"><!--SEC ANCHOR -->The <code><span style="color: #228b22; ">Expression</span></code>, <code><span style="color: #228b22; ">Empty</span></code>, and <code><span style="color: #228b22; ">Fresh</span></code> modules</H3><!--SEC END --><P> 
+<BR>
+Definitions common to <code><span style="color: #228b22; ">Expression</span></code>, <code><span style="color: #228b22; ">Fresh</span></code>, et <code><span style="color: #228b22; ">Empty</span></code>. 
+<BR><A NAME="src/cps/cpsbase/cpsdef.ml:6006"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Common</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;get&nbsp;t&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;t.expression&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #228b22; ">Some</span>(t_)&nbsp;&#X2192;&nbsp;t_&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6107"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;t&nbsp;t_&nbsp;=&nbsp;t.expression&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">Some</span>&nbsp;t_</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6150"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;empty&nbsp;t&nbsp;=&nbsp;t.expression&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">None</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6189"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_empty&nbsp;t&nbsp;=&nbsp;t.expression&nbsp;&#X2261;&nbsp;<span style="color: #228b22; ">None</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6232"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;enclosing&nbsp;t&nbsp;=&nbsp;t.enclosing</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6266"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_enclosing&nbsp;t&nbsp;e&nbsp;=&nbsp;t.enclosing&nbsp;&#X2190;&nbsp;e</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6311"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;delete_enclosing&nbsp;t&nbsp;=&nbsp;t.enclosing&nbsp;&#X2190;&nbsp;<span style="color: #228b22; ">Enclosing_uninitialized</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6379"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_fresh&nbsp;t&nbsp;=&nbsp;t.enclosing&nbsp;&#X2261;&nbsp;<span style="color: #228b22; ">Enclosing_uninitialized</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6439"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6447"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Empty</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6470"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;expression</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6493"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_empty&nbsp;=&nbsp;<span style="color: #228b22; ">Common.</span>is_empty</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6528"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;empty&nbsp;expression&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>(&nbsp;¬(&nbsp;is_empty&nbsp;expression));<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Common.</span>empty&nbsp;expression;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+expression</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6640"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;t&nbsp;t_&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>(&nbsp;is_empty&nbsp;t);<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Common.</span>set&nbsp;t&nbsp;t_</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6704"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;fill&nbsp;t&nbsp;t_&nbsp;=&nbsp;set&nbsp;t&nbsp;t_;&nbsp;t</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6736"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6741"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Fresh</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6764"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;expression</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6787"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;make&nbsp;t_&nbsp;=&nbsp;{&nbsp;expression&nbsp;=&nbsp;<span style="color: #228b22; ">Some</span>&nbsp;t_;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+enclosing&nbsp;=&nbsp;<span style="color: #228b22; ">Enclosing_uninitialized</span>&nbsp;}<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_fresh&nbsp;=&nbsp;<span style="color: #228b22; ">Common.</span>is_fresh</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6919"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;get&nbsp;t&nbsp;=&nbsp;<span style="color: #a020f0; ">assert</span>(&nbsp;is_fresh&nbsp;t);&nbsp;<span style="color: #228b22; ">Common.</span>get&nbsp;t</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:6968"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_enclosing&nbsp;t&nbsp;e&nbsp;=&nbsp;<span style="color: #a020f0; ">assert</span>(&nbsp;is_fresh&nbsp;t);&nbsp;<span style="color: #228b22; ">Common.</span>set_enclosing&nbsp;t&nbsp;e;<BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpsdef.ml:7046"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Expression</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;get&nbsp;=&nbsp;<span style="color: #228b22; ">Common.</span>get<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;<span style="color: #228b22; ">Common.</span>set</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:7120"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;enclosing&nbsp;=&nbsp;<span style="color: #228b22; ">Common.</span>enclosing</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:7157"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_enclosing&nbsp;=&nbsp;<span style="color: #228b22; ">Common.</span>set_enclosing</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:7203"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;make&nbsp;?reconnect&nbsp;t_&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;reconnect&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Fresh.</span>make&nbsp;t_<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(t)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Empty.</span>fill&nbsp;t&nbsp;t_<BR>&nbsp;&nbsp;
+</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:7318"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;discard&nbsp;expression&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Common.</span>delete_enclosing&nbsp;expression;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Common.</span>empty&nbsp;expression<BR>&nbsp;&nbsp;
+</P><P><A NAME="src/cps/cpsbase/cpsdef.ml:7419"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR><BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

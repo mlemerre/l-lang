@@ -29,6 +29,7 @@ body { padding:60px }
               margin-bottom: 0;
             }
 
+/*  */
 .post-title { margin-bottom: 2.5em; margin-left:-1em; padding-left:1em; padding-bottom:0.5em;
               border-bottom: 2px solid gray;
             }
@@ -58,3 +59,64 @@ pre {
     white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
     white-space: pre-wrap;      /* css-3 */
 }
+
+/*  */
+
+/*  */
+.css-treeview input + label + ul { display: block; }
+.css-treeview input + label + a + ul { display: block; }
+.css-treeview input:not(:checked) + label + ul { display: none; }
+.css-treeview input:not(:checked) + label + a + ul { display: none; }
+
+/*  */
+.css-treeview input { position: absolute; opacity: 0; }
+
+.css-treeview ul { list-style-type: none }
+
+
+
+
+/*  */
+.css-treeview input:disabled + label { font-weight: bold; }
+
+
+/*  */
+.css-treeview input + label { display:inline-block;
+                              width:1em;
+                              transition: 0.4s;
+                              -moz-transition: 0.4s;
+                              -webkit-transition: 0.4s;
+                              -o-transition: 0.4s;
+
+ }
+
+.css-treeview input:checked + label { transform: rotate(90deg);
+                                      -moz-transform: rotate(90deg);
+                                      -o-transform: rotate(90deg);
+                                      -webkit-transform: rotate(90deg);
+                                    }
+
+/*  */
+@media screen and (-webkit-min-device-pixel-ratio:0)
+{
+    .css-treeview
+    {
+        -webkit-animation: webkit-adjacent-element-selector-bugfix infinite 1s;
+    }
+
+    @-webkit-keyframes webkit-adjacent-element-selector-bugfix
+    {
+        from
+        {
+            padding: 0;
+        }
+        to
+        {
+            padding: 0;
+        }
+    }
+}
+
+/* */
+.disabled a { opacity: 0.5; }
+a[class~="disabled"] { opacity: 0.5; }

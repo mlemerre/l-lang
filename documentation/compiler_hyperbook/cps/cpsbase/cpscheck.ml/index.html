@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpsbase/cpscheck.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpsbase/cpscheck.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Cpscheck-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Cpscheck</H2><!--SEC END --><P>
+<B>1.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpscheck.ml:0"></A><A NAME="src/cps/cpsbase/cpscheck.ml:40"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Cpsdef</span></P><P></code></div>
+For each kind of check, we provide a function to check an entire
+<code>expression</code>. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:142"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">S</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;expression:&nbsp;expression&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR></code></div><B>2.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpscheck.ml:206"></A>This module allows checking the uplinks. We recursively traverse a
+expression, and for each expression <code>t</code> we find, we examine its elements
+(variables, occurrences, subexpressions...). If the element has an uplink,
+it must point to <code>t</code>. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:454"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Uplinks</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P></code></div>&nbsp;&nbsp;
+The following function is necessary (rather than just comparing 2
+enclosings with <code>=</code>) because comparison of uplinks is done with
+<code>&#X2261;</code>; so we must perform a match on the enclosing expression before
+comparing it with x<code>&#X2261;</code>. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:725"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;check_enclosing_equal_to_expression&nbsp;enclosing&nbsp;expression&nbsp;=</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:791"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;print_error()&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"\nError:&nbsp;wrong&nbsp;uplink:&nbsp;should&nbsp;point&nbsp;to&nbsp;%a@."</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Cpsprint.</span>expression&nbsp;expression&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:926"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;enclosing&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_expression</span>&nbsp;t&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;t&nbsp;&#X2261;&nbsp;expression&nbsp;&#X2192;&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_expression</span>&nbsp;t&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(print_error();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"Instead,&nbsp;points&nbsp;to&nbsp;%a@."</span>&nbsp;<span style="color: #228b22; ">Cpsprint.</span>expression&nbsp;t;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;(print_error();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>)<BR>&nbsp;&nbsp;
+</P><P></code></div>&nbsp;&nbsp;
+Checks that all the components in an expression (subexpressions,
+variables, occurrences...) have their uplink correctly set to <code>t</code>. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:1359"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;one_expression&nbsp;t&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Each of the following helper function performs a complete check
+on the corresponding element (e.g. <code>var</code> checks variables,
+<code>occ</code> occurences etc. In addition <code>body</code> recurses.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;body&nbsp;t&#X2019;&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+check_enclosing_equal_to_expression&nbsp;(<span style="color: #228b22; ">Expression.</span>enclosing&nbsp;t&#X2019;)&nbsp;t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;var&nbsp;var&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;enclosing&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Var.</span>binding_site&nbsp;var&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+check_enclosing_equal_to_expression&nbsp;enclosing&nbsp;t&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;var_list&nbsp;vl&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>iter&nbsp;var&nbsp;vl&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Note that <code>cont_var</code>, <code>occ</code> and <code>cont_occ</code> do not yet have uplinks. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:1919"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cont_var&nbsp;cont_var&nbsp;=&nbsp;()&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;occ&nbsp;occ&nbsp;=&nbsp;()&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;occ_list&nbsp;ol&nbsp;=&nbsp;<span style="color: #228b22; ">List.</span>iter&nbsp;occ&nbsp;ol&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cont_occ&nbsp;cont_occ&nbsp;=&nbsp;()&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:2054"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;value&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Constant</span>(_)&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">External</span>(_)&nbsp;&#X2192;&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>(l)&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">List.</span>iter&nbsp;occ&nbsp;l<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Injection</span>(_,_,t)&nbsp;&#X2192;&nbsp;occ&nbsp;t<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Lambda</span>(_,k,vl,b)&nbsp;&#X2192;&nbsp;cont_var&nbsp;k;&nbsp;var_list&nbsp;vl;&nbsp;body&nbsp;b&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:2257"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;prim&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Value</span>&nbsp;v&nbsp;&#X2192;&nbsp;value&nbsp;v<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Projection</span>(_,t)&nbsp;&#X2192;&nbsp;occ&nbsp;t<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_operation</span>(_,a,b)&nbsp;&#X2192;&nbsp;occ&nbsp;a;&nbsp;occ&nbsp;b<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_predicate</span>(_,a,b)&nbsp;&#X2192;&nbsp;occ&nbsp;a;&nbsp;occ&nbsp;b&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:2458"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;t&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(x,&nbsp;p,&nbsp;b)&nbsp;&#X2192;&nbsp;var&nbsp;x;&nbsp;prim&nbsp;p;&nbsp;body&nbsp;b<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(k,x,bc,b)&nbsp;&#X2192;&nbsp;cont_var&nbsp;k;&nbsp;var&nbsp;x;&nbsp;body&nbsp;bc;&nbsp;body&nbsp;b<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply</span>(_,f,k,xl)&nbsp;&#X2192;&nbsp;occ&nbsp;f;&nbsp;cont_occ&nbsp;k;&nbsp;occ_list&nbsp;xl<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply_cont</span>(k,x)&nbsp;&#X2192;&nbsp;cont_occ&nbsp;k;&nbsp;occ&nbsp;x<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Case</span>(o,l,d)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(&nbsp;occ&nbsp;o;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">CaseMap.</span>iter&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;k&nbsp;&#X2192;&nbsp;cont_occ&nbsp;k)&nbsp;l;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;d&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;()&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(k)&nbsp;&#X2192;&nbsp;cont_occ&nbsp;k)<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Halt</span>(x)&nbsp;&#X2192;&nbsp;occ&nbsp;x</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:2868"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;expression&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">Cpstraverse.</span>iter_on_expressions<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+~enter_lambdas:<span style="color: #a020f0; ">true</span>&nbsp;t&nbsp;one_expression</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:2965"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR></code></div><B>3.</B>&nbsp;
+<A NAME="src/cps/cpsbase/cpscheck.ml:2973"></A>This module allows checking the occurrences. For each variable, we
+build the <code><span style="color: #228b22; ">Set</span></code> of its occurrences, <I>A</I>. Each variable is linked to
+a set of occurrences, represented by a doubly linked list, <I>B</I>. We
+check that <I>A</I> = <I>B</I>, i.e. that <I>A</I> &#X2286; <I>B</I> &#X2227; <I>B</I> &#X2286; <I>A</I>.
+The code performs these two checks separately (in particular because
+<I>A</I> and <I>B</I> have different data structures) 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:3370"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Occurrences</span>:<span style="color: #228b22; ">S</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P></code></div>&nbsp;&nbsp;
+This functor factorizes the code common to <code><span style="color: #228b22; ">Var</span></code> and <code><span style="color: #228b22; ">Cont_var</span></code>. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:3474"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Make</span>(<span style="color: #228b22; ">Var</span>:<span style="color: #228b22; ">Cpsdef.VAR_RW</span>)&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+For each variable <code>x</code> in a term <code>t</code>, we build a map mapping <code>x</code>
+to the set of occurrences of <code>x</code> we found in <code>t</code>. This map is
+build and used using a depth-first traversal on terms. The
+<code>definition</code> and <code>expression</code> data structures require that the
+term containing the binding site of a variable <code>v</code> is an
+ancestor of all the expressions containing occurrences of <code>v</code>.
+Thus a depth-first traversal of terms will encounter the
+binding site of the variable on the way down, then all
+occurrences, then the binding site of the variable on the way
+up.</P><P>When we first encounter the variable, we associate it to the
+empty set (function <code>add_variable</code>).</P><P>When we encounter an occurrence, we update the map associated to
+its binding variable (function <code>add_occurrence</code>).</P><P>When we last encounter the variable, we known that we have found
+all occurrences in the expression; thus we compare the sets of
+occurrences (function <code>compare_set</code>). 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+Return a new map with <code>x</code> mapped to an empty set. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:4635"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;add_variable&nbsp;x&nbsp;map&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Check that x is not already in the map.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>(&nbsp;¬&nbsp;(<span style="color: #228b22; ">Var.Var.Map.</span>mem&nbsp;x&nbsp;map));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;map&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Var.Map.</span>add&nbsp;x&nbsp;(<span style="color: #228b22; ">Var.Occur.Set.</span>empty)&nbsp;map&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+map&nbsp;</P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Return a new map with <code>o</code> added to the set of occurrences of <code>x</code>. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:4914"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;add_occurrence&nbsp;o&nbsp;map&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;x&nbsp;=&nbsp;(<span style="color: #228b22; ">Var.Occur.</span>binding_variable&nbsp;o)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">try</span>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set&nbsp;=&nbsp;(<span style="color: #228b22; ">Var.Var.Map.</span>find&nbsp;x&nbsp;map)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;newset&nbsp;=&nbsp;<span style="color: #228b22; ">Var.Occur.Set.</span>add&nbsp;o&nbsp;set&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var.Var.Map.</span>add&nbsp;x&nbsp;newset&nbsp;map<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #228b22; ">Not_found</span>&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span></P><P></code></div>&nbsp;&nbsp;&nbsp;&nbsp;
+Compare the set of occurrences in the doubly-linked list of x with
+the set given as an argument. Returns void if they are equal, and
+fails if they are not. </P><P>The algorithm is the same for both kind of set comparisons:
+</P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">First we have or define a function that checks whether one
+element <code>e</code> in a set <code>s</code> is in the other set <code>s&#X2019;</code>, by comparing <code>e</code>
+with every element in <code>s&#X2019;</code></LI><LI CLASS="li-enumerate">We iterate this function on all elements <code>e</code> in <code>s</code>, which
+tells use that <I>s</I> &#X2286; <I>s</I>&#X2032;.</LI></OL><P>Once we know that <I>s</I> &#X2286; <I>s</I>&#X2032; and <I>s</I>&#X2032; &#X2286; <I>s</I>, we
+deduce that <I>s</I> = <I>s</I>&#X2032;. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:5866"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;compare_sets&nbsp;x&nbsp;set&nbsp;=</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:5896"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;check_set_subset_of_doubly_linked_list&nbsp;()&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_in_doubly_linked_list&nbsp;occ&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">try</span>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var.Var.</span>fold_on_occurrences&nbsp;x&nbsp;()&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;()&nbsp;o&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;o&nbsp;&#X2261;&nbsp;occ&nbsp;<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"found"</span>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">false</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">with</span>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:6164"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var.Occur.Set.</span>iter&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;occ&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;(is_in_doubly_linked_list&nbsp;occ)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">failwith</span>(<span style="color: #8b2252; ">"Element&nbsp;"</span>^(<span style="color: #228b22; ">Var.Occur.</span>to_string&nbsp;occ)^<span style="color: #8b2252; ">"&nbsp;in&nbsp;CPS&nbsp;expression&nbsp;"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+^&nbsp;<span style="color: #8b2252; ">"was&nbsp;not&nbsp;in&nbsp;the&nbsp;doubly&nbsp;linked&nbsp;list"</span>))&nbsp;set&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:6433"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;check_doubly_linked_list_subset_of_set&nbsp;()&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Var.Var.</span>fold_on_occurrences&nbsp;x&nbsp;()&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;()&nbsp;o&nbsp;&#X2192;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;<span style="color: #228b22; ">Var.Occur.Set.</span>mem&nbsp;o&nbsp;set<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">failwith</span>&nbsp;(<span style="color: #8b2252; ">"Element&nbsp;"</span>^(<span style="color: #228b22; ">Var.Occur.</span>to_string&nbsp;o)^<span style="color: #8b2252; ">"&nbsp;in&nbsp;the&nbsp;"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+^&nbsp;<span style="color: #8b2252; ">"doubly&nbsp;linked&nbsp;list&nbsp;was&nbsp;not&nbsp;in&nbsp;the&nbsp;CPS&nbsp;expression"</span>))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:6766"></A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+check_set_subset_of_doubly_linked_list();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+check_doubly_linked_list_subset_of_set()<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:6869"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:6878"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">MakeVar</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Make</span>(<span style="color: #228b22; ">Var</span>)</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:6909"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">MakeContVar</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Make</span>(<span style="color: #228b22; ">Cont_var</span>)</P><P></code></div>&nbsp;&nbsp;
+The depth-first traversal of the variables and occurrences in the
+expression is handled by the <code>fold_on_variables_and_occurrences</code>
+function. 
+<BR><A NAME="src/cps/cpsbase/cpscheck.ml:7109"></A>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;expression&nbsp;t&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;beforevar&nbsp;(map,contmap)&nbsp;x&nbsp;=&nbsp;(<span style="color: #228b22; ">MakeVar.</span>add_variable&nbsp;x&nbsp;map,&nbsp;contmap)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;beforecontvar&nbsp;(map,contmap)&nbsp;k&nbsp;=&nbsp;(map,<span style="color: #228b22; ">MakeContVar.</span>add_variable&nbsp;k&nbsp;contmap)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:7292"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;focc&nbsp;(map,contmap)&nbsp;o&nbsp;=&nbsp;(<span style="color: #228b22; ">MakeVar.</span>add_occurrence&nbsp;o&nbsp;map,&nbsp;contmap)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;fcontocc&nbsp;(map,contmap)&nbsp;o&nbsp;=&nbsp;(map,&nbsp;<span style="color: #228b22; ">MakeContVar.</span>add_occurrence&nbsp;o&nbsp;contmap)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:7449"></A>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;aftervar&nbsp;(map,contmap)&nbsp;x&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">MakeVar.</span>compare_sets&nbsp;x&nbsp;(<span style="color: #228b22; ">Var.Var.Map.</span>find&nbsp;x&nbsp;map);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(map,contmap)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;aftercontvar&nbsp;(map,contmap)&nbsp;x&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">MakeContVar.</span>compare_sets&nbsp;x&nbsp;(<span style="color: #228b22; ">Cont_var.Var.Map.</span>find&nbsp;x&nbsp;contmap);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(map,contmap)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;init&nbsp;=&nbsp;(<span style="color: #228b22; ">Var.Var.Map.</span>empty,&nbsp;<span style="color: #228b22; ">Cont_var.Var.Map.</span>empty)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+ignore(<span style="color: #228b22; ">Cpstraverse.</span>fold_on_variables_and_occurrences&nbsp;t&nbsp;init<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+~before_var:beforevar&nbsp;~occ:focc&nbsp;~after_var:aftervar<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+~before_cont_var:beforecontvar&nbsp;~cont_occ:fcontocc&nbsp;~after_cont_var:aftercontvar)</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:7978"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:7985"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Contains</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;var&nbsp;t_&nbsp;v&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;t_&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(x,_,_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;x&nbsp;&#X2261;&nbsp;v&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(_,x,_,_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;x&nbsp;&#X2261;&nbsp;v&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(_,<span style="color: #228b22; ">Value</span>(<span style="color: #228b22; ">Lambda</span>(_,_,xl,_)),_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;<span style="color: #228b22; ">List.</span>memq&nbsp;v&nbsp;xl&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">false</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:8214"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cont_var&nbsp;t_&nbsp;cv&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;t_&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(k,_,_,_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;k&nbsp;&#X2261;&nbsp;cv&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(_,<span style="color: #228b22; ">Value</span>(<span style="color: #228b22; ">Lambda</span>(_,k,_,_)),_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;k&nbsp;&#X2261;&nbsp;cv&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">false</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:8376"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;subexpression&nbsp;expr_&nbsp;subexpr&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;expr_&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(_,_,t1,t2)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;subexpr&nbsp;&#X2261;&nbsp;t1&nbsp;&#X2228;&nbsp;subexpr&nbsp;&#X2261;&nbsp;t2&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(_,_,t)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;subexpr&nbsp;&#X2261;&nbsp;t&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(_,<span style="color: #228b22; ">Value</span>(<span style="color: #228b22; ">Lambda</span>(_,_,_,t)),_)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;subexpr&nbsp;&#X2261;&nbsp;t&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">false</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:8626"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span></P><P><A NAME="src/cps/cpsbase/cpscheck.ml:8632"></A>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">And</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_enclosing&nbsp;t&nbsp;e&nbsp;=&nbsp;(<span style="color: #a020f0; ">match</span>&nbsp;e&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_expression</span>(superexpression)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">assert</span>(&nbsp;<span style="color: #228b22; ">Contains.</span>subexpression&nbsp;(<span style="color: #228b22; ">Expression.</span>get&nbsp;superexpression)&nbsp;t));<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Expression.</span>set_enclosing&nbsp;t&nbsp;e</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:8850"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;set_expression&nbsp;t&nbsp;t_&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Expression.</span>set&nbsp;t&nbsp;t_;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Uplinks.</span>one_expression&nbsp;t</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:8935"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;fill&nbsp;e&nbsp;t_&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">Empty.</span>fill&nbsp;e&nbsp;t_&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Uplinks.</span>one_expression&nbsp;t;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+t</P><P><A NAME="src/cps/cpsbase/cpscheck.ml:9022"></A>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>

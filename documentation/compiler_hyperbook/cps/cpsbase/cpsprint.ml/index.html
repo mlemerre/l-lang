@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>cps/cpsbase/cpsprint.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/">The L language</a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>cps/cpsbase/cpsprint.ml</h1>
+    </div>
+    
+<!--CUT DEF section 1 --><!--TOC section Module Cpsprint-->
+<H2 CLASS="section"><!--SEC ANCHOR -->Module Cpsprint</H2><!--SEC END --><P>
+<A NAME="src/cps/cpsbase/cpsprint.ml:0"></A>These functions output a printed representation of a CPS term
+(expression or definition). One problem of the CPS representation
+is that it is difficult to read, especially because of the deep
+level of nesting. We tried to simplify this representation by not
+showing the nesting explicitely to the user; instead a parent
+always has the same level of indentation than its children in the
+tree. The syntax looks a lot like assembly language, or SSA
+representation.</P><P>Still, this representation could be readily parsed back into a CPS
+data structure if needed. 
+<BR><A NAME="src/cps/cpsbase/cpsprint.ml:629"></A>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Format</span></P><P><A NAME="src/cps/cpsbase/cpsprint.ml:643"></A>
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Cpsdef</span></P><P><A NAME="src/cps/cpsbase/cpsprint.ml:658"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;var&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Var.Var.</span>to_string&nbsp;v)<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;occur&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Var.Occur.</span>to_string&nbsp;v)<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_var&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Cont_var.Var.</span>to_string&nbsp;v)<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_occur&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Cont_var.Occur.</span>to_string&nbsp;v)</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:911"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;var_list&nbsp;ppf&nbsp;vl&nbsp;=&nbsp;(<span style="color: #228b22; ">Make_printer.</span>list&nbsp;~sep:<span style="color: #8b2252; ">",&nbsp;"</span>&nbsp;var)&nbsp;ppf&nbsp;vl<BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;occur_list&nbsp;ppf&nbsp;vl&nbsp;=&nbsp;(<span style="color: #228b22; ">Make_printer.</span>list&nbsp;~sep:<span style="color: #8b2252; ">",&nbsp;"</span>&nbsp;occur)&nbsp;ppf&nbsp;vl</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:1042"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;expression&nbsp;ppf&nbsp;t&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;t&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Halt</span>&nbsp;v&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"halt&nbsp;%a"</span>&nbsp;occur&nbsp;v<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply</span>(_,callerv,k,callees)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%a(&nbsp;%a,&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occur&nbsp;callerv&nbsp;cont_occur&nbsp;k&nbsp;occur_list&nbsp;callees<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Apply_cont</span>(k,v)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%a(&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cont_occur&nbsp;k&nbsp;occur&nbsp;v<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(k,v,loccont,incont)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"decl&nbsp;%a"</span>&nbsp;cont_var&nbsp;k;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;loop&nbsp;accu&nbsp;e&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;e&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(k,v,loccont,incont)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">",&nbsp;%a"</span>&nbsp;cont_var&nbsp;k;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loop&nbsp;((k,v,loccont)::accu)&nbsp;incont<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;final_incont&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@\n@[&lt;v&gt;%a@]"</span>&nbsp;expression&nbsp;e;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>iter&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;(k,v,cont)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@\n@\n%a(&nbsp;%a)&nbsp;=&nbsp;{@\n&nbsp;&nbsp;@[&lt;v&gt;%a@]@\n}"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cont_var&nbsp;k&nbsp;var&nbsp;v&nbsp;expression&nbsp;cont)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+accu<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;loop&nbsp;[k,v,loccont]&nbsp;incont<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(v,p,body)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@[&lt;v&gt;let&nbsp;%a&nbsp;=&nbsp;%a&nbsp;in@&nbsp;%a@]"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var&nbsp;v&nbsp;prim&nbsp;p&nbsp;expression&nbsp;body<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Case</span>(v,l,d)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;case&nbsp;ppf&nbsp;(i,k)&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%d&nbsp;-&gt;&nbsp;%a"</span>&nbsp;i&nbsp;cont_occur&nbsp;k&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;case_list&nbsp;ppf&nbsp;l&nbsp;=&nbsp;<span style="color: #228b22; ">Make_printer.</span>list&nbsp;~sep:<span style="color: #8b2252; ">"@\n"</span>&nbsp;case&nbsp;ppf&nbsp;l&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;default&nbsp;ppf&nbsp;d&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">match</span>&nbsp;d&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(k)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@\n_&nbsp;-&gt;&nbsp;%a"</span>&nbsp;cont_occur&nbsp;k)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"case(%a){@\n&nbsp;&nbsp;@[&lt;v&gt;%a%a@]@\n}"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+occur&nbsp;v&nbsp;case_list&nbsp;(<span style="color: #228b22; ">CaseMap.</span>bindings&nbsp;l)&nbsp;default&nbsp;d</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:2347"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;prim&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Value</span>&nbsp;v&nbsp;&#X2192;&nbsp;value&nbsp;ppf&nbsp;v<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Projection</span>(i,x)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"#%d(&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+i&nbsp;occur&nbsp;x<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_operation</span>(op,v1,v2)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s(&nbsp;%a,&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Constant.</span>integer_binary_operation_to_string&nbsp;op)&nbsp;occur&nbsp;v1&nbsp;occur&nbsp;v2<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_predicate</span>(pred,v1,v2)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s(&nbsp;%a,&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Constant.</span>integer_binary_predicate_to_string&nbsp;pred)&nbsp;occur&nbsp;v1&nbsp;occur&nbsp;v2</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:2771"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;value&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Constant</span>(c)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Constant.</span>to_string&nbsp;c)<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>(l)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"(&nbsp;%a)"</span>&nbsp;occur_list&nbsp;l<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Injection</span>(i,j,x)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"inj_{%d/%d}(&nbsp;%a)"</span>&nbsp;i&nbsp;j&nbsp;occur&nbsp;x<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Lambda</span>(_,k,vl,expression_)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@,@[&lt;v&gt;{&nbsp;@[&lt;v&gt;%a&nbsp;-&gt;&nbsp;(%a)&nbsp;-&gt;@\n@[&lt;v&gt;%a@]@]@\n}@]"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cont_var&nbsp;k&nbsp;var_list&nbsp;vl&nbsp;expression&nbsp;expression_<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">External</span>(str)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"external(&nbsp;\"%s\")"</span>&nbsp;str</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:3197"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;definition&nbsp;ppf&nbsp;(<span style="color: #228b22; ">Definition</span>(v,dt))&nbsp;=<BR>&nbsp;&nbsp;
+fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%a&nbsp;=&nbsp;@[%a@]"</span>&nbsp;visibility&nbsp;v&nbsp;definition_type&nbsp;dt</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:3303"></A>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;visibility&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Public</span>(v)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"def&nbsp;%a"</span>&nbsp;var&nbsp;v<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Private</span>(v)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"let&nbsp;%a"</span>&nbsp;var&nbsp;v<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Unused</span>&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"let&nbsp;_"</span><BR>
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;definition_type&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Static_value</span>(_)&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"Not&nbsp;yet&nbsp;implemented"</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Dynamic_value</span>(t)&nbsp;&#X2192;&nbsp;expression&nbsp;ppf&nbsp;t</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:3589"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;definitions&nbsp;ppf&nbsp;l&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">List.</span>iter&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;def&nbsp;&#X2192;&nbsp;definition&nbsp;ppf&nbsp;def;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@."</span>)&nbsp;l</P><P><A NAME="src/cps/cpsbase/cpsprint.ml:3678"></A>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;debug_expression&nbsp;t&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"----------------------------------------\n"</span>;<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"%a\n"</span>&nbsp;expression&nbsp;t;<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"----------------------------------------\n@?"</span><BR></code></div></P><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+   
+   <script src="/js/jquery.js"></script>
+   
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+  </body>
+</html>
