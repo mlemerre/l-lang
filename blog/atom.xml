@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
  <title>L language - blog</title>
- <link href="http://www.l-lang.org/blog-atom.xml" rel="self"/>
- <link href="http://www.l-lang.org"/>
- <updated>2013-07-27T09:16:04+02:00</updated>
- <id>http://www.l-lang.org/</id>
+ <link href="http://l-lang.org/blog-atom.xml" rel="self"/>
+ <link href="http://l-lang.org"/>
+ <updated>2013-08-12T21:36:02+02:00</updated>
+ <id>http://l-lang.org/</id>
  <author>
    <name>Matthieu Lemerre</name>
    <email>contact @@@ l-lang.org</email>
@@ -13,9 +13,9 @@
  
  <entry>
    <title>Structuring the compiler</title>
-   <link href="http://www.l-lang.org/blog/Structuring-the-compiler"/>
+   <link href="http://l-lang.org/blog/Structuring-the-compiler"/>
    <updated>2013-06-30T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/Structuring-the-compiler</id>
+   <id>http://l-lang.org/blog/Structuring-the-compiler</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -234,9 +234,9 @@ point.
  
  <entry>
    <title>Compiling pattern matching</title>
-   <link href="http://www.l-lang.org/blog/Compiling-pattern-matching"/>
+   <link href="http://l-lang.org/blog/Compiling-pattern-matching"/>
    <updated>2013-05-28T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/Compiling-pattern-matching</id>
+   <id>http://l-lang.org/blog/Compiling-pattern-matching</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -515,9 +515,9 @@ share a constructor matched as the same time (e.g. exchanging rules
  
  <entry>
    <title>A framework for CPS transformation (and a Github account)</title>
-   <link href="http://www.l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account"/>
+   <link href="http://l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account"/>
    <updated>2012-12-30T00:00:00+01:00</updated>
-   <id>http://www.l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account</id>
+   <id>http://l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -676,9 +676,9 @@ assert( { let true = { (x,y) -&amp;gt; x }
  
  <entry>
    <title>Using OCaml packages with ocamlbuild: a recipe</title>
-   <link href="http://www.l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe"/>
+   <link href="http://l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe"/>
    <updated>2012-12-20T00:00:00+01:00</updated>
-   <id>http://www.l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe</id>
+   <id>http://l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -903,9 +903,9 @@ for it &lt;a href=&quot;http://caml.inria.fr/mantis/view.php?id=5752&quot;&gt;he
  
  <entry>
    <title>A literate union-find data structure</title>
-   <link href="http://www.l-lang.org/blog/A-literate-union-find-data-structure"/>
+   <link href="http://l-lang.org/blog/A-literate-union-find-data-structure"/>
    <updated>2012-10-07T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/A-literate-union-find-data-structure</id>
+   <id>http://l-lang.org/blog/A-literate-union-find-data-structure</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -1325,9 +1325,9 @@ Jean Blair, Fredrik Manne.
  
  <entry>
    <title>CPS to LLVM SSA conversion in literate programming</title>
-   <link href="http://www.l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming"/>
+   <link href="http://l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming"/>
    <updated>2012-08-25T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming</id>
+   <id>http://l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -2037,9 +2037,9 @@ the_function&lt;BR&gt;  
  
  <entry>
    <title>Incorporating C code in an Ocaml project using Ocamlbuild</title>
-   <link href="http://www.l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild"/>
+   <link href="http://l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild"/>
    <updated>2012-08-10T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild</id>
+   <id>http://l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -2344,9 +2344,9 @@ compiler. But OMake seems not to be maintained anymore&amp;#x2026;
  
  <entry>
    <title>A typecast with many uses</title>
-   <link href="http://www.l-lang.org/blog/A-typecast-with-many-uses"/>
+   <link href="http://l-lang.org/blog/A-typecast-with-many-uses"/>
    <updated>2012-06-22T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/A-typecast-with-many-uses</id>
+   <id>http://l-lang.org/blog/A-typecast-with-many-uses</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -2617,9 +2617,9 @@ cast function.
  
  <entry>
    <title>Guaranteed optimizations for system programming languages</title>
-   <link href="http://www.l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages"/>
+   <link href="http://l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages"/>
    <updated>2012-05-01T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages</id>
+   <id>http://l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -2844,9 +2844,9 @@ to take this idea further.
  
  <entry>
    <title>My first blog entry</title>
-   <link href="http://www.l-lang.org/blog/My-first-blog-entry"/>
+   <link href="http://l-lang.org/blog/My-first-blog-entry"/>
    <updated>2012-04-04T00:00:00+02:00</updated>
-   <id>http://www.l-lang.org/blog/My-first-blog-entry</id>
+   <id>http://l-lang.org/blog/My-first-blog-entry</id>
    <content type="html">&lt;p&gt;
 
 &lt;/p&gt;
@@ -2854,7 +2854,7 @@ to take this idea further.
 &lt;i&gt;
 &lt;p&gt;
 &lt;b&gt;Update (2013/07/07)&lt;/b&gt;: I no longer use blogger; &lt;a
-href=&quot;http://www.l-lang.org/blog/New-website&quot;&gt;this blog post&lt;/a&gt;
+href=&quot;http://l-lang.org/blog/New-website&quot;&gt;this blog post&lt;/a&gt;
 describes my new setup.
 &lt;/p&gt;
 &lt;/i&gt;

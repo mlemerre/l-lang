@@ -3,8 +3,8 @@
   <channel>
     <title>L language - blog</title>
     <description></description>
-    <link>http://www.l-lang.org</link>
-    <atom:link href="http://www.l-lang.org/blog-rss.xml" rel="self" type="application/rss+xml" />
+    <link>http://l-lang.org</link>
+    <atom:link href="http://l-lang.org/blog-rss.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Structuring the compiler</title>
@@ -223,8 +223,8 @@ point.
 &lt;/div&gt;
 </description>
       <pubDate>Sun, 30 Jun 2013 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/Structuring-the-compiler</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/Structuring-the-compiler</guid>
+      <link>http://l-lang.org/blog/Structuring-the-compiler</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/Structuring-the-compiler</guid>
     </item>
     
     <item>
@@ -504,8 +504,8 @@ share a constructor matched as the same time (e.g. exchanging rules
 1 and 2, and rule 5 and 6) would improve the presentation.&lt;/P&gt;&lt;!--CUT END --&gt;
 </description>
       <pubDate>Tue, 28 May 2013 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/Compiling-pattern-matching</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/Compiling-pattern-matching</guid>
+      <link>http://l-lang.org/blog/Compiling-pattern-matching</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/Compiling-pattern-matching</guid>
     </item>
     
     <item>
@@ -665,8 +665,8 @@ assert( { let true = { (x,y) -&amp;gt; x }
 &lt;/pre&gt;
 </description>
       <pubDate>Sun, 30 Dec 2012 00:00:00 +0100</pubDate>
-      <link>http://www.l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account</guid>
+      <link>http://l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/A-framework-for-CPS-transformation-and-a-Github-account</guid>
     </item>
     
     <item>
@@ -892,8 +892,8 @@ for it &lt;a href=&quot;http://caml.inria.fr/mantis/view.php?id=5752&quot;&gt;he
 &lt;/div&gt;
 </description>
       <pubDate>Thu, 20 Dec 2012 00:00:00 +0100</pubDate>
-      <link>http://www.l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe</guid>
+      <link>http://l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe</guid>
     </item>
     
     <item>
@@ -1314,8 +1314,8 @@ Jean Blair, Fredrik Manne.
 &lt;BR&gt;&lt;/P&gt;&lt;!--CUT END --&gt;
 </description>
       <pubDate>Sun, 07 Oct 2012 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/A-literate-union-find-data-structure</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/A-literate-union-find-data-structure</guid>
+      <link>http://l-lang.org/blog/A-literate-union-find-data-structure</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/A-literate-union-find-data-structure</guid>
     </item>
     
     <item>
@@ -2026,8 +2026,8 @@ the_function&lt;BR&gt;  
 &lt;span style=&quot;color: #a020f0; &quot;&gt;with&lt;/span&gt; e &amp;#X2192; &lt;span style=&quot;color: #228b22; &quot;&gt;Llvm.&lt;/span&gt;delete_function the_function; raise e&lt;BR&gt;&lt;/code&gt;&lt;/div&gt;&lt;/P&gt;&lt;!--CUT END --&gt;
 </description>
       <pubDate>Sat, 25 Aug 2012 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming</guid>
+      <link>http://l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming</guid>
     </item>
     
     <item>
@@ -2333,8 +2333,8 @@ compiler. But OMake seems not to be maintained anymore&amp;#x2026;
 &lt;/div&gt;
 </description>
       <pubDate>Fri, 10 Aug 2012 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild</guid>
+      <link>http://l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild</guid>
     </item>
     
     <item>
@@ -2606,8 +2606,8 @@ cast function.
 &lt;/div&gt;
 </description>
       <pubDate>Fri, 22 Jun 2012 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/A-typecast-with-many-uses</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/A-typecast-with-many-uses</guid>
+      <link>http://l-lang.org/blog/A-typecast-with-many-uses</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/A-typecast-with-many-uses</guid>
     </item>
     
     <item>
@@ -2833,8 +2833,8 @@ to take this idea further.
 &lt;/div&gt;
 </description>
       <pubDate>Tue, 01 May 2012 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages</guid>
+      <link>http://l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/Guaranteed-optimizations-for-system-programming-languages</guid>
     </item>
     
     <item>
@@ -2846,7 +2846,7 @@ to take this idea further.
 &lt;i&gt;
 &lt;p&gt;
 &lt;b&gt;Update (2013/07/07)&lt;/b&gt;: I no longer use blogger; &lt;a
-href=&quot;http://www.l-lang.org/blog/New-website&quot;&gt;this blog post&lt;/a&gt;
+href=&quot;http://l-lang.org/blog/New-website&quot;&gt;this blog post&lt;/a&gt;
 describes my new setup.
 &lt;/p&gt;
 &lt;/i&gt;
@@ -2924,8 +2924,8 @@ So now, I have no excuses left to fill my blog!
 &lt;/p&gt;
 </description>
       <pubDate>Wed, 04 Apr 2012 00:00:00 +0200</pubDate>
-      <link>http://www.l-lang.org/blog/My-first-blog-entry</link>
-      <guid isPermaLink="true">http://www.l-lang.org/blog/My-first-blog-entry</guid>
+      <link>http://l-lang.org/blog/My-first-blog-entry</link>
+      <guid isPermaLink="true">http://l-lang.org/blog/My-first-blog-entry</guid>
     </item>
     
   </channel>

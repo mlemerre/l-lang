@@ -120,3 +120,60 @@ pre {
 /* */
 .disabled a { opacity: 0.5; }
 a[class~="disabled"] { opacity: 0.5; }
+
+
+
+.social-share {
+  padding-left: 0;
+  list-style: none; }
+
+.social-share-item {
+  display: inline;
+  font-size: 80%;
+  margin-right: 0.5em; }
+
+.social-share-link {
+  /* crude button styles */
+  text-decoration: none;
+  color: #444;
+  font-weight: bold;
+  padding: .005em .4em .005em 26px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 5px; }
+  .social-share-link:hover, .social-share-link:active, .social-share-link:focus {
+    color: #891434; }
+
+[class*="social-ico-"] {
+  display: inline-block;
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position: 5px center; }
+
+.social-ico-facebook {
+  background-image: url("http://www.facebook.com/favicon.ico"); }
+
+.social-ico-twitter {
+  background-image: url("http://twitter.com/favicons/favicon.ico"); }
+
+.social-ico-google {
+  background-image: url("https://ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
+
+.social-ico-rss {
+  background-image: url("/img/rss.ico"); }
+
+.social-ico-hackernews {
+/*  background-image: url("/img/hn.ico"); } */
+  background-image: url("https://news.ycombinator.com/favicon.ico"); }
+
+.social-ico-reddit {
+  background-image: url("http://reddit.com/favicon.ico"); }
+
+.social-ico-digg {
+  background-image: url("http://digg.com/favicon.ico"); }
+
+.social-ico-e_mail {
+  background-image: url("/img/e_mail.ico"); }
+
+.social-ico-flattr {
+  background-image: url("https://flattr.com/_img/icons/flattr_logo_16.png"); }
