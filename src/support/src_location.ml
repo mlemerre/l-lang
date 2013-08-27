@@ -16,16 +16,17 @@ let coordinates pos =
    by Emacs compilation mode, it is precise (allowing ranges of lines
    and characters), and can be read without knowing the format (thanks
    to the "lines" and "characters" text. *)
-let printf fmt (pos1,pos2) =
+let fprintf fmt (pos1,pos2) =
   let (file1,line1,col1) = coordinates pos1 in
   let (file2,line2,col2) = coordinates pos2 in
   assert (file1 = file2);
-  let line() =
+  let line fmt =
     if line1 == line2
     then Format.fprintf fmt "line %d" line1
     else Format.fprintf fmt "lines %d-%d" line1 line2 in
-  let col() =
+  let col fmt =
     if col1 == col2
     then Format.fprintf fmt "character %d" col1
     else Format.fprintf fmt "characters %d-%d" col1 col2 in
-  Format.fprintf fmt "File %s, %t, %t:\n"
+  Format.fprintf fmt "File %s, %t, %t:\n" file1 line col
+;;
