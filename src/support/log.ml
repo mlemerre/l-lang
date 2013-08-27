@@ -3,11 +3,14 @@
 (* Note: unlike C, writed to stderr are not buffered by default; this
    module handles all the flushing. *)
 
-let koutput_ k (bool,name) x =
+let koutput_ ?loc k (bool,name) x =
   if bool
   then
     begin
-      Format.eprintf "@.#LOG (%s): @? " name;
+      let maybe_print_loc fmt = match loc with
+        | Some(loc) -> Src_location.fprintf fmt loc
+        | None -> () in
+      Format.eprintf "@.%t#LOG (%s): @? " maybe_print_loc name;
       (* We use kfprintf to preserve the type of output_ *)
       Format.kfprintf (fun fmt -> Format.eprintf "@."; k()) Format.err_formatter x
     end
@@ -34,11 +37,16 @@ module type CATEGORY = sig
   val is_output: level -> bool
   val output: level -> ('a, Format.formatter, unit) format -> 'a
 
-  val debug: ('a, Format.formatter, unit) format -> 'a
-  val info: ('a, Format.formatter, unit) format -> 'a
-  val warning: ('a, Format.formatter, unit) format -> 'a
-  val raise_user_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
-  val raise_compiler_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
+  val debug:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit) format -> 'a
+  val info:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit) format -> 'a
+  val warning:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit) format -> 'a
+  val raise_user_error:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit, 'b) format4 -> 'a
+  val raise_compiler_error:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit, 'b) format4 -> 'a
 
   exception User_error;;
   exception Compiler_error;;
@@ -52,17 +60,17 @@ end
 module Make(Param:S):CATEGORY = struct
   let is_output l = l >== Param.min_output_level;;
   let output level x = output_ (is_output level,Param.printed_name) x;;
-  let koutput k level x = koutput_ k (is_output level,Param.printed_name) x;;
+  let koutput ?loc k level x = koutput_ ?loc k (is_output level,Param.printed_name) x;;
 
-  let debug x = output Debug x
-  let info x = output Info x
-  let warning x = output Warning x
+  let debug ?loc x = output Debug x
+  let info ?loc x = output Info x
+  let warning ?loc x = output Warning x
 
   exception User_error;;
   exception Compiler_error;;
 
-  let raise_user_error x = koutput (fun () -> raise User_error) Error x
-  let raise_compiler_error x = koutput (fun () -> raise Compiler_error) Error x
+  let raise_user_error ?loc x = koutput ?loc (fun () -> raise User_error) Error x
+  let raise_compiler_error ?loc x = koutput ?loc (fun () -> raise Compiler_error) Error x
 end
 
 (* For now, we set manually the min output level. *)

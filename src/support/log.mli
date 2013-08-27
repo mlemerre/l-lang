@@ -52,11 +52,16 @@ module type CATEGORY = sig
 
   (* [Format.printf]-like functions for each log level. In addition
      the last two levels do not return, and throw an error. *)
-  val debug: ('a, Format.formatter, unit) format -> 'a
-  val info: ('a, Format.formatter, unit) format -> 'a
-  val warning: ('a, Format.formatter, unit) format -> 'a
-  val raise_user_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
-  val raise_compiler_error: ('a, Format.formatter, unit, 'b) format4 -> 'a
+  val debug:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit) format -> 'a
+  val info:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit) format -> 'a
+  val warning:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit) format -> 'a
+  val raise_user_error:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit, 'b) format4 -> 'a
+  val raise_compiler_error:
+    ?loc:Src_location.t -> ('a, Format.formatter, unit, 'b) format4 -> 'a
   exception User_error;;
   exception Compiler_error;;
 end
