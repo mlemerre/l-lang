@@ -91,7 +91,7 @@ rule token = parse
   (* Ids may be normal ids, or keywords if they belong to the hashtable. *)
   | id as word
       { try Token.Keyword.find word
-	with Not_found -> Token.Ident(word) }
+	with Not_found -> Token.Ident(Token.Ident.intern word) }
 
   | symbol as op
       { try Token.Keyword.find op

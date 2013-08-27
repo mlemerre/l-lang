@@ -5,8 +5,15 @@
 module Keyword_id = Unique.Make(struct end)
 type keyword = Keyword_id.t
 
+module Ident = struct 
+  include Intern.Make(struct end);;
+  let of_string = intern
+end
+type ident = Ident.t;;
+
+
 type token =
-| Ident of string
+| Ident of ident
 | String of string
 | Int of int
 | Float of float
@@ -31,7 +38,8 @@ module Keyword = struct
 
   let find string = Keyword( Hashtbl.find keyword_table string)
 
-  let name keyword = Hashtbl.find inverse_keyword_table keyword
+  (* Not exported; the user can use just Token.to_string. *)
+  let to_string keyword = Hashtbl.find inverse_keyword_table keyword
 end
 
 module Separation = struct
@@ -73,9 +81,9 @@ module With_info = struct
 end
 
 let to_string = function
-  | Ident(string) -> string
+  | Ident(id) -> Ident.to_string id
   | String(string) -> "\"" ^ string ^ "\""
   | Int(n) -> string_of_int n
   | Float(f) -> string_of_float f
   | End -> "<end-of-input>"
-  | Keyword(k) -> Keyword.name k
+  | Keyword(k) -> Keyword.to_string k

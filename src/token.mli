@@ -1,20 +1,30 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-(* Tokens are the result of the lexing pass. A special category are
-   keywords, which are either identifiers handled specially (e.g.
-   [let] or [if]), or symbols (like [+] or [->]); the lexer is
-   extensible and allows defining new keywords.
-
-   Note: keywords and tokens can be compared using [=].
-*)
+(* Tokens are the result of the lexing pass. Two special categories
+   are defined. [keyword]s, which are either identifiers handled
+   specially (e.g. [let] or [if]), or symbols (like [+] or [->]); the
+   lexer is extensible and allows defining new keywords. [ident]s,
+   which are hash-consed (interned) strings and provide a [Key]
+   interface for convenient later use. *)
 type keyword;;
+type ident;;
+
 type token =
-| Ident of string          (* An identifier (begins with a letter) *)
+| Ident of ident           (* An identifier (begins with a letter) *)
 | String of string         (* A quoted string.  *)
 | Int of int               (* An integer value. *)
 | Float of float           (* A float value. *)
 | Keyword of keyword       (* Any keyword or punctuation mark. *)
 | End;;                    (* Indicates the end of a stream. *)
+
+module Ident:sig
+  (* Note: as there is no location information in Ident, the
+     token_with_info should probably be kept around? Or location is
+     sufficient? *)
+  val to_string: ident -> string
+  val of_string: string -> ident
+  include Key.S with type t := ident;;
+end
 
 module Keyword : sig
   (* [add string] adds a new keyword. [string] must not have been
@@ -80,3 +90,26 @@ module Stream: sig
   (* Remove the first token from the stream, without returning it. *)
   val junk: t -> unit
 end
+
+(* The list of predefined keywords for the L language. *)
+module Keywords: sig
+val lparen:token;; val rparen:token;;
+val lbrace:token;; val rbrace:token;;
+val colon:token;; val coma:token;; val pipe:token;;
+val equals:token;; val eq:token;; val ne:token;; 
+val gt:token;; val lt:token;; val le:token;; val ge:token;;
+val plus:token;; val minus:token;; val star:token;; val slash:token;;
+val semicolon:token;;
+val arrow:token;;
+val assigns:token;;
+
+(* Non-symbols keywords. Those that are also OCaml keyword are
+   suffixed by _. *)
+val forall:token;; val cast:token;;
+val if_:token;; val else_:token;;
+val match_:token;;
+val let_:token;; val and_:token;;
+val def:token;; val type_:token;; val declare:token;;
+end
+
+
