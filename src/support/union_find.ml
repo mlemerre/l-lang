@@ -248,14 +248,16 @@ struct
       assert (p1 != p2);
       if( d1.rank < d2.rank) then 
         begin 
-	  (* Keep d2_repr as root. Height of the merge is max(d1_height +1, d2_height) so does not change. *)
+	  (* Keep [d2_repr] as root. Height of the merge is
+             [max(d1_height + 1, d2_height)] so does not change. *)
           Link.set p1 (Saf.securize t (Parent p2));
           d2.desc <- newdesc;
           p2
         end
       else if (d1.rank > d2.rank) then
         begin 
-	  (* Keep d1_repr as root. Height of the merge is max(d2_height +1, d1_height) so does not change. *)
+	  (* Keep [d1_repr] as root. Height of the merge is
+             [max(d2_height + 1, d1_height)] so does not change. *)
           Link.set p2 (Saf.securize t (Parent p1));
           d1.desc <- newdesc;
 	  p1
