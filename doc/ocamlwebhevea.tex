@@ -7,10 +7,7 @@
 %% Big code blocks.
 \renewcommand{\ocwbegincode}{%
 \begin{rawhtml}
-<div style="border: solid 1px gray; background:#eeeeee;
-            margin: 0.5em 1em 0.5em 1em;
-            padding: 0.5em 1em 0.5em 1em;
-            font-family:mono"><code>
+<div class="ocamlweb-src"><code>
 \end{rawhtml}}
 
 \renewcommand{\ocwendcode}{\begin{rawhtml}</code></div>\end{rawhtml}}
@@ -84,3 +81,6 @@
 %% Base types and type variables are in green.
 \renewcommand{\ocwbt}[1]{\spangreen{\textrm{#1}}}
 \renewcommand{\ocwtv}[1]{\spangreen{#1}}
+
+%% Literal numbers
+\renewcommand{\ocwhexconst}[1]{\texttt{0x#1}}
