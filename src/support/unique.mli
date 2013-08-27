@@ -1,4 +1,4 @@
-(* Copyright 2011-2012 Matthieu Lemerre. *)
+(* Copyright 2011-2013 Matthieu Lemerre. *)
 
 (* The [Unique] module provides globally unique identifiers.
 
@@ -17,10 +17,8 @@ sig
   (* String representation of the identifier. It is also unique. *)
   val to_string : t -> string
 
-  (* Provides a total ordering between to unique ids. *)
-  val compare : t -> t -> int
+  include Key.S with type t := t
 
-  (* Often-used helper modules.  *)
-  module Map : Extensions.Map.S with type key = t
-  module Set : Set.S with type elt = t
+  (* Comparison between unique ids. Fast. *)
+  val equal: t -> t -> bool
 end

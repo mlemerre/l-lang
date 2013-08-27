@@ -17,6 +17,8 @@ struct
   let to_string i = string_of_int i;;
 
   let compare = compare;;
+  let hash = Hashtbl.hash;;
+  let equal = (==);;
 
   (*c Create a fresh identifier. If this overflows, switch to bigger
     int such as [Int64]. *)

@@ -80,6 +80,7 @@ module type S = sig
     val set_description : var -> var_desc -> unit
     val to_string : var -> string
 
+    (* include Key.S with type t := var *)
     module Map : Map.S with type key = var
     module Set : Set.S with type elt = var
   end
@@ -108,6 +109,7 @@ module type S = sig
     val set_description: occur -> occur_desc -> unit
     val to_string : occur -> string
 
+    (* include Key.S with type t := occur *)
     module Map : Map.S with type key = occur
     module Set : Set.S with type elt = occur
   end
