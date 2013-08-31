@@ -20,8 +20,10 @@ doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml c
 	cps/cpsconvertclosures.ml cps/cpsfree.ml \
 	llvm/cpsllvm.mli llvm/cpsllvm.ml\
 	support/unique.mli support/unique.ml\
-	cps/cpstransform/cpstransform_rules.ml\
-	compilation_passes.ml
+	cps/cpstransform/base.ml cps/cpstransform/expression.ml\
+	cps/cpstransform/rules.ml cps/cpstransform/definition.ml \
+	compilation_passes.ml \
+	parser/tdop.mli parser/tdop.ml
 
 doc: $(addsuffix .html,$(addprefix web/,$(doc-files))) check_doc web/cps/cpstransform/cpstransform_rules.ml001.png
 
