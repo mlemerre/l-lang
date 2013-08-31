@@ -4,5 +4,14 @@
 Compiler and tools for the L programming language.
 
 The code is in literate programming form; to generate the
-documentation juste type =make doc=. Documentation is put in the =web=
-directory.
+documentation juste type =make doc= and read it on the web directory.
+Alternatively, you can read it online on
+http://l-lang.org/documentation/compiler_hyperbook).
+
+For more information about the L language, go to http://l-lang.org
+
+* Troubleshootings
+
+- The following message: /usr/bin/ld: cannot find -lstdc++ can happen
+  if you do not have g++ installed in your system (or a g++ that does
+  not match your version of gcc).
