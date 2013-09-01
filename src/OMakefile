@@ -3,7 +3,7 @@
 # All this is for compilation_passes. TODO: Use indentation to reduce
 # the scope of FILES[] etc.
 tests: main libl/libl.bc
-	cd .. && echo $(PWD) && OCAMLRUNPARAM="b" ./src/main
+	cd .. && echo $(PWD) && OCAMLRUNPARAM="b" ./src/main --fixed
 
 FILES[] = main
 FILES[] += compilation_passes pretty_print
