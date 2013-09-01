@@ -12,6 +12,7 @@ build
 
 # Documentation; produced in the web directory.
 web
+web4jekyll
 # *.ml.haux
 # *.ml.tex
 # *.mli.haux
