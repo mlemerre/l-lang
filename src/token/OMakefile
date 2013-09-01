@@ -4,5 +4,3 @@ OCAMLINCLUDES = ../support
 base.cmi base.cmo: ../support/src_location.cmi\
 		   ../support/unique.cmi intern.cmi
 lexer.cmi lexer.cmo: base.cmi
-
-intern.cmi intern.cmo: intern_sig.cmi
