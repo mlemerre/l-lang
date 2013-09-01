@@ -5,3 +5,8 @@ CPSBASEPACK_FILES[] = cpsvar cpsbuild cpsdef cpsprint cpstraverse cpsast \
 	  	      cpschange cpscheck
 
 OCamlPackage(cpsbasepack, $(addprefix cpsbase/, $(CPSBASEPACK_FILES)))
+CPSTRANSFORMPACK_FILES[] = $(addprefix cpstransform/, \
+				       base rules expression definition)
+
+OCAMLINCLUDES[] += ../../next/ast
+OCamlPackage(cpstransformpack, $(CPSTRANSFORMPACK_FILES))

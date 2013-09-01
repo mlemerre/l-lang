@@ -1,1 +1,2 @@
 OCAMLINCLUDES = ../support ..
+tdop.cmo tdop.cmi: ../token.cmi

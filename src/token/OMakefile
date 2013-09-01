@@ -4,3 +4,4 @@ OCAMLINCLUDES = ../support
 base.cmi base.cmo: ../support/src_location.cmi\
 		   ../support/unique.cmi intern.cmi
 lexer.cmi lexer.cmo: base.cmi
+keywords.cmi keywords.cmo: base.cmi
