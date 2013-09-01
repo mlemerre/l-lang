@@ -69,6 +69,9 @@ let print_stream cond printf print_elt stream =
   else stream
 
 let process_file file =
+
+  Log.Compilation_passes.info "================ File %s================" file;
+
   let parsetree_stream = Parser.make_stream file in
 
   let ast_stream = Astfromsexp.from_stream parsetree_stream in

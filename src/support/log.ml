@@ -99,6 +99,11 @@ module Pattern_matching = Make(struct
   let printed_name = "pattern matching"
 end)
 
+module Compilation_passes = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "compilation_passes"
+end)
+
 module Ast_elaboration = Make(struct
   let min_output_level = Info;;
   let printed_name = "AST elaboration"
