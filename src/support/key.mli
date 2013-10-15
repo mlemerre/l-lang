@@ -10,7 +10,11 @@ module type S = sig
   (* Same spec than [Hashtbl.hash]. *)
   val hash: t -> int
 
+  (* Same spec than (=). *)
+  val equal: t -> t -> bool
+
   (* Often-used helper modules.  *)
   module Map : Extensions.Map.S with type key = t
   module Set : Set.S with type elt = t
+  module Hashtbl: Hashtbl.S with type key = t
 end

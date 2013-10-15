@@ -20,6 +20,13 @@ struct
   let hash = Hashtbl.hash;;
   let equal = (==);;
 
+  module Hashtbl = Hashtbl.Make(struct
+    type t = t_
+    let equal = equal
+    let hash = hash
+  end)
+
+
   (*c Create a fresh identifier. If this overflows, switch to bigger
     int such as [Int64]. *)
   let fresh =
