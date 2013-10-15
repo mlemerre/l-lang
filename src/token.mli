@@ -89,6 +89,11 @@ module Stream: sig
 
   (* Remove the first token from the stream, without returning it. *)
   val junk: t -> unit
+  (* Reads the nth next token on the stream (starting from 0), leaving
+     it in the stream. [peek stream] is equivalent to [peek_nth stream
+     0]. *)
+  val peek_nth: t -> int -> With_info.t
+
 end
 
 (* The list of predefined keywords for the L language. *)

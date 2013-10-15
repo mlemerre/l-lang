@@ -129,7 +129,7 @@ and sep cur_sep = parse
     lexbuf: Lexing.lexbuf;
 
     (* Remembering the parsed token is necessary to implement [peek]. *)
-    mutable cache: Token.With_info.t option;
+    mutable cache: Token.With_info.t list;
 
     (* Remembering the previous separation is used to provide
        [separation_before]. *)
@@ -147,7 +147,7 @@ and sep cur_sep = parse
      This function should be called only if the cache is empty (if
      full, empty the cache first). *)
   let get_next t =
-    assert (t.cache == None);
+    assert (t.cache == []);
     let separation_before = t.previous_separation in
     let token = token t.lexbuf in
     let location = current_location t.lexbuf in
@@ -162,17 +162,33 @@ and sep cur_sep = parse
      the cache.  *)
   let next t =
     match t.cache with
-    | None -> get_next t
-    | Some(x) -> t.cache <- None; x;;
+    | [] -> get_next t
+    | x::rest -> t.cache <- rest; x;;
 
   let peek t =
     match t.cache with
-    | None ->
+    | [] ->
       let tokeni = get_next t in
-      t.cache <- Some tokeni;
+      t.cache <- [tokeni];
       tokeni
-    | Some(x) -> x
+    | x::_ -> x
   ;;
+
+  let peek_nth t n =
+    (* let n = n-1 in *)
+    try
+      List.nth t.cache n
+    with Failure _ ->
+      let rec loop i =
+        let x = get_next t in
+        if i == n
+        then x, [x]
+        else let last, new_cache = loop (i+1) in
+             last, x::new_cache
+      in
+      let result, new_cache = loop (List.length t.cache) in
+      t.cache <- t.cache @ new_cache;
+      result
 
   let junk t = ignore (next t);;
 
@@ -191,6 +207,6 @@ and sep cur_sep = parse
     (* The first token in filename is considered as being after a newline.  *)
     let previous_separation = sep Token.Separation.Strong lexbuf in
 
-    {cache = None; previous_separation; lexbuf }
+    {cache = []; previous_separation; lexbuf }
   ;;
 }
