@@ -33,17 +33,19 @@ struct
     Hashtbl.create 17;;
 
   let prefix_handler {token} stream =
-    let raise_error token = Log.Parser.raise_user_error 
-      "`%s' cannot be used in prefix position." (Token.to_string token)
-    in match token with
+    let fail() =
+      Log.Parser.raise_user_error "`%s' cannot be used in prefix position."
+        (Token.to_string token) in
+    match token with
       | Token.Keyword(kwd) ->
 	(try ((Hashtbl.find prefix_handlers kwd) stream)
-	 with Not_found -> raise_error token)
+	 with Not_found -> fail())
       | Token.Int(n) -> Base_parser.int_handler n stream
       | Token.Ident(id) -> Base_parser.ident_handler id stream
       | Token.Float(n) -> failwith "Floats not yet handled"
       | Token.String(s) -> failwith "Strings not yet handled"
-      | Token.End -> raise_error token
+      | Token.End -> fail()
+  ;;
 
 
   (* Infix handlers, types, table, and accessor. *)
@@ -52,7 +54,7 @@ struct
     Hashtbl.create 17;;
   let infix_handler token left = 
     let fail() =
-      Log.Parser.raise_user_error "Token `%s' cannot be used as infix"
+      Log.Parser.raise_user_error "`%s' cannot be used in infix position."
         (Token.to_string token.token) in
     match token.token with
       | Token.Keyword(kwd) ->
@@ -61,7 +63,7 @@ struct
 	    non-zero lbp, but its infix handler is not defined.  *)
 	 with Not_found ->  fail())
       | _ -> fail()
-         ;;
+  ;;
 
     
   (* Parse an expression with a right binding power of [rbp]: all
