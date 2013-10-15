@@ -17,6 +17,8 @@ type token =
 | Keyword of keyword       (* Any keyword or punctuation mark. *)
 | End;;                    (* Indicates the end of a stream. *)
 
+include Key.S with type t := token;;
+
 module Ident:sig
   (* Note: as there is no location information in Ident, the
      token_with_info should probably be kept around? Or location is
@@ -87,14 +89,13 @@ module Stream: sig
   (* Reads the first token in the stream, leaving it in the stream. *)
   val peek: t -> With_info.t
 
-  (* Remove the first token from the stream, without returning it. *)
-  val junk: t -> unit
   (* Reads the nth next token on the stream (starting from 0), leaving
      it in the stream. [peek stream] is equivalent to [peek_nth stream
      0]. *)
   val peek_nth: t -> int -> With_info.t
 
-end
+  (* Remove the first token from the stream, without returning it. *)
+  val junk: t -> unit
 
 (* The list of predefined keywords for the L language. *)
 module Keywords: sig

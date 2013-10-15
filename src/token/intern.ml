@@ -15,10 +15,9 @@
 module Make(S:sig end) = struct
 
   module Id = Unique.Make(S)
-  include Id;;
 
-  let table:(string,t) Hashtbl.t = Hashtbl.create 31;;
-  let inverse_table:(t,string) Hashtbl.t = Hashtbl.create 31;;
+  let table:(string,Id.t) Hashtbl.t = Hashtbl.create 31;;
+  let inverse_table:(Id.t,string) Hashtbl.t = Hashtbl.create 31;;
   let intern string =
     try Hashtbl.find table string 
     with Not_found -> 
@@ -26,6 +25,10 @@ module Make(S:sig end) = struct
       Hashtbl.replace table string num;
       Hashtbl.replace inverse_table num string;
       num;;
-  let to_string id = Hashtbl.find inverse_table id
+  let to_string_ id = Hashtbl.find inverse_table id
+  include Id
+  let to_string = to_string_
+
+
 end
 

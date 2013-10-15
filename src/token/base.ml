@@ -87,3 +87,21 @@ let to_string = function
   | Float(f) -> string_of_float f
   | End -> "<end-of-input>"
   | Keyword(k) -> Keyword.to_string k
+
+
+let compare = Pervasives.compare
+let hash = Hashtbl.hash
+let equal = (=)
+
+module Ordered = struct
+  type t = token
+  let compare = compare
+end
+
+module Set = Set.Make(Ordered);;
+module Map = Extensions.Map.Make(Ordered);;
+module Hashtbl = Hashtbl.Make(struct
+  type t = token
+  let hash = Hashtbl.hash
+  let equal = (=)
+end);;
