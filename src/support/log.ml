@@ -94,6 +94,11 @@ module Parser = Make(struct
   let printed_name = "parser"
 end)
 
+module Expansion = Make(struct
+  let min_output_level = Info;;
+  let printed_name = "expansion"
+end)
+
 module Pattern_matching = Make(struct
   let min_output_level = Info;;
   let printed_name = "pattern matching"

@@ -75,6 +75,7 @@ module Free_variables:CATEGORY;;
 module Llvm_output:CATEGORY;;
 module Lexer:CATEGORY;;
 module Parser:CATEGORY;;
+module Expansion:CATEGORY;;
 module Pattern_matching:CATEGORY;;
 module Compilation_passes:CATEGORY;;
 module Ast_elaboration:CATEGORY;;
