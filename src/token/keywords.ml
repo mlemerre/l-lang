@@ -5,6 +5,7 @@ let rparen = Keyword.add ")";;
 let lbrace = Keyword.add "{";;
 let rbrace = Keyword.add "}";;
 let colon = Keyword.add ":";;
+let doublecolon = Keyword.add "::";;
 let coma = Keyword.add ",";;
 let pipe = Keyword.add "|";;
 let gt = Keyword.add ">";;
@@ -24,7 +25,6 @@ let semicolon = Keyword.add ";";;
 
 (* Non-symbols keywords. Those that are also OCaml keyword are
    suffixed by _. *)
-let forall = Keyword.add "forall";;
 let if_ = Keyword.add "if";;
 let else_ = Keyword.add "else";;
 let match_ = Keyword.add "match";;
@@ -33,4 +33,6 @@ let let_ = Keyword.add "let";;
 let and_ = Keyword.add "and";;
 let def = Keyword.add "def";;
 let type_ = Keyword.add "type";;
+let data = Keyword.add "data";;
 let declare = Keyword.add "declare";;
+let module_ = Keyword.add "module";;

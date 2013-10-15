@@ -100,7 +100,7 @@ end
 module Keywords: sig
 val lparen:token;; val rparen:token;;
 val lbrace:token;; val rbrace:token;;
-val colon:token;; val coma:token;; val pipe:token;;
+val colon:token;; val doublecolon:token;; val coma:token;; val pipe:token;;
 val equals:token;; val eq:token;; val ne:token;; 
 val gt:token;; val lt:token;; val le:token;; val ge:token;;
 val plus:token;; val minus:token;; val star:token;; val slash:token;;
@@ -110,11 +110,11 @@ val assigns:token;;
 
 (* Non-symbols keywords. Those that are also OCaml keyword are
    suffixed by _. *)
-val forall:token;; val cast:token;;
+val cast:token;;
 val if_:token;; val else_:token;;
 val match_:token;;
 val let_:token;; val and_:token;;
-val def:token;; val type_:token;; val declare:token;;
+val def:token;; val type_:token;; val declare:token;; val module_:token;; val data:token
 end
 
 
