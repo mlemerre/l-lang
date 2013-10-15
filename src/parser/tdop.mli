@@ -328,11 +328,11 @@ sig
      combining them. *)
   val define_infix_left_associative :
     Token.token -> left_binding_power_provider ->
-    (left:Base_parser.t -> right:Base_parser.t -> Base_parser.t) ->
+    (Token.With_info.t -> left:Base_parser.t -> right:Base_parser.t -> Base_parser.t) ->
     unit
   val define_infix_right_associative :
     Token.token -> left_binding_power_provider ->
-    (left:Base_parser.t -> right:Base_parser.t -> Base_parser.t) ->
+    (Token.With_info.t -> left:Base_parser.t -> right:Base_parser.t -> Base_parser.t) ->
     unit
 
   (* Returns the left_binding_power assigned to an infix operator.

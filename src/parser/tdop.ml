@@ -167,7 +167,7 @@ struct
     let left_associative_infix stream left =
       let token = Token.Stream.next stream in
       let right = parse stream (binding_powerf token) in
-      sem_act ~left ~right
+      sem_act token ~left ~right
     in define_infix string binding_powerf left_associative_infix;;
 
   (* Common case infix: the right part is another expression, and the
@@ -176,7 +176,7 @@ struct
     let right_associative_infix stream left =
       let token = Token.Stream.next stream in
       let right = parse stream ((binding_powerf token) - 1) in
-      sem_act ~left ~right
+      sem_act token ~left ~right
     in define_infix string binding_powerf right_associative_infix
 
 end;;
