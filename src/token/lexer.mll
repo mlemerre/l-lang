@@ -143,11 +143,8 @@ and sep cur_sep = parse
 
 
   (* Retrieve the next token. [t.lexbuf] must point to a token (i.e.
-     there must have been a previous call to [sep] on [t.lexbuf]).
-     This function should be called only if the cache is empty (if
-     full, empty the cache first). *)
+     there must have been a previous call to [sep] on [t.lexbuf]). *)
   let get_next t =
-    assert (t.cache == []);
     let separation_before = t.previous_separation in
     let token = token t.lexbuf in
     let location = current_location t.lexbuf in
