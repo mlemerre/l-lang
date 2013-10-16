@@ -96,6 +96,7 @@ module Stream: sig
 
   (* Remove the first token from the stream, without returning it. *)
   val junk: t -> unit
+end
 
 (* The list of predefined keywords for the L language. *)
 module Keywords: sig
