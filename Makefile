@@ -23,12 +23,20 @@ doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml c
 	cps/cpstransform/base.ml cps/cpstransform/expression.ml\
 	cps/cpstransform/rules.ml cps/cpstransform/definition.ml \
 	compilation_passes.ml \
-	parser/tdop.mli parser/tdop.ml
+	parser/tdop.mli parser/tdop.ml \
+	parser/parser_type.ml # parser/parser_expression.ml
 
 doc: $(addsuffix /index.html,$(addprefix web/,$(doc-files))) check_doc web/cps/cpstransform/cpstransform_rules.ml001.png
 #	rm -Rf ~/Cloud/UbuntuOne/src-blessed/site/jekyll/documentation/compiler-book && mv web ~/Cloud/UbuntuOne/src-blessed/site/jekyll/documentation/compiler-book
 
-jekyll: $(addsuffix /index.html,$(addprefix web4jekyll/,$(doc-files))) check_doc web/cps/cpstransform/cpstransform_rules.ml001.png
+jekyll: $(addsuffix /index.html,$(addprefix web4jekyll/,$(doc-files))) web/cps/cpstransform/cpstransform_rules.ml001.png # check_doc
+
+web/parser/grammar.tex: src/parser/parser_type.ml # src/parser/parser_expression.ml src/parser/parser_definition.ml
+	awk '/\\begin{grammar}/,/\\end{grammar}/' $^ \
+	| sed 's/\\begin{grammar}//g' \
+	| sed 's/\\end{grammar}//g' \
+	| sed 's/(\*//g' \
+	| sed 's/\*)//g' > $@
 
 web/cps/cpstransform/cpstransform_rules.ml001.png: doc/cpstransform_rules_example.tex
 	cd doc && pdflatex cpstransform_rules_example.tex
