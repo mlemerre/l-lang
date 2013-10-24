@@ -125,16 +125,26 @@ struct
     (* Get the first token of the expression, and handles it as a prefix
        (i.e. as the beginning of an expression). *)
     let token = Token.Stream.peek stream in
+    Log.Parser.debug "Starting prefix %s"
+      (Token.to_string token.Token.With_info.token);
     let left = prefix_handler token stream in
+    Log.Parser.debug "Ending prefix %s"
+      (Token.to_string token.Token.With_info.token);
+
        
     (* Parses tokens while we find tokens with left binding power
        strictly greater than [rbp]. Tail-recursive. *)
     let rec loop left =
       let token = Token.Stream.peek stream in
       if (left_binding_power token) > rbp
-      then let handler = infix_handler token in
-           let new_left = handler stream left in
-           loop new_left
+      then
+        (Log.Parser.debug "Starting infix %s"
+          (Token.to_string token.Token.With_info.token);
+        let handler = infix_handler token in
+        let new_left = handler stream left in
+        Log.Parser.debug "Ending infix %s"
+          (Token.to_string token.Token.With_info.token);
+        loop new_left)
       else left
     in loop left;;
 
