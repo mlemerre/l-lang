@@ -57,7 +57,7 @@ let digit = ['0'-'9']
    e.g in <-, <<, >>, --, etc. For clarity, it is better to clearly
    separate the use of custom symbols using space. *)
 let tex_symbol = '\\' [^'\t' ' ' '\n' ';']+
-let custom_symbol = ['=' '+' '-' '|' '*' '.' '!' '?' '<' '>' ':' '/']+
+let custom_symbol = ['=' '+' '-' '|' '*' '.' '!' '?' '<' ':' '/']+
 let arrow_end = ( "<"+ | ">"+ | "()" | "[]" | "|" | "+" | "*")
 let arrow_symbol = arrow_end? ['-' '=' '|' '+' '~']+ arrow_end?
 let open_symbol = ['(' '{' '<' '['] ['|']?
