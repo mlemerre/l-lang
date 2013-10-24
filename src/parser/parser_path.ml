@@ -54,7 +54,7 @@ let rec parse_module_name_with_path stream =
   if tok.Token.With_info.token = Kwd.slash 
   && tok.separation_before = Token.Separation.Stuck
   then (Token.Stream.junk stream;
-        P.binary_op tok mn (parse_module_name_with_path stream))
+        P.infix_binary_op mn tok (parse_module_name_with_path stream))
   else mn
 ;;
 
@@ -77,7 +77,7 @@ let parse_tuple_path_and_remove_singleton stream =
     parse_tuple_generic_return_parens stream parse_module_name_with_path in
   match list_paths with
     | [t] -> t
-    | _ -> P.delimited_list lpar rpar list_paths
+    | _ -> P.delimited_list lpar list_paths rpar
 in Module_name_tdop.define_prefix Kwd.lparen parse_tuple_path_and_remove_singleton;
 
 (* \begin{grammar}
@@ -92,7 +92,7 @@ let parse_tuple_type_infix stream left =
     parse_list_with_sep stream parse_module_name_with_path Kwd.coma in
   let gt = Token.Stream.next stream in
   expect gt Kwd.gt;
-  let right = P.delimited_list lt gt type_list in 
+  let right = P.delimited_list lt type_list gt in
   { P.func = P.Custom "modapply"; P.arguments = [ left; right ];
     P.location = P.between_terms left right }
 in Module_name_tdop.define_infix Kwd.lt (infix_when_stuck 0xf000) parse_tuple_type_infix;;
@@ -103,7 +103,7 @@ in Module_name_tdop.define_infix Kwd.lt (infix_when_stuck 0xf000) parse_tuple_ty
 \end{grammar}*)
 Module_name_tdop.define_infix_right_associative
   Kwd.arrow (infix_when_normal 0x8000)
-  (fun tok ~left ~right -> P.binary_op tok left right)
+  (fun tok ~left ~right -> P.infix_binary_op left tok right)
 ;;
 
 (* Things like (Int,Int), or Int -> Int, are correct module paths. So
@@ -161,6 +161,6 @@ let rec parse_with_path parsefun stream =
         let slash = Token.Stream.next stream in
         expect slash Kwd.slash;
         let rest = parse_with_path parsefun stream in
-        P.binary_op slash dir rest)
+        P.infix_binary_op dir slash rest)
   else parsefun stream
 ;;
