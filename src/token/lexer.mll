@@ -162,6 +162,12 @@ and sep cur_sep = parse
     | [] -> get_next t
     | x::rest -> t.cache <- rest; x;;
 
+  let next t =
+    let tok = next t in
+    Log.Lexer.debug "next = %s" (Token.to_string tok.Token.With_info.token);
+    tok
+  ;;
+
   let peek t =
     match t.cache with
     | [] ->
@@ -170,6 +176,13 @@ and sep cur_sep = parse
       tokeni
     | x::_ -> x
   ;;
+
+  let peek t =
+    let tok = peek t in
+    Log.Lexer.debug "peek = %s" (Token.to_string tok.Token.With_info.token);
+    tok
+  ;;
+
 
   let peek_nth t n =
     (* let n = n-1 in *)
