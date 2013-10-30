@@ -16,3 +16,6 @@ val map_with_index:
    upwards. In other words, [foldk f init [b1;...;bn] k] computes
    [f init b1 (x1 -> f x2 b2 (x3 -> ... f xn bn ( xn+1 -> k xn+1)))]. *)
 val foldk : ('a -> 'b -> ('a -> 'c) ->'c) -> 'a -> 'b list -> ('a -> 'c) -> 'c
+
+(* [first l] returns the last element in l. l must be non-empty. *)
+val last: 'a list -> 'a

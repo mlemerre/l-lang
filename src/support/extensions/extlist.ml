@@ -17,3 +17,9 @@ let rec map_with_index f ?(start_index=0) = function
 let rec foldk f accu list k = match list with
   | [] -> k accu
   | a::b -> f accu a (fun x -> foldk f x b k)
+
+
+let rec last = function
+  | [] -> failwith "List.last called on empty list"
+  | [x] -> x
+  | a::b -> last b
