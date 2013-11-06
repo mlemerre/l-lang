@@ -10,7 +10,7 @@ then
     List.iter Compilation_passes.process_file Asttest.files
   end
 else if Sys.argv.(1) = "--pretty"
-  then Pretty_print.pretty Sys.argv.(2)
+  then Pretty_print.print_html Sys.argv.(2)
 else
   let file = Sys.argv.(1) in
   Compilation_passes.process_file file
