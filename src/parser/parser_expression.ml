@@ -153,7 +153,7 @@ let parse_let_binding stream =
    \item $\call{statement} ::=\\
    \alt \tok{let}\ \call{let\_binding}\\
    \alt \call{exp}$
-   \item $\call{statements} ::= \call{statement}+$
+   \item $\call{statements} ::= \call{statement}\ ({}_{\backslash{}n}\call{statement})*$
    \item $\call{pattern\_matching} ::= (\call{pattern}\ \tok{->}\ \call{statements})+$
 
    \item $\call{lambda} ::= \tok{\{}\ \call{pattern\_matching}\ \tok{\}}$
