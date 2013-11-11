@@ -1,0 +1,141 @@
+ 
+   \item $\call{module\_args} ::=
+   \tok{<} \call{type} (\tok{,} \call{type})* \tok{>}$
+   
+ 
+   \item $\call{module\_name} ::= \\
+   \alt \call{module\_id} \\
+   \alt \call{module\_id}\call{module\_args}$
+    
+ 
+   \item $\call{dir} ::= (\call{module\_name} \tok{/})*$
+   \item $\call{path\_to\_module\_name} ::=  \call{dir}\call{module\_name}$
+   
+
+  \item $\call{type} ::= \call{path\_to\_module\_name}$
+   
+ 
+   \item $\call{tuple\_type} ::= \\
+    \alt \tok{(}\tok{)}\\
+    \alt \tok{(} \call{type} (\tok{,} \call{type})* \tok{)}$
+   \item $\addprefix{type}{(}{\call{tuple\_type}}$
+    
+
+  \item $\addinfix{type}{->}{80}{rightassoc}{
+  {}^{\ \backslash{}n}\tok{->}\ \call{type}}$
+
+
+  \item $\call{path\_to\_module\_name\_allow\_type\_constr} ::= \call{type}$
+  
+
+  \item $\call{exp} ::=\\
+  \alt \call{int}\\
+  \alt \call{dir}\call{id}$
+   
+
+  \item $\addinfix{exp}{==}{90}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{==}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{!=}{90}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{!=}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{<}{a0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{<}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{<=}{a0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{<=}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{>=}{a0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{>=}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{>}{a0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{>}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{+}{c0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{+}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{-}{c0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{-}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{*}{d0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{*}^{\backslash{}n}\  \call{exp}}$
+  \item $\addinfix{exp}{/}{d0}{leftassoc}{
+  \ {{}^\textvisiblespace}\tok{/}^{\backslash{}n}\  \call{exp}}$
+   
+ 
+   \item $\addprefix{exp}{-}{\tok{-} \call{exp}}$
+    
+ 
+   \item $\call{tuple\_exp} ::=\\
+   \alt \tok{(}\tok{)}\\
+   \alt \tok{(}\ \call{exp}\ (\tok{,}\ \call{exp})* )\ \tok{)}$
+   \item $\addprefix{exp}{(}{\call{tuple\_exp}}$
+   \item $\addinfix{exp}{(}{f0}{leftassoc}{\call{tuple\_exp}}$
+    
+ 
+   \item $\addprefix{exp}{if}{\tok{if} \tok{(} \call{exp} \tok{)}
+   \ \call{exp}\ \tok{else}\ \call{exp}}$
+    
+ 
+   \item $\call{let\_binding} ::= \call{pattern}\ \tok{=}\ \call{expression}$
+     
+ 
+   \item $\call{statement} ::=\\
+   \alt \tok{let}\ \call{let\_binding}\\
+   \alt \call{exp}$
+   \item $\call{statements} ::= \call{statement}\ ({}_{\backslash{}n}\call{statement})*$
+   \item $\call{pattern\_matching} ::= (\call{pattern}\ \tok{->}\ \call{statements})+$
+
+   \item $\call{lambda} ::= \tok{\{}\ \call{pattern\_matching}\ \tok{\}}$
+   \item $\call{statements\_block} ::= \tok{\{}\ \call{statements}\ \tok{\}}$
+   \item $\call{block} ::=\\
+   \alt \call{lambda}\\
+   \alt \call{statements\_block} $
+
+   
+ 
+   \item $\addprefix{exp}{\{}{\call{block}}$
+   \item $\addinfix{exp}{\{}{f0}{leftassoc}{\call{block}}$
+    
+ 
+   \item $\addprefix{exp}{match}{\tok{match} \tok{(} \call{exp} \tok{)} \call{lambda}}$
+   
+ 
+   \item $\addprefix{exp}{cast}{\tok{cast}\tok{(} \call{exp} 
+   \tok{,}\ \call{type} \tok{)}}$
+    
+ 
+   \item $\addinfix{exp}{\{}{e0}{noassoc}{\tok{::}\call{type}}$
+    
+ 
+   \item $\call{def} ::= \tok{def}\ \call{id}\ \tok{=}\ \call{expression}$
+    
+ 
+   \item $\call{declare} ::= \tok{declare}\ \call{id}\tok{::}\call{type}$
+    
+ 
+   \item $\call{definition} ::= \\
+   \alt \call{def}\\
+   \alt \call{declare}\\
+   \alt \call{module\_definition}$
+    
+ 
+  \item $\call{constructor\_argument} ::= 
+    ( \call{id} \tok{::} \alt \epsilon)\ \call{type}$
+  \item $\call{constructor\_arguments} ::=\\
+   \quad\tok{(} \call{constructor\_argument}\ ( \tok{,}\ {constructor\_argument} )* \tok{)}$ 
+    
+ 
+   \item $\call{constructor} ::= \call{upper\_id}\call{constructor\_arguments}$
+    
+
+  \item $\call{data} ::= \tok{data}\ \tok{\{} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* \tok{\}}$
+   
+ 
+   \item $\call{module\_implementation} ::= \tok{\{} (\epsilon \alt
+   \call{definition}\ ({}_{\backslash{}n}\call{definition})* ) \tok{\}}$
+    
+ 
+   \item $\call{module\_expr} ::=\\
+   \alt \call{module\_implementation}\\
+   \alt \call{data}\\
+   \alt \call{path\_to\_module\_name\_allow\_type\_constr}$
+    
+ 
+   \item $\call{module\_def\_args} ::= \tok{<} \call{upper\_id}
+   (\tok{,} \call{upper\_id})* \tok{>}$\\
+   \item $\call{module\_definition} ::= 
+   \tok{module}\ \call{upper\_id}\call{module\_def\_args}?\ \tok{=}\ \call{module\_expr}$
+    

@@ -1,6 +1,6 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-(*p \include{../grammardefs} *)
+(*p \include{../../../doc/grammardefs} *)
 
 (* This module implements the TDOP-based parser of L paths and module
    names.

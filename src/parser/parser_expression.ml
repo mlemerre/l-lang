@@ -2,7 +2,7 @@
 
 (* This module implements the TDOP-based parser of L expressions. *)
 
-(*p \include{../grammardefs} *)
+(*p \include{../../../doc/grammardefs} *)
 
 open Parser_base;;
 open Token.With_info;;

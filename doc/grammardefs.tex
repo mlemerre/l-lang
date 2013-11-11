@@ -1,0 +1,13 @@
+\usepackage{color}
+
+\newenvironment{grammar}{\begin{itemize}}{\end{itemize}}
+%\newcommand{\tok}[1]{"{\bf #1}"}
+\newcommand{\tok}[1]{\textcolor{blue}{\texttt{#1}}}
+%HEVEA\renewcommand{\tok}[1]{\textcolor{blue}{\large\bf \texttt{#1}}}
+%\newcommand{\call}[1]{<\!\!#1\!\!>}
+\newcommand{\call}[1]{\langle{}{\mathit{#1}}\rangle}
+\newcommand{\alt}{\ \ |\ \ }
+\newcommand{\addprefix}[3]{\call{#1} \ {{\small{+}}\!\!=}\ #3 \qquad \textit{/*
+    prefix token {\rm{\tok{#2}}} */}}
+\newcommand{\addinfix}[5]{\call{#1} \ {{\small{+}}\!\!=}\ \call{#1}#5 \qquad \textit{/*
+    #4 infix token {\rm{\tok{#2}}}, priority 0x#3 */}}
