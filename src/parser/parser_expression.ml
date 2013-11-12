@@ -35,25 +35,25 @@ let binary_infix tok ~left ~right = P.infix_binary_op left tok right
 
 (*\begin{grammar}
   \item $\addinfix{exp}{==}{90}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{==}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{==}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{!=}{90}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{!=}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{!=}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{<}{a0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{<}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{<}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{<=}{a0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{<=}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{<=}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{>=}{a0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{>=}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{>=}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{>}{a0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{>}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{>}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{+}{c0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{+}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{+}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{-}{c0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{-}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{-}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{*}{d0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{*}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{*}^{\backslash{}n}\  \call{exp}}$
   \item $\addinfix{exp}{/}{d0}{leftassoc}{
-  \ {{}^\textvisiblespace}\tok{/}^{\backslash{}n}\  \call{exp}}$
+  \ {{}^{\textrm{\textvisiblespace}}}\tok{/}^{\backslash{}n}\  \call{exp}}$
   \end{grammar} *)
 ExpTdop.define_infix_left_associative Kwd.eq    (infix_when_normal 0x9000) binary_infix;;
 ExpTdop.define_infix_left_associative Kwd.ne    (infix_when_normal 0x9000) binary_infix;;
