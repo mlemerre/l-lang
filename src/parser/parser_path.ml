@@ -228,8 +228,8 @@ r_parse_type := parse_type;;
 
 (* \begin{grammar}
    \item $\call{tuple\_type} ::= \\
-    \alt \tok{(}\tok{)}\\
-    \alt \tok{(} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* \tok{)}$
+    \alt \tok{(}^{\backslash{}n}{}^{\backslash{}n}\tok{)}\\
+    \alt \tok{(}^{\backslash{}n}n \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{)}$
    \item $\addprefix{type}{(}{\call{tuple\_type}}$
    \end{grammar} *)
 let parse_tuple_type stream =

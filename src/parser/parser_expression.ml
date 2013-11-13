@@ -79,8 +79,8 @@ ExpTdop.define_prefix Kwd.minus (fun stream ->
 
 (* \begin{grammar}
    \item $\call{tuple\_exp} ::=\\
-   \alt \tok{(}\tok{)}\\
-   \alt \tok{(}\ \call{exp}\ ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{exp})* )\ \tok{)}$
+   \alt \tok{(}^{\backslash{}n}{}^{\backslash{}n}\tok{)}\\
+   \alt \tok{(}^{\backslash{}n}\ \call{exp}\ ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{exp})* )\ {}^{\backslash{}n}\tok{)}$
    \item $\addprefix{exp}{(}{\call{tuple\_exp}}$
    \item $\addinfix{exp}{(}{f0}{leftassoc}{\call{tuple\_exp}}$
    \end{grammar} 
