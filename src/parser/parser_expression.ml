@@ -67,10 +67,11 @@ ExpTdop.define_infix_left_associative Kwd.star  (infix_when_normal 0xd000) binar
 ExpTdop.define_infix_left_associative Kwd.slash (infix_when_normal 0xd000) binary_infix;;
 
 (* \begin{grammar}
-   \item $\addprefix{exp}{-}{\tok{-} \call{exp}}$
+   \item $\addprefix{exp}{-}{\tok{-}^\textrm\textvisiblespace\ \call{exp}}$
    \end{grammar} *)
 ExpTdop.define_prefix Kwd.minus (fun stream ->
   let minus = Token.Stream.next stream in
+  expect minus Kwd.minux ~after_max:Kwd.Normal;
   let exp = ExpTdop.parse stream 0xf000 in
   { P.func = P.Token minus;
     P.arguments = [exp];
@@ -101,7 +102,7 @@ in ExpTdop.define_prefix Kwd.lparen parse_tuple;
    in ExpTdop.define_infix Kwd.lparen (infix_when_stuck 0xf000) infix_fun;;
 
 (* \begin{grammar}
-   \item $\addprefix{exp}{if}{\tok{if} \tok{(}^{\backslash{}n} \call{exp} {}^{\backslash{}n}\tok{)}
+   \item $\addprefix{exp}{if}{\tok{if} \tok{(}^{\backslash{}n} \call{exp} {}^{\backslash{}n}\tok{)}^{\backslash{}n}
    \ \call{exp}\ {}^{\backslash{}n}\tok{else}^{\backslash{}n}\ \call{exp}}$
    \end{grammar}
 
@@ -113,9 +114,11 @@ in ExpTdop.define_prefix Kwd.lparen parse_tuple;
    mistakes, but we will probably relax it later. *)
 let parse_if stream =
   let iftok = Token.Stream.next stream in
-  expect (Token.Stream.next stream) Kwd.lparen ~after_max:Sep.Strong;
+  expect (Token.Stream.next stream) Kwd.lparen
+    ~before_max:Sep.Stuck ~after_max:Sep.Strong;
   let cond = parse_expression stream in
-  expect (Token.Stream.next stream) Kwd.rparen ~before_max:Sep.Strong;
+  expect (Token.Stream.next stream) Kwd.rparen
+    ~before_max:Sep.Strong ~after_max:Sep.Strong;
   let then_ = parse_expression stream in
   expect (Token.Stream.next stream) Kwd.else_ ~before_max:Sep.Strong ~after_max:Sep.Strong ;
   let else_ = parse_expression stream in
@@ -297,7 +300,8 @@ in ExpTdop.define_infix Kwd.lbrace (infix_when_stuck 0xf000) infix_fun
    matched. *)
 let parse_match stream =
   let match_tok = Token.Stream.next stream in
-  expect (Token.Stream.next stream) Kwd.lparen ~after_max:Sep.Strong;
+  expect (Token.Stream.next stream) Kwd.lparen
+    ~before_max:Sep.Stuck ~after_max:Sep.Strong;
   let cond = parse_expression stream in
   expect (Token.Stream.next stream) Kwd.rparen ~before_max:Sep.Strong;
   let pattern_matching_block = parse_lambda stream in
@@ -315,7 +319,8 @@ in ExpTdop.define_prefix Kwd.match_ parse_match;;
 let parse_cast stream =
   let cast_tok = Token.Stream.next stream in
   check cast_tok Kwd.cast;
-  expect (Token.Stream.next stream) Kwd.lparen ~after_max:Sep.Strong;
+  expect (Token.Stream.next stream) Kwd.lparen
+    ~before_max:Sep.Stuck ~after_max:Sep.Strong;
   let exp = parse_expression stream in
   expect (Token.Stream.next stream) Kwd.comma ~after_max:Sep.Strong;
   let t = Parser_path.parse_type stream in
@@ -333,7 +338,7 @@ in ExpTdop.define_prefix Kwd.cast parse_cast;;
    This construction, and its syntax, are still alpha. *)
 let parse_annotation stream left =
   let dcolon = Token.Stream.next stream in
-  check dcolon Kwd.doublecolon;
+  expect dcolon Kwd.doublecolon ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
   let typ = Parser_path.parse_type stream in
   P.infix_binary_op left dcolon typ
 in ExpTdop.define_infix Kwd.doublecolon (function
