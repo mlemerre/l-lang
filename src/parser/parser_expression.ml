@@ -13,8 +13,8 @@ module ExpSemanticActions = struct
   let int_handler n stream = P.single (Token.Stream.next stream);;
 
   (* TODO: Differentiate upper and lower ids at the token level *)
-  let ident_handler id stream = 
-    Parser_path.parse_path_to 
+  let ident_handler id stream =
+    Parser_path.parse_path_to
       (fun stream -> P.single (Token.Stream.next stream))
       stream
 
@@ -69,7 +69,7 @@ ExpTdop.define_infix_left_associative Kwd.slash (infix_when_normal 0xd000) binar
 (* \begin{grammar}
    \item $\addprefix{exp}{-}{\tok{-} \call{exp}}$
    \end{grammar} *)
-ExpTdop.define_prefix Kwd.minus (fun stream -> 
+ExpTdop.define_prefix Kwd.minus (fun stream ->
   let minus = Token.Stream.next stream in
   let exp = ExpTdop.parse stream 0xf000 in
   { P.func = P.Token minus;
@@ -83,7 +83,7 @@ ExpTdop.define_prefix Kwd.minus (fun stream ->
    \alt \tok{(}^{\backslash{}n}\ \call{exp}\ ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{exp})* )\ {}^{\backslash{}n}\tok{)}$
    \item $\addprefix{exp}{(}{\call{tuple\_exp}}$
    \item $\addinfix{exp}{(}{f0}{leftassoc}{\call{tuple\_exp}}$
-   \end{grammar} 
+   \end{grammar}
 
    Note that function calls bind very strongly, more than other
    operators. This allows to write f() + g(), instead of (f()) +
@@ -92,9 +92,9 @@ ExpTdop.define_prefix Kwd.minus (fun stream ->
 let parse_tuple stream =
   let lpar,rpar,list_exp = parse_tuple_generic stream parse_expression in
   P.delimited_list lpar list_exp rpar
-in ExpTdop.define_prefix Kwd.lparen parse_tuple; 
+in ExpTdop.define_prefix Kwd.lparen parse_tuple;
    ExpTdop.define_prefix Kwd.lparen parse_tuple;
-   let infix_fun stream caller = 
+   let infix_fun stream caller =
      let args = parse_tuple stream in
      { P.func = P.Custom "apply"; P.arguments = [caller;args];
        P.location = P.between_terms caller args }
@@ -103,7 +103,7 @@ in ExpTdop.define_prefix Kwd.lparen parse_tuple;
 (* \begin{grammar}
    \item $\addprefix{exp}{if}{\tok{if} \tok{(} \call{exp} \tok{)}
    \ \call{exp}\ {}^{\backslash{}n}\tok{else}^{\backslash{}n}\ \call{exp}}$
-   \end{grammar} 
+   \end{grammar}
 
    Note: for now we require parens around the condition of the if. We
    can remove this condition, but this requires that it is always ok
@@ -111,7 +111,7 @@ in ExpTdop.define_prefix Kwd.lparen parse_tuple;
    flagged as an error, making impossible to write things like if f {
    x + 1}. The parser is a bit conservative here to help catch these
    mistakes, but we will probably relax it later. *)
-let parse_if stream = 
+let parse_if stream =
   let iftok = Token.Stream.next stream in
   expect (Token.Stream.next stream) Kwd.lparen;
   let cond = parse_expression stream in
@@ -136,7 +136,7 @@ let parse_pattern = parse_expression;;
    \item $\call{let\_binding} ::= \call{pattern}\
    {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
    \end{grammar}  *)
-let parse_let_binding stream = 
+let parse_let_binding stream =
   let pattern = parse_pattern stream in
   let eq_tok = Token.Stream.next stream in
   expect eq_tok Kwd.equals ~before_max:Sep.Normal ~after_max:Sep.Strong;
@@ -165,14 +165,14 @@ let parse_let_binding stream =
    \alt \call{statements\_block} $
 
    \end{grammar}
-   
+
    This part is the trickiest to parse without using backtracking, and
    relies on the fact that parsing expressions and patterns use the
    same function. The idea is to call [parse_expression]; if it is
    followed by a ["->"], then it was a pattern; else it is an
    expression. A third case may arise where we parse a statement which
    is not an expression (currently, a [let]), but these are quickly
-   detected because they use a special keyword as prefix. 
+   detected because they use a special keyword as prefix.
 
    This scheme could be easily extended to allow multiple arrows, as
    in { x -> y -> x + y }, if this syntax extension is considered
@@ -181,25 +181,25 @@ let parse_let_binding stream =
 (* This function parses all the statements, up to (and including) the
    following pattern in the match list, or up to the \} if there is no
    following pattern. *)
-let rec parse_statements_and_maybe_next_pattern stream = 
-  let continue_with stmt = 
+let rec parse_statements_and_maybe_next_pattern stream =
+  let continue_with stmt =
     expect_strong_separation stream;
     let (stmts, maybe_patt) = parse_statements_and_maybe_next_pattern stream in
     (stmt::stmts, maybe_patt)
   in
-  if (Token.Stream.peek stream).token = Kwd.let_ 
+  if (Token.Stream.peek stream).token = Kwd.let_
   then begin
     let let_tok = Token.Stream.next stream in
     expect let_tok Kwd.let_ ~after_min:Sep.Normal ~after_max:Sep.Normal;
     let (patt,exp) = parse_let_binding stream in
-    let stmt = 
+    let stmt =
       { P.func = P.Token(let_tok);
         P.arguments = [patt;exp];
         P.location = P.between_tok_term let_tok exp }
     in
     continue_with stmt
   end
-  else 
+  else
     let pattern_or_expression = parse_expression stream in
     let after = Token.Stream.peek stream in
     if after.token = Kwd.rbrace
@@ -213,10 +213,10 @@ let rec parse_statements_and_maybe_next_pattern stream =
 ;;
 
 (* Parse a pattern matching once we know it is a pattern matching. *)
-let parse_rest_pattern_matching stream first_patt first_arrow = 
-  let rec loop patt arrow = 
+let parse_rest_pattern_matching stream first_patt first_arrow =
+  let rec loop patt arrow =
     let (stmts, maybe_patt) = parse_statements_and_maybe_next_pattern stream in
-    let stmts = 
+    let stmts =
       { P.func = P.Custom("statements");
         P.arguments = stmts;
         P.location = P.between_terms (List.hd stmts) (List.last stmts)
@@ -234,13 +234,13 @@ let parse_rest_pattern_matching stream first_patt first_arrow =
 (* Parse a lambda, between its \{ \}. In this case, we know in advance that
    we expect a match list; this is use in the parse rule of
    [match]. *)
-let parse_lambda stream = 
-  let lbra = Token.Stream.next stream in 
+let parse_lambda stream =
+  let lbra = Token.Stream.next stream in
   expect lbra Kwd.lbrace ~after_max:Sep.Strong;
   let first_pattern = parse_pattern stream in
   let first_arrow = Token.Stream.next stream in
   expect first_arrow Kwd.arrow;
-  let pattern_matching = 
+  let pattern_matching =
     parse_rest_pattern_matching stream first_pattern first_arrow in
   let rbra = Token.Stream.next stream in
   expect rbra Kwd.rbrace ~before_max:Sep.Strong;
@@ -250,29 +250,29 @@ let parse_lambda stream =
 (* When we encounter a \{, we do not know whether it only introduces a
    new statement block, or if it is a lambda. This function parses in both
    cases. *)
-let parse_block stream = 
-  let lbra = Token.Stream.next stream in 
+let parse_block stream =
+  let lbra = Token.Stream.next stream in
   expect lbra Kwd.lbrace;
   let stmts, maybe_patt = parse_statements_and_maybe_next_pattern stream in
   match stmts, maybe_patt with
   (* Pattern matching. *)
-  | [], Some(patt,arrow) -> 
+  | [], Some(patt,arrow) ->
     let pattern_matching = parse_rest_pattern_matching stream patt arrow in
     let rbra = Token.Stream.next stream in
     expect rbra Kwd.rbrace;
     P.delimited_list lbra pattern_matching rbra
   (* Statements.  *)
-  | stmts, None -> 
+  | stmts, None ->
     let rbra = Token.Stream.next stream in
     expect rbra Kwd.rbrace;
     { P.func = P.Custom "statements";
       P.arguments = stmts;
       P.location = P.between_terms (List.hd stmts) (List.last stmts) }
   (* Empty block: {} *)
-  | [], None -> 
-    Log.Parser.raise_compiler_error ~loc:lbra.location 
+  | [], None ->
+    Log.Parser.raise_compiler_error ~loc:lbra.location
       "Error: nothing between { and }"
-  | _ -> Log.Parser.raise_compiler_error ~loc:lbra.location 
+  | _ -> Log.Parser.raise_compiler_error ~loc:lbra.location
     "Error: a pattern matching must begin by \"<pattern> ->\" "
 ;;
 
@@ -283,7 +283,7 @@ let parse_block stream =
 ExpTdop.define_prefix Kwd.lbrace parse_block;;
 let infix_fun stream left =
   let right = parse_block stream in
-  { P.func = P.Custom "apply"; 
+  { P.func = P.Custom "apply";
     P.arguments = [left;right];
     P.location = P.between_terms left right }
 in ExpTdop.define_infix Kwd.lbrace (infix_when_stuck 0xf000) infix_fun
@@ -295,7 +295,7 @@ in ExpTdop.define_infix Kwd.lbrace (infix_when_stuck 0xf000) infix_fun
 
    As for if, we could remove the () around the expression beeing
    matched. *)
-let parse_match stream = 
+let parse_match stream =
   let match_tok = Token.Stream.next stream in
   expect (Token.Stream.next stream) Kwd.lparen;
   let cond = parse_expression stream in
@@ -307,10 +307,10 @@ let parse_match stream =
 in ExpTdop.define_prefix Kwd.match_ parse_match;;
 
 (* \begin{grammar}
-   \item $\addprefix{exp}{cast}{\tok{cast}\tok{(} \call{exp} 
+   \item $\addprefix{exp}{cast}{\tok{cast}\tok{(} \call{exp}
    {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{type} \tok{)}}$
-   \end{grammar} 
-   
+   \end{grammar}
+
    This construction, and its syntax, are still alpha. *)
 let parse_cast stream =
   let cast_tok = Token.Stream.next stream in
@@ -328,15 +328,15 @@ in ExpTdop.define_prefix Kwd.cast parse_cast;;
 
 (* \begin{grammar}
    \item $\addinfix{exp}{\{}{e0}{noassoc}{\tok{::}\call{type}}$
-   \end{grammar} 
-   
+   \end{grammar}
+
    This construction, and its syntax, are still alpha. *)
 let parse_annotation stream left =
   let dcolon = Token.Stream.next stream in
   check dcolon Kwd.doublecolon;
   let typ = Parser_path.parse_type stream in
   P.infix_binary_op left dcolon typ
-in ExpTdop.define_infix Kwd.doublecolon (function 
+in ExpTdop.define_infix Kwd.doublecolon (function
 | {Token.With_info.separation_before = Sep.Stuck} -> 0xe000
 | _ -> failwith "invalid use of annotation") parse_annotation
 ;;

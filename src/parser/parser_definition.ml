@@ -13,8 +13,8 @@ open Token.With_info;;
 (* \begin{grammar}
    \item $\call{def} ::= \tok{def}\ \call{id}\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
    \end{grammar} *)
-let parse_def stream = 
-  let def = Token.Stream.next stream in 
+let parse_def stream =
+  let def = Token.Stream.next stream in
   check def Kwd.def;
   let patt = Parser_expression.parse_expression stream in
   expect (Token.Stream.next stream) Kwd.equals ~before_max:Sep.Normal ~after_max:Sep.Strong;
@@ -26,7 +26,7 @@ let parse_def stream =
 
 (* \begin{grammar}
    \item $\call{declare} ::= \tok{declare}\ \call{id}\tok{::}\call{type}$
-   \end{grammar} 
+   \end{grammar}
 
    Note: declare is temporary. Will surely be replaced with "def
    id::type." *)
@@ -49,7 +49,7 @@ let r_parse_module_definition = ref (fun _ -> assert false);;
    \alt \call{declare}\\
    \alt \call{module\_definition}$
    \end{grammar} *)
-let parse_definition stream = 
+let parse_definition stream =
   let {token=first_token} = Token.Stream.peek stream in
   match first_token with
     | k when k = Kwd.def -> parse_def stream
@@ -71,20 +71,20 @@ let parse_definition stream =
    that the [Constructor()] construct is not allowed; to have no
    arguments, one has to write just [Constructor]. *)
 (* \begin{grammar}
-  \item $\call{constructor\_argument} ::= 
+  \item $\call{constructor\_argument} ::=
     ( \call{id} \tok{::} \alt \epsilon)\ \call{type}$
   \item $\call{constructor\_arguments} ::=\\
-   \quad\tok{(} \call{constructor\_argument}\ ( {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ {constructor\_argument} )* \tok{)}$ 
-  \end{grammar} *) 
+   \quad\tok{(} \call{constructor\_argument}\ ( {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ {constructor\_argument} )* \tok{)}$
+  \end{grammar} *)
 let parse_constructor_arguments stream =
   let lparen = Token.Stream.next stream in
   check lparen Kwd.lparen;
   let parse_one_argument stream =
     let maybe_arg = Token.Stream.peek stream in
     let maybe_dcolon = Token.Stream.peek_nth stream 1 in
-    match maybe_arg.token with 
-    | Token.Ident x when maybe_dcolon.token = Kwd.doublecolon -> 
-      Token.Stream.junk stream; Token.Stream.junk stream; 
+    match maybe_arg.token with
+    | Token.Ident x when maybe_dcolon.token = Kwd.doublecolon ->
+      Token.Stream.junk stream; Token.Stream.junk stream;
       let typ = Parser_path.parse_type stream in
       P.infix_binary_op (P.single maybe_arg) maybe_dcolon typ
     | _ -> Parser_path.parse_type stream
@@ -103,7 +103,7 @@ let parse_constructor stream =
   expect_id tok;
   if ((Token.Stream.peek stream).token = Kwd.lparen)
   then let arguments = parse_constructor_arguments stream in
-       { P.func = P.Token tok; 
+       { P.func = P.Token tok;
          P.arguments = [arguments];
          P.location = P.between_tok_term tok arguments}
   else P.single tok
@@ -113,11 +113,11 @@ let parse_constructor stream =
   \item $\call{data} ::= \tok{data}\ \tok{\{} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* \tok{\}}$
   \end{grammar} *)
 let parse_data stream =
-  let parse_constructors stream = 
+  let parse_constructors stream =
     let tok = Token.Stream.next stream in
     expect tok Kwd.lbrace;
     let first = parse_constructor stream in
-    let rest = ref [] in 
+    let rest = ref [] in
     while (Token.Stream.peek stream).token <> Kwd.rbrace do
       expect_strong_separation stream;
       rest := (parse_constructor stream)::!rest;
@@ -131,7 +131,7 @@ let parse_data stream =
   { P.func = P.Token data;
     P.arguments = [constructors];
     P.location = P.between_tok_term data constructors }
-  
+
 ;;
 
 (****************************************************************)
@@ -141,10 +141,10 @@ let parse_data stream =
    \item $\call{module\_implementation} ::= \tok{\{} (\epsilon \alt
    \call{definition}\ ({}_{\backslash{}n}\call{definition})* ) \tok{\}}$
    \end{grammar} *)
-let parse_module_implementation stream = 
+let parse_module_implementation stream =
   let lbrace = Token.Stream.next stream in
   expect lbrace Kwd.lbrace;
-  if (Token.Stream.peek stream).token = Kwd.rbrace 
+  if (Token.Stream.peek stream).token = Kwd.rbrace
   then P.delimited_list lbrace [] (Token.Stream.next stream)
   else
     let def = parse_definition stream in
@@ -165,7 +165,7 @@ let parse_module_implementation stream =
    \alt \call{data}\\
    \alt \call{path\_to\_module\_name\_allow\_type\_constr}$
    \end{grammar} *)
-let parse_module_expr stream = 
+let parse_module_expr stream =
   match (Token.Stream.peek stream) with
   | t when t.token = Kwd.lbrace -> parse_module_implementation stream
   | t when t.token = Kwd.data -> parse_data stream
@@ -175,21 +175,21 @@ let parse_module_expr stream =
 (* \begin{grammar}
    \item $\call{module\_def\_args} ::= \tok{<} \call{upper\_id}
    ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{upper\_id})* \tok{>}$\\
-   \item $\call{module\_definition} ::= 
+   \item $\call{module\_definition} ::=
    \tok{module}\ \call{upper\_id}\call{module\_def\_args}?\ \tok{=}\ \call{module\_expr}$
-   \end{grammar} 
+   \end{grammar}
 
    Note that we do not allow empty list of module args. It does not
    really makes sense when all functors are applicative. *)
-let parse_module_definition stream = 
-  let module_def_args stream = 
+let parse_module_definition stream =
+  let module_def_args stream =
     let lt = Token.Stream.next stream in
-    let l = 
+    let l =
       parse_comma_separated_list stream
         (fun stream -> let id = Token.Stream.next stream in
                        expect_id id; P.single id) in
     let gt = Token.Stream.next stream in
-    expect gt Kwd.gt; 
+    expect gt Kwd.gt;
     P.delimited_list lt l gt
   in
   let modul_tok = Token.Stream.next stream in
@@ -197,7 +197,7 @@ let parse_module_definition stream =
   let module_ = Token.Stream.next stream in
   expect_id module_;
   let module_ = P.single module_ in
-  let module_args = 
+  let module_args =
     if((Token.Stream.peek stream).token = Kwd.lt)
     then let args = module_def_args stream in
          { P.func = P.Custom "modapply";
@@ -212,15 +212,15 @@ let parse_module_definition stream =
     P.location = P.between_tok_term modul_tok body
   }
 ;;
-  
+
 r_parse_module_definition := parse_module_definition;;
 
 (****************************************************************)
 (*s External interface for the parser.  *)
-let maybe_parse_term stream = 
+let maybe_parse_term stream =
   if (Token.Stream.peek stream).token = Token.End
   then None
   else Some(parse_definition stream)
 
-let definition_stream stream = 
+let definition_stream stream =
   Stream.from (fun _ -> maybe_parse_term stream)
