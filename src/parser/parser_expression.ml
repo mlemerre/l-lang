@@ -101,7 +101,7 @@ in ExpTdop.define_prefix Kwd.lparen parse_tuple;
    in ExpTdop.define_infix Kwd.lparen (infix_when_stuck 0xf000) infix_fun;;
 
 (* \begin{grammar}
-   \item $\addprefix{exp}{if}{\tok{if} \tok{(} \call{exp} \tok{)}
+   \item $\addprefix{exp}{if}{\tok{if} \tok{(}^{\backslash{}n} \call{exp} {}^{\backslash{}n}\tok{)}
    \ \call{exp}\ {}^{\backslash{}n}\tok{else}^{\backslash{}n}\ \call{exp}}$
    \end{grammar}
 
@@ -113,9 +113,9 @@ in ExpTdop.define_prefix Kwd.lparen parse_tuple;
    mistakes, but we will probably relax it later. *)
 let parse_if stream =
   let iftok = Token.Stream.next stream in
-  expect (Token.Stream.next stream) Kwd.lparen;
+  expect (Token.Stream.next stream) Kwd.lparen ~after_max:Sep.Strong;
   let cond = parse_expression stream in
-  expect (Token.Stream.next stream) Kwd.rparen;
+  expect (Token.Stream.next stream) Kwd.rparen ~before_max:Sep.Strong;
   let then_ = parse_expression stream in
   expect (Token.Stream.next stream) Kwd.else_ ~before_max:Sep.Strong ~after_max:Sep.Strong ;
   let else_ = parse_expression stream in
@@ -290,16 +290,16 @@ in ExpTdop.define_infix Kwd.lbrace (infix_when_stuck 0xf000) infix_fun
 ;;
 
 (* \begin{grammar}
-   \item $\addprefix{exp}{match}{\tok{match} \tok{(} \call{exp} \tok{)} \call{lambda}}$
+   \item $\addprefix{exp}{match}{\tok{match} \tok{(}^{\backslash{}n} \call{exp} {}^{\backslash{}n}\tok{)} \call{lambda}}$
    \end{grammar}
 
    As for if, we could remove the () around the expression beeing
    matched. *)
 let parse_match stream =
   let match_tok = Token.Stream.next stream in
-  expect (Token.Stream.next stream) Kwd.lparen;
+  expect (Token.Stream.next stream) Kwd.lparen ~after_max:Sep.Strong;
   let cond = parse_expression stream in
-  expect (Token.Stream.next stream) Kwd.rparen;
+  expect (Token.Stream.next stream) Kwd.rparen ~before_max:Sep.Strong;
   let pattern_matching_block = parse_lambda stream in
   { P.func = P.Token match_tok;
     P.arguments = [ cond; pattern_matching_block ];
@@ -307,20 +307,20 @@ let parse_match stream =
 in ExpTdop.define_prefix Kwd.match_ parse_match;;
 
 (* \begin{grammar}
-   \item $\addprefix{exp}{cast}{\tok{cast}\tok{(} \call{exp}
-   {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{type} \tok{)}}$
+   \item $\addprefix{exp}{cast}{\tok{cast}\tok{(}^{\backslash{}n} \call{exp}
+   {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{type} {}^{\backslash{}n}\tok{)}}$
    \end{grammar}
 
    This construction, and its syntax, are still alpha. *)
 let parse_cast stream =
   let cast_tok = Token.Stream.next stream in
   check cast_tok Kwd.cast;
-  expect (Token.Stream.next stream) Kwd.lparen;
+  expect (Token.Stream.next stream) Kwd.lparen ~after_max:Sep.Strong;
   let exp = parse_expression stream in
   expect (Token.Stream.next stream) Kwd.comma ~after_max:Sep.Strong;
   let t = Parser_path.parse_type stream in
   let rparen = (Token.Stream.next stream) in
-  expect rparen Kwd.rparen;
+  expect rparen Kwd.rparen ~before_max:Sep.Strong;
   { P.func = P.Token cast_tok;
     P.arguments = [ exp; t];
     P.location = P.between_toks cast_tok rparen }
