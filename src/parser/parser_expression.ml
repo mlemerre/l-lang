@@ -102,7 +102,7 @@ in ExpTdop.define_prefix Kwd.lparen parse_tuple;
 
 (* \begin{grammar}
    \item $\addprefix{exp}{if}{\tok{if} \tok{(} \call{exp} \tok{)}
-   \ \call{exp}\ \tok{else}\ \call{exp}}$
+   \ \call{exp}\ {}^{\backslash{}n}\tok{else}^{\backslash{}n}\ \call{exp}}$
    \end{grammar} 
 
    Note: for now we require parens around the condition of the if. We
@@ -117,7 +117,7 @@ let parse_if stream =
   let cond = parse_expression stream in
   expect (Token.Stream.next stream) Kwd.rparen;
   let then_ = parse_expression stream in
-  expect (Token.Stream.next stream) Kwd.else_;
+  expect (Token.Stream.next stream) Kwd.else_ ~before_max:Sep.Strong ~after_max:Sep.Strong ;
   let else_ = parse_expression stream in
   { P.func = P.Token iftok; P.arguments = [cond;then_;else_];
     P.location = P.between_tok_term iftok else_ }
@@ -133,12 +133,13 @@ let parse_pattern = parse_expression;;
 
 
 (* \begin{grammar}
-   \item $\call{let\_binding} ::= \call{pattern}\ \tok{=}\ \call{expression}$
+   \item $\call{let\_binding} ::= \call{pattern}\
+   {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
    \end{grammar}  *)
 let parse_let_binding stream = 
   let pattern = parse_pattern stream in
   let eq_tok = Token.Stream.next stream in
-  expect eq_tok Kwd.equals;
+  expect eq_tok Kwd.equals ~before_max:Sep.Normal ~after_max:Sep.Strong;
   let exp = parse_expression stream in
   (* TODO: For and: return
   and(=(patt1,exp1),and(=(patt2,exp2),=(patt3,exp3)))  *)
@@ -151,13 +152,14 @@ let parse_let_binding stream =
 
 (* \begin{grammar}
    \item $\call{statement} ::=\\
-   \alt \tok{let}\ \call{let\_binding}\\
+   \alt \tok{let}_{\textrm{\textvisiblespace}}^{\textrm{\textvisiblespace}}\ \call{let\_binding}\\
    \alt \call{exp}$
    \item $\call{statements} ::= \call{statement}\ ({}_{\backslash{}n}\call{statement})*$
-   \item $\call{pattern\_matching} ::= (\call{pattern}\ \tok{->}\ \call{statements})+$
+   \item $\call{pattern\_matching} ::= (\call{pattern}\
+   {}^\textrm\textvisiblespace\tok{->}^{\backslash{}n}\ \call{statements})+$
 
-   \item $\call{lambda} ::= \tok{\{}\ \call{pattern\_matching}\ \tok{\}}$
-   \item $\call{statements\_block} ::= \tok{\{}\ \call{statements}\ \tok{\}}$
+   \item $\call{lambda} ::= \tok{\{}^{\backslash{}n}\ \call{pattern\_matching}\ {}^{\backslash{}n}\tok{\}}$
+   \item $\call{statements\_block} ::= \tok{\{}^{\backslash{}n}\ \call{statements}\ {}^{\backslash{}n}\tok{\}}$
    \item $\call{block} ::=\\
    \alt \call{lambda}\\
    \alt \call{statements\_block} $
@@ -188,6 +190,7 @@ let rec parse_statements_and_maybe_next_pattern stream =
   if (Token.Stream.peek stream).token = Kwd.let_ 
   then begin
     let let_tok = Token.Stream.next stream in
+    expect let_tok Kwd.let_ ~after_min:Sep.Normal ~after_max:Sep.Normal;
     let (patt,exp) = parse_let_binding stream in
     let stmt = 
       { P.func = P.Token(let_tok);
@@ -203,7 +206,8 @@ let rec parse_statements_and_maybe_next_pattern stream =
     then (* Last statement. *)
       ([pattern_or_expression], None)
     else if after.token = Kwd.arrow
-    then (Token.Stream.junk stream;
+    then (expect after Kwd.arrow ~before_max:Sep.Normal ~after_max:Sep.Strong;
+          Token.Stream.junk stream;
           ([], Some (pattern_or_expression,after)))
     else continue_with pattern_or_expression
 ;;
@@ -232,14 +236,14 @@ let parse_rest_pattern_matching stream first_patt first_arrow =
    [match]. *)
 let parse_lambda stream = 
   let lbra = Token.Stream.next stream in 
-  expect lbra Kwd.lbrace;
+  expect lbra Kwd.lbrace ~after_max:Sep.Strong;
   let first_pattern = parse_pattern stream in
   let first_arrow = Token.Stream.next stream in
   expect first_arrow Kwd.arrow;
   let pattern_matching = 
     parse_rest_pattern_matching stream first_pattern first_arrow in
   let rbra = Token.Stream.next stream in
-  expect rbra Kwd.rbrace;
+  expect rbra Kwd.rbrace ~before_max:Sep.Strong;
   P.delimited_list lbra pattern_matching rbra
 ;;
 

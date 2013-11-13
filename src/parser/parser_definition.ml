@@ -11,13 +11,13 @@ open Token.With_info;;
 (*s Definitions and declarations (except definitions of modules). *)
 
 (* \begin{grammar}
-   \item $\call{def} ::= \tok{def}\ \call{id}\ \tok{=}\ \call{expression}$
+   \item $\call{def} ::= \tok{def}\ \call{id}\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
    \end{grammar} *)
 let parse_def stream = 
   let def = Token.Stream.next stream in 
   check def Kwd.def;
   let patt = Parser_expression.parse_expression stream in
-  expect (Token.Stream.next stream) Kwd.equals;
+  expect (Token.Stream.next stream) Kwd.equals ~before_max:Sep.Normal ~after_max:Sep.Strong;
   let exp = Parser_expression.parse_expression stream in
   { P.func = P.Token def;
     P.arguments = [patt;exp];

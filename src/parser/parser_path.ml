@@ -240,7 +240,7 @@ in Type_tdop.define_prefix Kwd.lparen parse_tuple_type;;
 
 (*\begin{grammar}
   \item $\addinfix{type}{->}{80}{rightassoc}{
-  {}^{\ \backslash{}n}\tok{->}\ \call{type}}$
+  \ {}^\textrm\textvisiblespace\tok{->}^{\backslash{}n}\ \call{type}}$
 \end{grammar}*)
 Type_tdop.define_infix_right_associative
   Kwd.arrow (infix_when_normal 0x8000)
