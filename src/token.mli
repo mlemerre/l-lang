@@ -102,7 +102,7 @@ end
 module Keywords: sig
 val lparen:token;; val rparen:token;;
 val lbrace:token;; val rbrace:token;;
-val colon:token;; val doublecolon:token;; val coma:token;; val pipe:token;;
+val colon:token;; val doublecolon:token;; val comma:token;; val pipe:token;;
 val equals:token;; val eq:token;; val ne:token;; 
 val gt:token;; val lt:token;; val le:token;; val ge:token;;
 val plus:token;; val minus:token;; val star:token;; val slash:token;;
