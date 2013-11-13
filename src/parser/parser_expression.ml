@@ -80,7 +80,7 @@ ExpTdop.define_prefix Kwd.minus (fun stream ->
 (* \begin{grammar}
    \item $\call{tuple\_exp} ::=\\
    \alt \tok{(}\tok{)}\\
-   \alt \tok{(}\ \call{exp}\ (\tok{,}\ \call{exp})* )\ \tok{)}$
+   \alt \tok{(}\ \call{exp}\ ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{exp})* )\ \tok{)}$
    \item $\addprefix{exp}{(}{\call{tuple\_exp}}$
    \item $\addinfix{exp}{(}{f0}{leftassoc}{\call{tuple\_exp}}$
    \end{grammar} 
@@ -308,7 +308,7 @@ in ExpTdop.define_prefix Kwd.match_ parse_match;;
 
 (* \begin{grammar}
    \item $\addprefix{exp}{cast}{\tok{cast}\tok{(} \call{exp} 
-   \tok{,}\ \call{type} \tok{)}}$
+   {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{type} \tok{)}}$
    \end{grammar} 
    
    This construction, and its syntax, are still alpha. *)
@@ -317,7 +317,7 @@ let parse_cast stream =
   check cast_tok Kwd.cast;
   expect (Token.Stream.next stream) Kwd.lparen;
   let exp = parse_expression stream in
-  expect (Token.Stream.next stream) Kwd.coma;
+  expect (Token.Stream.next stream) Kwd.comma ~after_max:Sep.Strong;
   let t = Parser_path.parse_type stream in
   let rparen = (Token.Stream.next stream) in
   expect rparen Kwd.rparen;

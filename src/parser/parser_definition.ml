@@ -74,7 +74,7 @@ let parse_definition stream =
   \item $\call{constructor\_argument} ::= 
     ( \call{id} \tok{::} \alt \epsilon)\ \call{type}$
   \item $\call{constructor\_arguments} ::=\\
-   \quad\tok{(} \call{constructor\_argument}\ ( \tok{,}\ {constructor\_argument} )* \tok{)}$ 
+   \quad\tok{(} \call{constructor\_argument}\ ( {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ {constructor\_argument} )* \tok{)}$ 
   \end{grammar} *) 
 let parse_constructor_arguments stream =
   let lparen = Token.Stream.next stream in
@@ -89,7 +89,7 @@ let parse_constructor_arguments stream =
       P.infix_binary_op (P.single maybe_arg) maybe_dcolon typ
     | _ -> Parser_path.parse_type stream
   in
-  let l = parse_list_with_sep stream parse_one_argument Kwd.coma in
+  let l = parse_comma_separated_list stream parse_one_argument in
   let rparen = Token.Stream.next stream in
   expect rparen Kwd.rparen;
   P.delimited_list lparen l rparen
@@ -174,7 +174,7 @@ let parse_module_expr stream =
 
 (* \begin{grammar}
    \item $\call{module\_def\_args} ::= \tok{<} \call{upper\_id}
-   (\tok{,} \call{upper\_id})* \tok{>}$\\
+   ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{upper\_id})* \tok{>}$\\
    \item $\call{module\_definition} ::= 
    \tok{module}\ \call{upper\_id}\call{module\_def\_args}?\ \tok{=}\ \call{module\_expr}$
    \end{grammar} 
@@ -185,9 +185,9 @@ let parse_module_definition stream =
   let module_def_args stream = 
     let lt = Token.Stream.next stream in
     let l = 
-      parse_list_with_sep stream 
+      parse_comma_separated_list stream
         (fun stream -> let id = Token.Stream.next stream in
-                       expect_id id; P.single id) Kwd.coma in
+                       expect_id id; P.single id) in
     let gt = Token.Stream.next stream in
     expect gt Kwd.gt; 
     P.delimited_list lt l gt

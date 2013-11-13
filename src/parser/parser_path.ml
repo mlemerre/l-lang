@@ -127,7 +127,7 @@ let r_parse_type = ref (fun _ -> assert false);;
 
 (* \begin{grammar}
    \item $\call{module\_args} ::=
-   \tok{<} \call{type} (\tok{,} \call{type})* \tok{>}$
+   \tok{<} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* \tok{>}$
    \end{grammar}
 
    Module args is when $\call{type}$ can appear in paths. *)
@@ -135,7 +135,7 @@ let parse_module_args stream left =
   let lt = Token.Stream.next stream in
   expect lt Kwd.lt;
   let type_list =
-    parse_list_with_sep stream !r_parse_type Kwd.coma in
+    parse_comma_separated_list stream !r_parse_type in
   let gt = Token.Stream.next stream in
   expect gt Kwd.gt;
   let right = P.delimited_list lt type_list gt in
@@ -229,7 +229,7 @@ r_parse_type := parse_type;;
 (* \begin{grammar}
    \item $\call{tuple\_type} ::= \\
     \alt \tok{(}\tok{)}\\
-    \alt \tok{(} \call{type} (\tok{,} \call{type})* \tok{)}$
+    \alt \tok{(} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* \tok{)}$
    \item $\addprefix{type}{(}{\call{tuple\_type}}$
    \end{grammar} *)
 let parse_tuple_type stream =
