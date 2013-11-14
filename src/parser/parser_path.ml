@@ -127,17 +127,17 @@ let r_parse_type = ref (fun _ -> assert false);;
 
 (* \begin{grammar}
    \item $\call{module\_args} ::=
-   \tok{<} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* \tok{>}$
+   \tok{<}^{\backslash{}n} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{>}$
    \end{grammar}
 
    Module args is when $\call{type}$ can appear in paths. *)
 let parse_module_args stream left =
   let lt = Token.Stream.next stream in
-  expect lt Kwd.lt;
+  expect lt Kwd.lt ~after_max:Sep.Strong;
   let type_list =
     parse_comma_separated_list stream !r_parse_type in
   let gt = Token.Stream.next stream in
-  expect gt Kwd.gt;
+  expect gt Kwd.gt ~before_max:Sep.Strong;
   let right = P.delimited_list lt type_list gt in
   { P.func = P.Custom "modapply"; P.arguments = [ left; right ];
     P.location = P.between_terms left right }
@@ -153,14 +153,14 @@ let parse_module_name stream =
   expect_id module_id;
   let following = Token.Stream.peek stream in
   let modul = P.single module_id in
-  if following.separation_before = Token.Separation.Stuck
+  if following.separation_before = Sep.Stuck
   && following.token = Kwd.lt
   then parse_module_args stream modul
   else modul
 ;;
 
 (* \begin{grammar}
-   \item $\call{dir} ::= (\call{module\_name} \tok{/})*$
+   \item $\call{dir} ::= (\call{module\_name} \tok{/}^\nleftrightarrow)*$
    \item $\call{path\_to\_module\_name} ::=  \call{dir}\call{module\_name}$
    \end{grammar}
 
@@ -170,8 +170,9 @@ let rec parse_path_to_module_name stream =
   let mn = parse_module_name stream in
   let maybe_slash = Token.Stream.peek stream in
   if maybe_slash.token = Kwd.slash
-  && maybe_slash.separation_before = Token.Separation.Stuck
+  && maybe_slash.separation_before = Sep.Stuck
   then (Token.Stream.junk stream;
+        expect maybe_slash Kwd.slash ~after_max:Sep.Stuck;
         let rest = parse_path_to_module_name stream in
         P.infix_binary_op mn maybe_slash rest)
   else mn
@@ -196,12 +197,12 @@ let rec parse_path_to parsefun stream =
     | _ -> false
   in
   if is_upper_id module_id.token
-    && following.separation_before = Token.Separation.Stuck
+    && following.separation_before = Sep.Stuck
     && (following.token = Kwd.slash || following.token = Kwd.lt)
   then
     let dir = parse_module_name stream in
     let slash = Token.Stream.next stream in
-    expect slash Kwd.slash;
+    expect slash Kwd.slash ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
     let rest = parse_path_to parsefun stream in
     P.infix_binary_op dir slash rest
   else

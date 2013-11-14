@@ -11,11 +11,11 @@ open Token.With_info;;
 (*s Definitions and declarations (except definitions of modules). *)
 
 (* \begin{grammar}
-   \item $\call{def} ::= \tok{def}\ \call{id}\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
+   \item $\call{def} ::= \tok{def}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{id}\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
    \end{grammar} *)
 let parse_def stream =
   let def = Token.Stream.next stream in
-  check def Kwd.def;
+  expect def Kwd.def ~after_min:Sep.Normal ~after_max:Sep.Normal;
   let patt = Parser_expression.parse_expression stream in
   expect (Token.Stream.next stream) Kwd.equals ~before_max:Sep.Normal ~after_max:Sep.Strong;
   let exp = Parser_expression.parse_expression stream in
@@ -25,17 +25,17 @@ let parse_def stream =
 ;;
 
 (* \begin{grammar}
-   \item $\call{declare} ::= \tok{declare}\ \call{id}\tok{::}\call{type}$
+   \item $\call{declare} ::= \tok{declare}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{id}\tok{::}\call{type}$
    \end{grammar}
 
    Note: declare is temporary. Will surely be replaced with "def
    id::type." *)
 let parse_declare stream =
   let declare = Token.Stream.next stream in
-  check declare Kwd.declare;
+  expect declare Kwd.declare ~after_min: Sep.Normal ~after_max:Sep.Normal;
   let id = Token.Stream.next stream in
   expect_id id;
-  expect (Token.Stream.next stream) Kwd.doublecolon;
+  expect (Token.Stream.next stream) Kwd.doublecolon ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
   let typ = Parser_path.parse_type stream in
   { P.func = P.Token declare;
     P.arguments = [P.single id;typ];
@@ -72,26 +72,27 @@ let parse_definition stream =
    arguments, one has to write just [Constructor]. *)
 (* \begin{grammar}
   \item $\call{constructor\_argument} ::=
-    ( \call{id} \tok{::} \alt \epsilon)\ \call{type}$
+    ( \call{id} \tok{::}^\nleftrightarrow \alt \epsilon)\ \call{type}$
   \item $\call{constructor\_arguments} ::=\\
-   \quad\tok{(} \call{constructor\_argument}\ ( {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ {constructor\_argument} )* \tok{)}$
+   \quad\tok{(}^{\backslash{}n} \call{constructor\_argument}\ ( {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ {constructor\_argument} )* {}^{\backslash{}n}\tok{)}$
   \end{grammar} *)
 let parse_constructor_arguments stream =
   let lparen = Token.Stream.next stream in
-  check lparen Kwd.lparen;
+  expect lparen Kwd.lparen ~after_max:Sep.Strong;
   let parse_one_argument stream =
     let maybe_arg = Token.Stream.peek stream in
     let maybe_dcolon = Token.Stream.peek_nth stream 1 in
     match maybe_arg.token with
     | Token.Ident x when maybe_dcolon.token = Kwd.doublecolon ->
       Token.Stream.junk stream; Token.Stream.junk stream;
+      expect maybe_dcolon Kwd.doublecolon ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
       let typ = Parser_path.parse_type stream in
       P.infix_binary_op (P.single maybe_arg) maybe_dcolon typ
     | _ -> Parser_path.parse_type stream
   in
   let l = parse_comma_separated_list stream parse_one_argument in
   let rparen = Token.Stream.next stream in
-  expect rparen Kwd.rparen;
+  expect rparen Kwd.rparen ~before_max:Sep.Strong;
   P.delimited_list lparen l rparen
 ;;
 
@@ -110,12 +111,12 @@ let parse_constructor stream =
 ;;
 
 (*\begin{grammar}
-  \item $\call{data} ::= \tok{data}\ \tok{\{} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* \tok{\}}$
+  \item $\call{data} ::= \tok{data}^\textrm\textvisiblespace\ \tok{\{}^{\backslash{}n} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* {}^{\backslash{}n}\tok{\}}$
   \end{grammar} *)
 let parse_data stream =
   let parse_constructors stream =
     let tok = Token.Stream.next stream in
-    expect tok Kwd.lbrace;
+    expect tok Kwd.lbrace ~after_max:Sep.Strong;
     let first = parse_constructor stream in
     let rest = ref [] in
     while (Token.Stream.peek stream).token <> Kwd.rbrace do
@@ -123,10 +124,12 @@ let parse_data stream =
       rest := (parse_constructor stream)::!rest;
     done ;
     let end_tok = Token.Stream.next stream in
+    expect end_tok Kwd.rbrace ~before_max:Sep.Strong;
     P.delimited_list tok (first::(List.rev !rest)) end_tok
   in
   let data = Token.Stream.next stream in
-  check data Kwd.data;
+  (*i MAYBE: Change after_max to Stuck here? i*)
+  expect data Kwd.data ~after_max:Sep.Normal;
   let constructors = parse_constructors stream in
   { P.func = P.Token data;
     P.arguments = [constructors];
@@ -138,14 +141,16 @@ let parse_data stream =
 (*s Definition of modules.  *)
 
 (* \begin{grammar}
-   \item $\call{module\_implementation} ::= \tok{\{} (\epsilon \alt
-   \call{definition}\ ({}_{\backslash{}n}\call{definition})* ) \tok{\}}$
+   \item $\call{module\_implementation} ::= \tok{\{}^{\backslash{}n} (\epsilon \alt
+   \call{definition}\ ({}_{\backslash{}n}\call{definition})* ) {}^{\backslash{}n}\tok{\}}$
    \end{grammar} *)
 let parse_module_implementation stream =
   let lbrace = Token.Stream.next stream in
-  expect lbrace Kwd.lbrace;
+  expect lbrace Kwd.lbrace ~after_max:Sep.Strong;
   if (Token.Stream.peek stream).token = Kwd.rbrace
-  then P.delimited_list lbrace [] (Token.Stream.next stream)
+  then let rbrace = Token.Stream.next stream in
+       expect rbrace Kwd.rbrace ~before_max:Sep.Strong;
+       P.delimited_list lbrace [] rbrace
   else
     let def = parse_definition stream in
     let defs = ref [def] in
@@ -155,6 +160,7 @@ let parse_module_implementation stream =
       defs := def::!defs;
     done;
     let rbrace = Token.Stream.next stream in
+    expect rbrace Kwd.rbrace ~before_max:Sep.Strong;
     let modul = P.delimited_list lbrace !defs rbrace in
     modul
 ;;
@@ -173,10 +179,10 @@ let parse_module_expr stream =
 ;;
 
 (* \begin{grammar}
-   \item $\call{module\_def\_args} ::= \tok{<} \call{upper\_id}
-   ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{upper\_id})* \tok{>}$\\
+   \item $\call{module\_def\_args} ::= \tok{<}^{\backslash{}n} \call{upper\_id}
+   ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{upper\_id})* {}^{\backslash{}n}\tok{>}$\\
    \item $\call{module\_definition} ::=
-   \tok{module}\ \call{upper\_id}\call{module\_def\_args}?\ \tok{=}\ \call{module\_expr}$
+   \tok{module}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{upper\_id}\call{module\_def\_args}?\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{module\_expr}$
    \end{grammar}
 
    Note that we do not allow empty list of module args. It does not
@@ -184,16 +190,17 @@ let parse_module_expr stream =
 let parse_module_definition stream =
   let module_def_args stream =
     let lt = Token.Stream.next stream in
+    expect lt Kwd.lt ~after_max:Sep.Strong;
     let l =
       parse_comma_separated_list stream
         (fun stream -> let id = Token.Stream.next stream in
                        expect_id id; P.single id) in
     let gt = Token.Stream.next stream in
-    expect gt Kwd.gt;
+    expect gt Kwd.gt ~before_max:Sep.Strong;
     P.delimited_list lt l gt
   in
   let modul_tok = Token.Stream.next stream in
-  check modul_tok  Kwd.module_;
+  expect modul_tok  Kwd.module_ ~after_min:Sep.Normal ~after_max:Sep.Normal;
   let module_ = Token.Stream.next stream in
   expect_id module_;
   let module_ = P.single module_ in
@@ -205,7 +212,8 @@ let parse_module_definition stream =
            P.location = P.between_terms module_ args }
     else module_
   in
-  expect (Token.Stream.next stream) Kwd.equals;
+  expect (Token.Stream.next stream) Kwd.equals
+    ~before_max:Sep.Normal ~after_max:Sep.Strong;
   let body = parse_module_expr stream in
   { P.func = P.Token modul_tok;
     P.arguments = [module_args; body ];

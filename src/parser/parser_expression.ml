@@ -71,7 +71,7 @@ ExpTdop.define_infix_left_associative Kwd.slash (infix_when_normal 0xd000) binar
    \end{grammar} *)
 ExpTdop.define_prefix Kwd.minus (fun stream ->
   let minus = Token.Stream.next stream in
-  expect minus Kwd.minux ~after_max:Kwd.Normal;
+  expect minus Kwd.minus ~after_max:Sep.Normal;
   let exp = ExpTdop.parse stream 0xf000 in
   { P.func = P.Token minus;
     P.arguments = [exp];
