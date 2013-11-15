@@ -5,16 +5,21 @@
 tests: main libl/libl.bc
 	cd .. && echo $(PWD) && OCAMLRUNPARAM="b" ./src/main --fixed
 
-FILES[] = main
-FILES[] += compilation_passes pretty_print
+ABORT_ON_DEPENDENCY_ERRORS = true
+FILES[] =
+FILES[] += constant
+FILES[] += tokenpack token
+FILES[] += parserpack parser
+FILES[] += ../next/ast/ast
 FILES[] += $(addprefix cps/, \
-	   cpsbase cpsbasepack cpsconvertclosures cpsfree)
-FILES[] += llvm/cpsllvm llvm/llvmenv llvm/llvmexec
-FILES[] += cps/cpstransform cps/cpstransformpack
-FILES[] += token tokenpack
-OCAML_LIBS[] = support/support ../next/parser/libparser ../next/ast/libast
+	   cpsbasepack cpsbase cpsfree cpsconvertclosures)
+FILES[] += cps/cpstransformpack cps/cpstransform
+FILES[] += llvm/llvmenv llvm/cpsllvm llvm/llvmexec
+FILES[] += compilation_passes pretty_print
+FILES[] += main
+OCAML_LIBS[] = support/support
 
-OCAMLINCLUDES +=  . cps ../next/ast support ../next/parser  llvm # ../src/cps/cpstransform/
+OCAMLINCLUDES +=  . cps support llvm ../next/ast
 
 OCAMLPACKS = llvm-3_0 llvm-3_0.bitreader llvm-3_0.executionengine llvm-3_0.analysis llvm-3_0.bitwriter
 
@@ -25,6 +30,12 @@ all: main.run
 OCamlPackage(tokenpack, $(addprefix token/, intern base lexer keywords))
 token.cmo token.cmi: support/key.cmi tokenpack.cmi
 
+OCamlPackage(parserpack, $(addprefix parser/, \
+	tdop parsetree parser_base  \
+	parser_path parser_expression parser_definition))
+
+compilation_passes.cmo compilation_passes.cmi: ../next/ast/ast.cmi
+main.cmo main.cmi: ../next/ast/ast.cmi
 
 # TODO: Encapsulate CPS into a pack. Currently this triggers an error
 # in the union-find data structure.
@@ -32,3 +43,18 @@ token.cmo token.cmi: support/key.cmi tokenpack.cmi
 # 			cpstransform \
 # 			cpsconvertclosures cpsfree \
 # 			cpsbase cpsbasepack))
+
+
+
+L2HTML_FILES[] = l2html tokenpack token \
+		 $(addprefix parser/, tdop parsetree parser_base\
+				      parser_type parser_expression\
+				      parser_definition)\
+
+OCAML_LIBS[] = support/support
+OCamlProgram(l2html, $(L2HTML_FILES))
+
+# HERE NEttoyer le parseur, en utilisant ca pour tester si besoin.
+# Execute this with omake -R build/src/l2html.test
+l2html.test: l2html
+	./l2html

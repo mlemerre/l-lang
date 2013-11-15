@@ -54,7 +54,7 @@ vmount_rec_in(src, dest) =
 	mkdir -p $(d)
         vmount(-fl, $(d), $(dest)/$(d))
 
-SRC_SUBDIRS[] = src unit_tests
+SRC_SUBDIRS[] = src unit_tests next
 
 # We vmount each directory containing source code in `build', to allow
 # out-of-source build. But we add these directories to "project

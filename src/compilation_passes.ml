@@ -71,12 +71,12 @@ let print_stream cond printf print_elt stream =
 let process_file file =
 
   Log.Compilation_passes.info "================ File %s================" file;
+  let token_stream = Token.Stream.make file in
+  let parsetree_stream = Parser.definition_stream token_stream in
 
-  let parsetree_stream = Parser.make_stream file in
-
-  let ast_stream = Astfromsexp.from_stream parsetree_stream in
+  let ast_stream = Ast.Ast_from_term.from_stream parsetree_stream in
   let ast_stream = print_stream (Log.Ast_elaboration.is_output Log.Debug)
-    Log.Ast_elaboration.debug Astprint.definition ast_stream in
+    Log.Ast_elaboration.debug Ast.Print.definition ast_stream in
 
   let cps_stream = Cpstransform.from_stream ast_stream in
   let cps_stream = print_stream (Log.Cps_transformation.is_output Log.Debug)
@@ -93,7 +93,7 @@ let process_file file =
 
 
 (*i
-\(* Simple version without debug information. *\)
+\(\* Simple version without debug information. \*\)
 let process_file file =
   let parsetree_stream = Parser.make_stream file in
   let ast_stream = Astfromsexp.from_stream parsetree_stream in

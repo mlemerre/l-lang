@@ -13,7 +13,7 @@
 *)
 
 module Build = Cpsbase.Build;;
-module Ast = Astdef;;
+module Ast = Ast.Def;;
 module AstVarMap = Ast.Variable.Map;;
 
 let expression = Expression.Expression.transform;;

@@ -24,15 +24,15 @@ doc-files = support/union_find.mli support/union_find.ml cps/cpsbase/cpsast.ml c
 	cps/cpstransform/rules.ml cps/cpstransform/definition.ml \
 	compilation_passes.ml \
 	parser/tdop.mli parser/tdop.ml \
-	parser/parser_type.ml # parser/parser_expression.ml
+	parser/parser_path.ml parser/parser_expression.ml parser/parser_definition.ml
 
 doc: $(addsuffix /index.html,$(addprefix web/,$(doc-files))) check_doc web/cps/cpstransform/cpstransform_rules.ml001.png
 #	rm -Rf ~/Cloud/UbuntuOne/src-blessed/site/jekyll/documentation/compiler-book && mv web ~/Cloud/UbuntuOne/src-blessed/site/jekyll/documentation/compiler-book
 
 jekyll: $(addsuffix /index.html,$(addprefix web4jekyll/,$(doc-files))) web/cps/cpstransform/cpstransform_rules.ml001.png # check_doc
 
-web/parser/grammar.tex: src/parser/parser_type.ml # src/parser/parser_expression.ml src/parser/parser_definition.ml
-	awk '/\\begin{grammar}/,/\\end{grammar}/' $^ \
+doc/grammar_inc.tex: src/parser/parser_path.ml src/parser/parser_expression.ml src/parser/parser_definition.ml
+	cat $^ | awk '/\\begin{grammar}/,/\\end{grammar}/' - \
 	| sed 's/\\begin{grammar}//g' \
 	| sed 's/\\end{grammar}//g' \
 	| sed 's/(\*//g' \
@@ -42,12 +42,14 @@ web/cps/cpstransform/cpstransform_rules.ml001.png: doc/cpstransform_rules_exampl
 	cd doc && pdflatex cpstransform_rules_example.tex
 	convert -trim -density 150 -transparent white doc/cpstransform_rules_example.pdf $@
 
+web/%/index.html: doc/%
+
 
 web/%/index.html: src/%
 	mkdir -p web/$*
 	ocamlweb -p "\usepackage{hevea}\usepackage{url}\usepackage{graphics}" --no-index doc/ocamlwebhevea.tex src/$* --hevea-option "-I /usr/share/texmf/tex/latex/misc" > web/$*/index.tex
 	cd web/$* && hevea -I /usr/share/texmf/tex/latex/misc ocamlweb.sty index.tex
-	rm -f web/$*/index.tex web/$*/index.haux
+#	rm -f web/$*/index.tex web/$*/index.haux
 
 web4jekyll/%/index.html: web/%/index.html
 #	This is the handling for the final publication using jekyll.

@@ -7,7 +7,7 @@ then
   begin
     (* Fixed entries. Useful for debugging with camldebug. *)
     Compilation_passes.process_file "../tests/test_current.l";
-    List.iter Compilation_passes.process_file Asttest.files
+    List.iter Compilation_passes.process_file Ast.Test.files
   end
 else if Sys.argv.(1) = "--pretty"
   then Pretty_print.print_html Sys.argv.(2)

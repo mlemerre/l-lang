@@ -1,6 +1,7 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-module Ast = Astdef;;
+module Astprint = Ast.Print;;
+module Ast = Ast.Def;;
 module Build = Cpsbase.Build;;
 
 module type EXPRESSION = sig

@@ -1,6 +1,6 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-module AstVarMap = Astdef.Variable.Map;;
+module AstVarMap = Ast.Def.Variable.Map;;
 let definition = Cpstransformpack.Definition.transform;;
 let initial_env:Cpsbase.Var.Occur.maker AstVarMap.t = AstVarMap.empty;;
 
