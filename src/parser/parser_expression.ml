@@ -264,6 +264,10 @@ let parse_block stream =
     let rbra = Token.Stream.next stream in
     expect rbra Kwd.rbrace;
     P.delimited_list lbra pattern_matching rbra
+  (* Empty block: {} *)
+  | [], None ->
+    Log.Parser.raise_compiler_error ~loc:lbra.location
+      "Error: nothing between { and }"
   (* Statements.  *)
   | stmts, None ->
     let rbra = Token.Stream.next stream in
@@ -271,10 +275,6 @@ let parse_block stream =
     { P.func = P.Custom "statements";
       P.arguments = stmts;
       P.location = P.between_terms (List.hd stmts) (List.last stmts) }
-  (* Empty block: {} *)
-  | [], None ->
-    Log.Parser.raise_compiler_error ~loc:lbra.location
-      "Error: nothing between { and }"
   | _ -> Log.Parser.raise_compiler_error ~loc:lbra.location
     "Error: a pattern matching must begin by \"<pattern> ->\" "
 ;;
