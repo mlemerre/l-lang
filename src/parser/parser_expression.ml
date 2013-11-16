@@ -17,6 +17,11 @@ module ExpSemanticActions = struct
     Parser_path.parse_path_to
       (fun stream -> P.single (Token.Stream.next stream))
       stream
+  ;;
+
+(* Note: we could allow the possibility to use keywords as regular
+   idents in some places, by having a general "ident" rule that
+   allows keywords. But maybe this would not be very robust. *)
 
 end;;
 
