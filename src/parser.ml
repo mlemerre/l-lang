@@ -1,4 +1,4 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
-let definition_stream = Parserpack.Parser_definition.definition_stream
+let definition_stream = Parserpack.Definition.definition_stream
 include Parserpack.Parsetree

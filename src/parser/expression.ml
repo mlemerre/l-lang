@@ -4,7 +4,7 @@
 
 (*p \include{../../../doc/grammardefs} *)
 
-open Parser_base;;
+open Common;;
 open Token.With_info;;
 module List = Extensions.List;;
 
@@ -14,7 +14,7 @@ module ExpSemanticActions = struct
 
   (* TODO: Differentiate upper and lower ids at the token level *)
   let ident_handler id stream =
-    Parser_path.parse_path_to
+    Path.parse_path_to
       (fun stream -> P.single (Token.Stream.next stream))
       stream
   ;;
@@ -328,7 +328,7 @@ let parse_cast stream =
     ~before_max:Sep.Stuck ~after_max:Sep.Strong;
   let exp = parse_expression stream in
   expect (Token.Stream.next stream) Kwd.comma ~after_max:Sep.Strong;
-  let t = Parser_path.parse_type stream in
+  let t = Path.parse_type stream in
   let rparen = (Token.Stream.next stream) in
   expect rparen Kwd.rparen ~before_max:Sep.Strong;
   { P.func = P.Token cast_tok;
@@ -344,7 +344,7 @@ in ExpTdop.define_prefix Kwd.cast parse_cast;;
 let parse_annotation stream left =
   let dcolon = Token.Stream.next stream in
   expect dcolon Kwd.doublecolon ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
-  let typ = Parser_path.parse_type stream in
+  let typ = Path.parse_type stream in
   P.infix_binary_op left dcolon typ
 in ExpTdop.define_infix Kwd.doublecolon (function
 | {Token.With_info.separation_before = Sep.Stuck} -> 0xe000

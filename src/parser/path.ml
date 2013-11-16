@@ -117,7 +117,7 @@
    for it. So note that in some contexts, $\call{type}$ can denote a
    path to a module name that may not contain any type. *)
 
-open Parser_base;;
+open Common;;
 open Token.With_info;;
 
 (****************************************************************)

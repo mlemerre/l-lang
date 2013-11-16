@@ -4,7 +4,7 @@
 
 (*p \include{../../../doc/grammardefs} *)
 
-open Parser_base;;
+open Common;;
 open Token.With_info;;
 
 (****************************************************************)
@@ -16,9 +16,9 @@ open Token.With_info;;
 let parse_def stream =
   let def = Token.Stream.next stream in
   expect def Kwd.def ~after_min:Sep.Normal ~after_max:Sep.Normal;
-  let patt = Parser_expression.parse_expression stream in
+  let patt = Expression.parse_expression stream in
   expect (Token.Stream.next stream) Kwd.equals ~before_max:Sep.Normal ~after_max:Sep.Strong;
-  let exp = Parser_expression.parse_expression stream in
+  let exp = Expression.parse_expression stream in
   { P.func = P.Token def;
     P.arguments = [patt;exp];
     P.location = P.between_tok_term def exp }
@@ -36,7 +36,7 @@ let parse_declare stream =
   let id = Token.Stream.next stream in
   expect_id id;
   expect (Token.Stream.next stream) Kwd.doublecolon ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
-  let typ = Parser_path.parse_type stream in
+  let typ = Path.parse_type stream in
   { P.func = P.Token declare;
     P.arguments = [P.single id;typ];
     P.location = P.between_tok_term declare typ }
@@ -55,7 +55,7 @@ let parse_definition stream =
     | k when k = Kwd.def -> parse_def stream
     | k when k = Kwd.declare -> parse_declare stream
     | k when k = Kwd.module_ -> !r_parse_module_definition stream
-    | _ -> let exp = Parser_expression.parse_expression stream in
+    | _ -> let exp = Expression.parse_expression stream in
            { P.func = P.Custom "expr";
              P.arguments = [ exp ];
              P.location = exp.P.location
@@ -86,9 +86,9 @@ let parse_constructor_arguments stream =
     | Token.Ident x when maybe_dcolon.token = Kwd.doublecolon ->
       Token.Stream.junk stream; Token.Stream.junk stream;
       expect maybe_dcolon Kwd.doublecolon ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
-      let typ = Parser_path.parse_type stream in
+      let typ = Path.parse_type stream in
       P.infix_binary_op (P.single maybe_arg) maybe_dcolon typ
-    | _ -> Parser_path.parse_type stream
+    | _ -> Path.parse_type stream
   in
   let l = parse_comma_separated_list stream parse_one_argument in
   let rparen = Token.Stream.next stream in
@@ -175,7 +175,7 @@ let parse_module_expr stream =
   match (Token.Stream.peek stream) with
   | t when t.token = Kwd.lbrace -> parse_module_implementation stream
   | t when t.token = Kwd.data -> parse_data stream
-  | _ -> Parser_path.parse_path_to_module_name_allow_type_constr stream
+  | _ -> Path.parse_path_to_module_name_allow_type_constr stream
 ;;
 
 (* \begin{grammar}

@@ -1,8 +1,8 @@
 OCAMLINCLUDES = ../support ..
 
 tdop.cmo tdop.cmi: ../token.cmi
-parser_base.cmo parser_base.cmi: parsetree.cmi
-parser_definition.cmo parser_definition.cmi: parser_expression.cmi parser_path.cmi
-parser_path.cmo parser_path.cmi: parsetree.cmi tdop.cmi
-parser_expression.cmo parser_expression.cmi: tdop.cmi
+common.cmo common.cmi: parsetree.cmi
+definition.cmo definition.cmi: expression.cmi path.cmi
+path.cmo path.cmi: parsetree.cmi tdop.cmi
+expression.cmo expression.cmi: tdop.cmi path.cmi
 parsetree.cmo parsetree.cmi: ../support/src_location.cmi ../token.cmi
