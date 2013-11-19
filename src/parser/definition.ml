@@ -11,7 +11,7 @@ open Token.With_info;;
 (*s Definitions and declarations (except definitions of modules). *)
 
 (* \begin{grammar}
-   \item $\call{def} ::= \tok{def}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{id}\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
+   \item $\call{def} ::= \tok{def}_{\textrm{\textvisiblespace}}^{\textrm{\textvisiblespace}}\ \call{id}\ {}^{\textrm{\textvisiblespace}}\tok{=}^{\backslash{}n}\ \call{expression}$
    \end{grammar} *)
 let parse_def stream =
   let def = Token.Stream.next stream in
@@ -25,7 +25,7 @@ let parse_def stream =
 ;;
 
 (* \begin{grammar}
-   \item $\call{declare} ::= \tok{declare}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{id}\tok{::}\call{type}$
+   \item $\call{declare} ::= \tok{declare}_{\textrm{\textvisiblespace}}^{\textrm{\textvisiblespace}}\ \call{id}\tok{::}\call{type}$
    \end{grammar}
 
    Note: declare is temporary. Will surely be replaced with "def
@@ -74,7 +74,7 @@ let parse_definition stream =
   \item $\call{constructor\_argument} ::=
     ( \call{id} \tok{::}^\nleftrightarrow \alt \epsilon)\ \call{type}$
   \item $\call{constructor\_arguments} ::=\\
-   \quad\tok{(}^{\backslash{}n} \call{constructor\_argument}\ ( {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ {constructor\_argument} )* {}^{\backslash{}n}\tok{)}$
+   \quad\tok{(}^{\backslash{}n} \call{constructor\_argument}\ ( {}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n}\ {constructor\_argument} )* {}^{\backslash{}n}\tok{)}$
   \end{grammar} *)
 let parse_constructor_arguments stream =
   let lparen = Token.Stream.next stream in
@@ -111,7 +111,7 @@ let parse_constructor stream =
 ;;
 
 (*\begin{grammar}
-  \item $\call{data} ::= \tok{data}^\textrm\textvisiblespace\ \tok{\{}^{\backslash{}n} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* {}^{\backslash{}n}\tok{\}}$
+  \item $\call{data} ::= \tok{data}^{\textrm{\textvisiblespace}}\ \tok{\{}^{\backslash{}n} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* {}^{\backslash{}n}\tok{\}}$
   \end{grammar} *)
 let parse_data stream =
   let parse_constructors stream =
@@ -180,9 +180,9 @@ let parse_module_expr stream =
 
 (* \begin{grammar}
    \item $\call{module\_def\_args} ::= \tok{<}^{\backslash{}n} \call{upper\_id}
-   ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{upper\_id})* {}^{\backslash{}n}\tok{>}$\\
+   ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n} \call{upper\_id})* {}^{\backslash{}n}\tok{>}$\\
    \item $\call{module\_definition} ::=
-   \tok{module}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{upper\_id}\call{module\_def\_args}?\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{module\_expr}$
+   \tok{module}_{\textrm{\textvisiblespace}}^{\textrm{\textvisiblespace}}\ \call{upper\_id}\call{module\_def\_args}?\ {}^{\textrm{\textvisiblespace}}\tok{=}^{\backslash{}n}\ \call{module\_expr}$
    \end{grammar}
 
    Note that we do not allow empty list of module args. It does not

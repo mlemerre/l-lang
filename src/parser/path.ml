@@ -127,7 +127,7 @@ let r_parse_type = ref (fun _ -> assert false);;
 
 (* \begin{grammar}
    \item $\call{module\_args} ::=
-   \tok{<}^{\backslash{}n} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{>}$
+   \tok{<}^{\backslash{}n} \call{type} ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{>}$
    \end{grammar}
 
    Module args is when $\call{type}$ can appear in paths. *)
@@ -230,7 +230,7 @@ r_parse_type := parse_type;;
 (* \begin{grammar}
    \item $\call{tuple\_type} ::= \\
     \alt \tok{(}^{\backslash{}n}{}^{\backslash{}n}\tok{)}\\
-    \alt \tok{(}^{\backslash{}n} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{)}$
+    \alt \tok{(}^{\backslash{}n} \call{type} ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{)}$
    \item $\addprefix{type}{(}{\call{tuple\_type}}$
    \end{grammar} *)
 let parse_tuple_type stream =
@@ -241,7 +241,7 @@ in Type_tdop.define_prefix Kwd.lparen parse_tuple_type;;
 
 (*\begin{grammar}
   \item $\addinfix{type}{->}{80}{rightassoc}{
-  \ {}^\textrm\textvisiblespace\tok{->}^{\backslash{}n}\ \call{type}}$
+  \ {}^{\textrm{\textvisiblespace}}\tok{->}^{\backslash{}n}\ \call{type}}$
 \end{grammar}*)
 Type_tdop.define_infix_right_associative
   Kwd.arrow (infix_when_normal 0x8000)

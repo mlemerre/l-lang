@@ -1,6 +1,6 @@
  
    \item $\call{module\_args} ::=
-   \tok{<}^{\backslash{}n} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{>}$
+   \tok{<}^{\backslash{}n} \call{type} ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{>}$
    
  
    \item $\call{module\_name} ::= \\
@@ -17,12 +17,12 @@
  
    \item $\call{tuple\_type} ::= \\
     \alt \tok{(}^{\backslash{}n}{}^{\backslash{}n}\tok{)}\\
-    \alt \tok{(}^{\backslash{}n} \call{type} ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{)}$
+    \alt \tok{(}^{\backslash{}n} \call{type} ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n} \call{type})* {}^{\backslash{}n}\tok{)}$
    \item $\addprefix{type}{(}{\call{tuple\_type}}$
     
 
   \item $\addinfix{type}{->}{80}{rightassoc}{
-  \ {}^\textrm\textvisiblespace\tok{->}^{\backslash{}n}\ \call{type}}$
+  \ {}^{\textrm{\textvisiblespace}}\tok{->}^{\backslash{}n}\ \call{type}}$
 
 
   \item $\call{path\_to\_module\_name\_allow\_type\_constr} ::= \call{type}$
@@ -55,12 +55,12 @@
   \ {{}^{\textrm{\textvisiblespace}}}\tok{/}^{\backslash{}n}\  \call{exp}}$
    
  
-   \item $\addprefix{exp}{-}{\tok{-}^\textrm\textvisiblespace\ \call{exp}}$
+   \item $\addprefix{exp}{-}{\tok{-}^{\textrm{\textvisiblespace}}\ \call{exp}}$
     
  
    \item $\call{tuple\_exp} ::=\\
    \alt \tok{(}^{\backslash{}n}{}^{\backslash{}n}\tok{)}\\
-   \alt \tok{(}^{\backslash{}n}\ \call{exp}\ ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{exp})* )\ {}^{\backslash{}n}\tok{)}$
+   \alt \tok{(}^{\backslash{}n}\ \call{exp}\ ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n}\ \call{exp})* )\ {}^{\backslash{}n}\tok{)}$
    \item $\addprefix{exp}{(}{\call{tuple\_exp}}$
    \item $\addinfix{exp}{(}{f0}{leftassoc}{\call{tuple\_exp}}$
    
@@ -70,7 +70,7 @@
    
  
    \item $\call{let\_binding} ::= \call{pattern}\
-   {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
+   {}^{\textrm{\textvisiblespace}}\tok{=}^{\backslash{}n}\ \call{expression}$
      
  
    \item $\call{statement} ::=\\
@@ -78,7 +78,7 @@
    \alt \call{exp}$
    \item $\call{statements} ::= \call{statement}\ ({}_{\backslash{}n}\call{statement})*$
    \item $\call{pattern\_matching} ::= (\call{pattern}\
-   {}^\textrm\textvisiblespace\tok{->}^{\backslash{}n}\ \call{statements})+$
+   {}^{\textrm{\textvisiblespace}}\tok{->}^{\backslash{}n}\ \call{statements})+$
 
    \item $\call{lambda} ::= \tok{\{}^{\backslash{}n}\ \call{pattern\_matching}\ {}^{\backslash{}n}\tok{\}}$
    \item $\call{statements\_block} ::= \tok{\{}^{\backslash{}n}\ \call{statements}\ {}^{\backslash{}n}\tok{\}}$
@@ -96,16 +96,16 @@
    
  
    \item $\addprefix{exp}{cast}{\tok{cast}\tok{(}^{\backslash{}n} \call{exp}
-   {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{type} {}^{\backslash{}n}\tok{)}}$
+   {}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n}\ \call{type} {}^{\backslash{}n}\tok{)}}$
    
  
    \item $\addinfix{exp}{\{}{e0}{noassoc}{\tok{::}\call{type}}$
    
  
-   \item $\call{def} ::= \tok{def}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{id}\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
+   \item $\call{def} ::= \tok{def}_{\textrm{\textvisiblespace}}^{\textrm{\textvisiblespace}}\ \call{id}\ {}^{\textrm{\textvisiblespace}}\tok{=}^{\backslash{}n}\ \call{expression}$
     
  
-   \item $\call{declare} ::= \tok{declare}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{id}\tok{::}\call{type}$
+   \item $\call{declare} ::= \tok{declare}_{\textrm{\textvisiblespace}}^{\textrm{\textvisiblespace}}\ \call{id}\tok{::}\call{type}$
    
  
    \item $\call{definition} ::= \\
@@ -117,13 +117,13 @@
   \item $\call{constructor\_argument} ::=
     ( \call{id} \tok{::}^\nleftrightarrow \alt \epsilon)\ \call{type}$
   \item $\call{constructor\_arguments} ::=\\
-   \quad\tok{(}^{\backslash{}n} \call{constructor\_argument}\ ( {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ {constructor\_argument} )* {}^{\backslash{}n}\tok{)}$
+   \quad\tok{(}^{\backslash{}n} \call{constructor\_argument}\ ( {}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n}\ {constructor\_argument} )* {}^{\backslash{}n}\tok{)}$
    
  
    \item $\call{constructor} ::= \call{upper\_id}\call{constructor\_arguments}$
     
 
-  \item $\call{data} ::= \tok{data}^\textrm\textvisiblespace\ \tok{\{}^{\backslash{}n} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* {}^{\backslash{}n}\tok{\}}$
+  \item $\call{data} ::= \tok{data}^{\textrm{\textvisiblespace}}\ \tok{\{}^{\backslash{}n} \call{constructor} ({}_{\backslash{}n} \call{constructor} )* {}^{\backslash{}n}\tok{\}}$
    
  
    \item $\call{module\_implementation} ::= \tok{\{}^{\backslash{}n} (\epsilon \alt
@@ -137,7 +137,7 @@
     
  
    \item $\call{module\_def\_args} ::= \tok{<}^{\backslash{}n} \call{upper\_id}
-   ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n} \call{upper\_id})* {}^{\backslash{}n}\tok{>}$\\
+   ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n} \call{upper\_id})* {}^{\backslash{}n}\tok{>}$\\
    \item $\call{module\_definition} ::=
-   \tok{module}_\textrm\textvisiblespace^\textrm\textvisiblespace\ \call{upper\_id}\call{module\_def\_args}?\ {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{module\_expr}$
+   \tok{module}_{\textrm{\textvisiblespace}}^{\textrm{\textvisiblespace}}\ \call{upper\_id}\call{module\_def\_args}?\ {}^{\textrm{\textvisiblespace}}\tok{=}^{\backslash{}n}\ \call{module\_expr}$
    

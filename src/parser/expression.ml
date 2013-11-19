@@ -72,7 +72,7 @@ ExpTdop.define_infix_left_associative Kwd.star  (infix_when_normal 0xd000) binar
 ExpTdop.define_infix_left_associative Kwd.slash (infix_when_normal 0xd000) binary_infix;;
 
 (* \begin{grammar}
-   \item $\addprefix{exp}{-}{\tok{-}^\textrm\textvisiblespace\ \call{exp}}$
+   \item $\addprefix{exp}{-}{\tok{-}^{\textrm{\textvisiblespace}}\ \call{exp}}$
    \end{grammar} *)
 ExpTdop.define_prefix Kwd.minus (fun stream ->
   let minus = Token.Stream.next stream in
@@ -86,7 +86,7 @@ ExpTdop.define_prefix Kwd.minus (fun stream ->
 (* \begin{grammar}
    \item $\call{tuple\_exp} ::=\\
    \alt \tok{(}^{\backslash{}n}{}^{\backslash{}n}\tok{)}\\
-   \alt \tok{(}^{\backslash{}n}\ \call{exp}\ ({}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{exp})* )\ {}^{\backslash{}n}\tok{)}$
+   \alt \tok{(}^{\backslash{}n}\ \call{exp}\ ({}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n}\ \call{exp})* )\ {}^{\backslash{}n}\tok{)}$
    \item $\addprefix{exp}{(}{\call{tuple\_exp}}$
    \item $\addinfix{exp}{(}{f0}{leftassoc}{\call{tuple\_exp}}$
    \end{grammar}
@@ -142,7 +142,7 @@ let parse_pattern = parse_expression;;
 
 (* \begin{grammar}
    \item $\call{let\_binding} ::= \call{pattern}\
-   {}^\textrm\textvisiblespace\tok{=}^{\backslash{}n}\ \call{expression}$
+   {}^{\textrm{\textvisiblespace}}\tok{=}^{\backslash{}n}\ \call{expression}$
    \end{grammar}  *)
 let parse_let_binding stream =
   let pattern = parse_pattern stream in
@@ -164,7 +164,7 @@ let parse_let_binding stream =
    \alt \call{exp}$
    \item $\call{statements} ::= \call{statement}\ ({}_{\backslash{}n}\call{statement})*$
    \item $\call{pattern\_matching} ::= (\call{pattern}\
-   {}^\textrm\textvisiblespace\tok{->}^{\backslash{}n}\ \call{statements})+$
+   {}^{\textrm{\textvisiblespace}}\tok{->}^{\backslash{}n}\ \call{statements})+$
 
    \item $\call{lambda} ::= \tok{\{}^{\backslash{}n}\ \call{pattern\_matching}\ {}^{\backslash{}n}\tok{\}}$
    \item $\call{statements\_block} ::= \tok{\{}^{\backslash{}n}\ \call{statements}\ {}^{\backslash{}n}\tok{\}}$
@@ -317,7 +317,7 @@ in ExpTdop.define_prefix Kwd.match_ parse_match;;
 
 (* \begin{grammar}
    \item $\addprefix{exp}{cast}{\tok{cast}\tok{(}^{\backslash{}n} \call{exp}
-   {}^\textrm\textvisiblespace\tok{,}^{\backslash{}n}\ \call{type} {}^{\backslash{}n}\tok{)}}$
+   {}^{\textrm{\textvisiblespace}}\tok{,}^{\backslash{}n}\ \call{type} {}^{\backslash{}n}\tok{)}}$
    \end{grammar}
 
    This construction, and its syntax, are still alpha. *)
