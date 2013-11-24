@@ -28,7 +28,7 @@
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
            </button>
-           <a class="brand" href="/">The L language</a>
+           <a class="brand" href="/"><i>The</i> L <i>language</i></a>
            <div class="nav-collapse collapse">
              <ul class="nav">
                
@@ -42,6 +42,10 @@
                  <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
                     data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
                  <ul class="dropdown-menu">
+                   <li class="nav-header">Introduction to L</li>
+                   
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
                    <li class="nav-header">Inside the compiler</li>
                    <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
                  </ul>
@@ -127,6 +131,15 @@
        <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
      </ul>
    </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/parser" /><label for="/documentation/compiler_hyperbook/parser">&#x25B7;</label> parser
+     <ul>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/common" /><label for="/documentation/compiler_hyperbook/parser/common">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/common.ml">common.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/definition" /><label for="/documentation/compiler_hyperbook/parser/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/definition.ml">definition.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/expression" /><label for="/documentation/compiler_hyperbook/parser/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/expression.ml">expression.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/path" /><label for="/documentation/compiler_hyperbook/parser/path">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/path.ml">path.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/parser" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.mli">tdop.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.ml">tdop.ml</a></li></ul> </li>
+     </ul>
+   </li>
    <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
      <ul>
        <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
@@ -143,43 +156,43 @@
       <h1>cps/cpstransform/definition.ml</h1>
     </div>
     
-<!--CUT DEF section 1 --><!--TOC section Module Definition-->
-<H2 CLASS="section"><!--SEC ANCHOR -->Module Definition</H2><!--SEC END --><P>
-<A NAME="src/cps/cpstransform/definition.ml:0"></A>This module performs CPS transformation of definitions; it is
+<!--CUT STYLE article--><!--CUT DEF section 1 --><!--TOC section id="sec1" Module Definition-->
+<h2 id="sec1" class="section">Module Definition</h2><!--SEC END --><p>
+This module performs CPS transformation of definitions; it is
 similar to the transformation proposed in "Compiling with
-continuations, continued" by A. Kennedy.</P><P>CPS transformation names all intermediary results, and fixes the
+continuations, continued" by A. Kennedy.</p><p>CPS transformation names all intermediary results, and fixes the
 order of evaluation; so it is in this module that we define that
 arguments to functions are evaluated from left to right, that a
 function is evaluated before its arguments, how pattern matching is
-compiled...</P><P><BR><A NAME="src/cps/cpstransform/definition.ml:505"></A>
+compiled...</p><p><BR><a id="src/cps/cpstransform/definition.ml:505"></a>
 <div class="ocamlweb-src"><code>
 
-<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Build</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbase.Build</span></P><P><A NAME="src/cps/cpstransform/definition.ml:536"></A>
-<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Ast</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Astdef</span></P><P><A NAME="src/cps/cpstransform/definition.ml:558"></A>
-<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">AstVarMap</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Ast.Variable.Map</span></P><P><A NAME="src/cps/cpstransform/definition.ml:597"></A>
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;expression&nbsp;=&nbsp;<span style="color: #228b22; ">Expression.Expression.</span>transform</P><P></code></div>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Build</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbase.Build</span></p><p><a id="src/cps/cpstransform/definition.ml:536"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Ast</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Ast.Def</span></p><p><a id="src/cps/cpstransform/definition.ml:559"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">AstVarMap</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Ast.Variable.Map</span></p><p><a id="src/cps/cpstransform/definition.ml:598"></a>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;expression&nbsp;=&nbsp;<span style="color: #228b22; ">Expression.Expression.</span>transform</p><p></code></div>
 Transform an expression (typically the expr in Ast.Def(x,expr) or
 Ast.Nodef(expr)) to a CPS definition 
 <BR>
 Transform a definition. Returns a list of cps definitions, and the
 new environment. 
-<BR><A NAME="src/cps/cpstransform/definition.ml:855"></A>
+<BR><a id="src/cps/cpstransform/definition.ml:856"></a>
 <div class="ocamlweb-src"><code>
 
 <span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;transform&nbsp;env&nbsp;def&nbsp;=<BR>&nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;halt_ctx&nbsp;=&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;x&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Build.</span>halt&nbsp;x)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
-<span style="color: #a020f0; ">match</span>&nbsp;def&nbsp;<span style="color: #a020f0; ">with</span></P><P></code></div>&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;def&nbsp;<span style="color: #a020f0; ">with</span></p><p></code></div>&nbsp;&nbsp;
 Definitions whose result is not used. 
-<BR><A NAME="src/cps/cpstransform/definition.ml:987"></A>
+<BR><a id="src/cps/cpstransform/definition.ml:988"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Ast.Definition.Expression</span>(exp)&nbsp;<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Ast.Definition.Value</span>([<span style="color: #228b22; ">Ast.Pattern.Wildcard</span>,&nbsp;exp])&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
 [<span style="color: #228b22; ">Cpsbase.Definition</span>(&nbsp;<span style="color: #228b22; ">Cpsbase.Unused</span>,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <span style="color: #228b22; ">Cpsbase.Dynamic_value</span>&nbsp;(expression&nbsp;exp&nbsp;env&nbsp;halt_ctx))],<BR>&nbsp;&nbsp;&nbsp;&nbsp;
-env</P><P></code></div>&nbsp;&nbsp;
+env</p><p></code></div>&nbsp;&nbsp;
 Non-recursive definitions. 
-<BR><A NAME="src/cps/cpstransform/definition.ml:1245"></A>
+<BR><a id="src/cps/cpstransform/definition.ml:1246"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Ast.Definition.Value</span>([<span style="color: #228b22; ">Ast.Pattern.Variable</span>&nbsp;var,exp])&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -187,15 +200,15 @@ Non-recursive definitions.
 <span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;definition&nbsp;=&nbsp;<span style="color: #228b22; ">Build.</span>with_var_in_def&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;v&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <span style="color: #228b22; ">Cpsbase.Definition</span>(<span style="color: #228b22; ">Cpsbase.Public</span>&nbsp;v,&nbsp;<span style="color: #228b22; ">Cpsbase.Dynamic_value</span>&nbsp;e))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">Cpsbase.Definition</span>(<span style="color: #228b22; ">Cpsbase.Public</span>&nbsp;v,_)&nbsp;=&nbsp;definition&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
-([definition],&nbsp;<span style="color: #228b22; ">AstVarMap.</span>add&nbsp;var&nbsp;(<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;v)&nbsp;env)</P><P><A NAME="src/cps/cpstransform/definition.ml:1607"></A>&nbsp;&nbsp;
+([definition],&nbsp;<span style="color: #228b22; ">AstVarMap.</span>add&nbsp;var&nbsp;(<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;v)&nbsp;env)</p><p><a id="src/cps/cpstransform/definition.ml:1608"></a>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Ast.Definition.Value</span>(_)&nbsp;&#X2192;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
-<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"Definitions&nbsp;with&nbsp;general&nbsp;patterns&nbsp;are&nbsp;not&nbsp;yet&nbsp;supported"</span></P><P></code></div>&nbsp;&nbsp;
+<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"Definitions&nbsp;with&nbsp;general&nbsp;patterns&nbsp;are&nbsp;not&nbsp;yet&nbsp;supported"</span></p><p></code></div>&nbsp;&nbsp;
 Definitions are not directly recursive; i.e. <code>def&nbsp;id&nbsp;=&nbsp;...id...</code>
 is transformed into <code>def&nbsp;id&nbsp;=&nbsp;{<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;id&nbsp;=&nbsp;...&nbsp;id&nbsp;...;&nbsp;id}</code>. This is
 because LLVM output is (currently) not able to deal with
 recursive definitions with dynamic values, because of the
 additional indirection. 
-<BR><A NAME="src/cps/cpstransform/definition.ml:2009"></A>
+<BR><a id="src/cps/cpstransform/definition.ml:2010"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Ast.Definition.Value_rec</span>([var,exp])&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -207,21 +220,21 @@ expression&nbsp;~v&nbsp;exp&nbsp;rec_map&nbsp;(<span style="color: #a020f0; ">fu
 halt_ctx&nbsp;v))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <span style="color: #228b22; ">Cpsbase.Definition</span>(<span style="color: #228b22; ">Cpsbase.Public</span>&nbsp;defv,&nbsp;<span style="color: #228b22; ">Cpsbase.Dynamic_value</span>&nbsp;e))&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #228b22; ">Cpsbase.Definition</span>(<span style="color: #228b22; ">Cpsbase.Public</span>&nbsp;defv,_)&nbsp;=&nbsp;def&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
-([def],&nbsp;<span style="color: #228b22; ">AstVarMap.</span>add&nbsp;var&nbsp;(<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;defv)&nbsp;env)</P><P><A NAME="src/cps/cpstransform/definition.ml:2535"></A>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Definition.Type_name</span>&nbsp;(_,_,_)&nbsp;&#X2192;&nbsp;([&nbsp;],env)</P><P></code></div>
-TODO:</P><P>- We can extend <code><span style="color: #228b22; ">Halt</span></code> to handle several variables, with a
+([def],&nbsp;<span style="color: #228b22; ">AstVarMap.</span>add&nbsp;var&nbsp;(<span style="color: #228b22; ">Cpsbase.Var.Occur.</span>maker&nbsp;defv)&nbsp;env)</p><p><a id="src/cps/cpstransform/definition.ml:2536"></a>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Ast.Definition.Type_name</span>&nbsp;(_,_,_)&nbsp;&#X2192;&nbsp;([&nbsp;],env)</p><p></code></div>
+TODO:</p><p>- We can extend <code><span style="color: #228b22; ">Halt</span></code> to handle several variables, with a
 construct like <code><span style="color: #228b22; ">Halt</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;def_vars&nbsp;×&nbsp;expr_vars</code>. This would be useful
 for both <code><span style="color: #228b22; ">Value_rec</span></code> with several variables, and for more general
-patterns (that can bind several variables at once).</P><P>- (Maybe). We could have a <code>value</code> function to build values, and
-only those would have the &nbsp;v argument (or a list of &nbsp;v). </P><P>- Allow mutual recursions, mainly for functions but also for
+patterns (that can bind several variables at once).</p><p>- (Maybe). We could have a <code>value</code> function to build values, and
+only those would have the &nbsp;v argument (or a list of &nbsp;v). </p><p>- Allow mutual recursions, mainly for functions but also for
 objects, perhaps through forward declarations. This is related to
 making the allocations explicit, and to typing (to know the size of
 the allocations). A forward declaration corresponds to allocation
-of object, which can be separated from its initialization.</P><P>- Link each CPS variable to its corresponding subterm. This would
+of object, which can be separated from its initialization.</p><p>- Link each CPS variable to its corresponding subterm. This would
 allow to display proper error messages if there is an error after
 the CPS transformation, and could help put debugging information
 in the compiler. In addition, when the ADT is typed, type
-information should be transformed to CPS.</P><P><BR></P><!--CUT END -->
+information should be transformed to CPS.</p><p><BR></p><!--CUT END -->
 
 
 

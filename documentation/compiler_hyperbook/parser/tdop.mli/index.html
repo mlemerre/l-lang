@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>parser/tdop.mli</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/"><i>The</i> L <i>language</i></a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Introduction to L</li>
+                   
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/parser" /><label for="/documentation/compiler_hyperbook/parser">&#x25B7;</label> parser
+     <ul>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/common" /><label for="/documentation/compiler_hyperbook/parser/common">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/common.ml">common.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/definition" /><label for="/documentation/compiler_hyperbook/parser/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/definition.ml">definition.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/expression" /><label for="/documentation/compiler_hyperbook/parser/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/expression.ml">expression.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/path" /><label for="/documentation/compiler_hyperbook/parser/path">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/path.ml">path.ml</a> </li>
+       <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook/parser" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.mli">tdop.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.ml">tdop.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>parser/tdop.mli</h1>
+    </div>
+    
+<!--CUT STYLE article--><!--CUT DEF section 1 --><!--TOC section id="sec1" Interface for module Tdop-->
+<h2 id="sec1" class="section">Interface for module Tdop</h2><!--SEC END --><p>
+This module helps implementing TDOP (top-down operator precedence)
+parsers. TDOP parsers (also called Pratt parsers) were invented by
+Vaughan Pratt in 1973. They are practical, efficient, simple to
+understand and simple to implement, and can be dynamically extended
+at runtime; their only drawback is that they are not very
+well-known.</p><p>The core idea of TDOP is to combine "recursive descent" parser with
+"operator precedence" in a single framework; and to work by
+associating parsing functions to tokens (and not to rules as done
+in BNF).</p><!--TOC subsection id="sec2" Main parsing function and token position-->
+<h3 id="sec2" class="subsection">Main parsing function and token position</h3><!--SEC END --><p>The module works by defining a "main" parsing function <code>parse</code>,
+that will call auxiliary parsing functions associated to the
+tokens, depending on their position:</p><ul class="itemize"><li class="li-itemize">The first token encountered when <code>parse</code> is called is in
+<em>prefix</em> position.</li><li class="li-itemize">If at a position <code>parse</code> could have returned something, but
+continues, then the first token encountered after <code>parse</code> could
+have returned is in <em>infix</em> position.</li></ul><p>For instance, suppose we are parsing an expression (i.e. <code>parse</code>
+parses an "expression"). In the string <code>-3&nbsp;+&nbsp;4&nbsp;×&nbsp;&#X2212;5&nbsp;&#X2212;&nbsp;22</code>, the
+left-most <code>-</code> appears in prefix position. It is associated to a
+parsing function requiring another expression, so <code>3</code> is also in
+prefix position. After <code>3</code> <code>parse</code> could return, but continues with
+<code>+</code>, so <code>+</code> is in infix position. <code>+</code> is associated to a parsing
+function requiring another expression, so <code>4</code> appears in prefix
+position, etc. At the end in this expression, all the numbers and
+the first two <code>-</code> are in prefix position, while <code>+</code>, <code>×</code>, and the
+last <code>-</code> are in infix position.</p><p>Note that the name "infix" does not imply a symmetry: in the regexp
+<code>[a&#X2212;z]+</code>, <code>+</code> is also in infix position; in the statement
+<code>(3+4):<span style="color: #228b22; ">Int</span></code>, <code>:</code> is in infix position, even if its left side is an
+expression and its right side a type. So "infix" also encompass
+"postfix" and other situations.</p><!--TOC paragraph id="sec3" Interface-->
+<h4 id="sec3" class="paragraph">Interface</h4><!--SEC END --><p>The main parsing function is called <code>parse</code>; it takes a stream, and
+a right binding power (defined below), as arguments.</p><p>The <code>define_prefix</code> and <code>define_infix</code> functions allow to associate
+to each keyword a parsing function. Parsing functions are given a
+stream; the prefix or infix token is left in the stream when the
+custom parsing function is called. This allows, for instance, the
+same parsing function to be used for different tokens. The
+<code>define_infix_{left&#X2223;right}_associative</code> functions are special cases
+of <code>define_infix</code>, explained below. This dynamic interface allows
+to dynamically extend the parser by registering new token/parsing
+function association; an application is to allow a source file to
+extend its syntax. It also breaks recursivity, which allow the
+parsing functions to call <code>parse</code>.</p><p>The dynamic interface cannot work for tokens that carry an
+information, such as ints and string: one cannot associate a
+parsing function to "all ints" using a hash table. Thus for
+non-keyword arguments, the parsing functions are given statically
+as arguments to a functor. The interface assumes that only keyword
+tokens can be used as infix.</p><p>The argument to the functor also define the type of the "semantic
+values", i.e. the objects returned by the parsing functions.</p><!--TOC subsection id="sec4" Binding power, operator precedence, and associativity-->
+<h3 id="sec4" class="subsection">Binding power, operator precedence, and associativity</h3><!--SEC END --><p>In TDOP, tokens are associated with two binding powers: the left
+binding power, and the right binding power. If a substring has the
+form <code><span style="color: #228b22; ">AEB</span></code>, where <code><span style="color: #228b22; ">A</span></code> and <code><span style="color: #228b22; ">B</span></code> are tokens and <code><span style="color: #228b22; ">E</span></code> an expression that
+can be parsed by <code>parse</code>, then:</p><ul class="itemize"><li class="li-itemize"> 
+If the left binding power of <code><span style="color: #228b22; ">B</span></code> is strictly higher than the
+right binding power of <code><span style="color: #228b22; ">A</span></code>, then <code><span style="color: #228b22; ">E</span></code> is associated to <code><span style="color: #228b22; ">A</span></code>; </li><li class="li-itemize">Else, <code><span style="color: #228b22; ">E</span></code> is associated to <code><span style="color: #228b22; ">A</span></code>.
+</li></ul><p>As a convention, we chose that in case of equality, <code><span style="color: #228b22; ">E</span></code> is
+associated to <code><span style="color: #228b22; ">A</span></code>. </p><p>Thus, "left binding power" of <code><span style="color: #228b22; ">B</span></code> really means "the binding power
+of <code><span style="color: #228b22; ">B</span></code> that applies to the expression <code><span style="color: #228b22; ">E</span></code> which is to the left of
+<code><span style="color: #228b22; ">B</span></code>" (and respectively for the "right binding power").</p><p>Here are some example uses of these binding powers.</p><!--TOC paragraph id="sec5" Classical operator precedence-->
+<h4 id="sec5" class="paragraph">Classical operator precedence</h4><!--SEC END --><p>In mathematics, <code>×</code> takes precedence over <code>+</code>: <code>2+3×4</code> is parsed as
+<code>2+(3×4)</code>; while <code>2×3+4</code> is parsed as <code>(2×3)+4</code>. If we give to <code>×</code>
+left and right binding powers of 100, and to <code>+</code> left and right
+binding powers of 90, then in both cases when parsing <code>3</code>, the
+token <code>×</code> will take precedence over <code>+</code>. Unary prefix operators
+like - should be given a big right binding power, to take
+precedence over + and *.</p><!--TOC paragraph id="sec6" Left associativity-->
+<h4 id="sec6" class="paragraph">Left associativity</h4><!--SEC END --><p>The <code>-</code> operator is left-associative: <code>1-2-3</code> must be read as
+<code>1-(2&#X2212;3)</code>, not as <code>(1&#X2212;2)&#X2212;3</code>. If we give to <code>-</code> equal binding powers
+of 90, then when parsing <code>2</code> the leftmost <code>-</code> will take precedence
+over the rightmost one; this is because of our convention that when
+binding powers are equal, the expression is associated to the
+leftmost token.</p><!--TOC paragraph id="sec7" Right associativity-->
+<h4 id="sec7" class="paragraph">Right associativity</h4><!--SEC END --><p>The <code>&#X2192;</code> operator for types is right-associative: <code><span style="color: #228b22; ">Int</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Float</span>&nbsp;&#X2192;
+&nbsp;<span style="color: #228b22; ">Bool</span></code> is actually <code><span style="color: #228b22; ">Int</span>&nbsp;&#X2192;&nbsp;(<span style="color: #228b22; ">Float</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Bool</span>)</code>. TDOP handles
+right-associative operators with equal ease: we associate to <code>&#X2192;</code> a
+left binding power of 80, and a right binding power of 79. Now when
+parsing <code><span style="color: #228b22; ">Float</span></code> the rightmost <code>&#X2192;</code> token takes precedence, which
+makes <code>&#X2192;</code> right-associative.</p><!--TOC paragraph id="sec8" Function calls-->
+<h4 id="sec8" class="paragraph">Function calls</h4><!--SEC END --><p>In classical mathematics, function call is denoted with <code>(</code>, i.e.
+the use of the <code>(</code> operator that follows a function name, as in
+<code>2×f(3+4)</code>. Here, <code>(</code> must be given a high left-binding power (to
+bind more tightly than <code>×</code>), and a low right-binding power (to bind
+less tightly than <code>+</code>); for instance <code>120</code> and <code>0</code>.</p><!--TOC paragraph id="sec9" Interface: affecting a left and right binding power-->
+<h4 id="sec9" class="paragraph">Interface: affecting a left and right binding power</h4><!--SEC END --><p>The left binding power of a token is provided together with the
+custom parsing function, using one of the <span style="font-family:monospace">define_infix_*</span>
+functions. The right binding power is passed as an argument to the
+<code>parse</code> function: the idea is to associate to each token an infix
+and/or prefix <em>handler</em>, which is a custom parsing function;
+this parsing function will call <code>parse</code> with the correct right
+binding power.</p><p>Note that there are predefined functions to help defining
+left-associative and right-associative operators, so there is no
+need to write custom parsing functions for these common cases.</p><p>In L, left-associative and right-associative operators are defined
+using <code>define_infix_{left&#X2223;right}_associative</code>, and we defined 0 to
+be the initial right binding power for the first call of the
+<code>parse</code> function; when calling <code>parse</code> from a custom parsing
+functions, the right binding power should generally be 0.</p><!--TOC subsection id="sec10" Using separation levels-->
+<h3 id="sec10" class="subsection">Using separation levels</h3><!--SEC END --><p>In addition to "normal" TDOP parsing, this parser also takes
+advantage of the separation levels of token provided by the lexer:
+the idea is that the same token used with different separations can
+be considered as if there were two different tokens, and can have
+different left and right binding powers, and parsing functions.</p><p>So one can view the use of separations as replacing the
+<code><span style="color: #228b22; ">Token</span>.token&nbsp;&#X2192;&nbsp;handler</code> and <code><span style="color: #228b22; ">Token</span>.token&nbsp;&#X2192;&nbsp;left_binding_power</code>
+maps of the normal TDOP interface, by <code><span style="color: #228b22; ">Token</span>.token&nbsp;×&nbsp;separation&nbsp;&#X2192;
+&nbsp;handler</code> and <code><span style="color: #228b22; ">Token</span>.token&nbsp;×&nbsp;separation&nbsp;&#X2192;&nbsp;left_binding_power</code> maps.
+However, most of the time tokens with different separations will
+still be bound to the same binding powers and parsing function.
+Thus, to make the token/parsing function more efficient and
+partical, using separations is in fact done using a "secondary
+dispatch" &#X2013; there is one dispatch for the token, and a second
+dispatch for the separation of this token. This amounts to currying
+the maps, i.e. we really have a <code><span style="color: #228b22; ">Token</span>.token&nbsp;&#X2192;&nbsp;separation&nbsp;&#X2192;
+&nbsp;left_binding_power</code> map. Here are some concrete recipes:</p><ul class="itemize"><li class="li-itemize">Compared to "normal" TDOP parsing, <code>define_infix</code> functions
+takes a <code><span style="color: #228b22; ">Token</span>.with_info&nbsp;&#X2192;&nbsp;left_binding_power_provider</code> instead of
+just a <code>left_binding_power</code>. The <code><span style="color: #228b22; ">Token</span>.with_info</code> contains the
+separation information. Thus, if you want to completely ignore the
+separation information and perform "normal" TDOP parsing, you just
+have to pass <code>(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;&#X2192;&nbsp;binding_power)</code> as a
+<code>binding_power_provider</code>.</li><li class="li-itemize">To consider tokens with different separation information
+differently, you must rely on the fact that the <code>infix_handler</code> and
+<code>prefix_handler</code> receive streams that still contain the token used
+to do the dispatch. The handler can dispatch and perform different
+actions according to the separation information in this token: make
+different semantic actions, or give different right binding powers.
+Combined with the dispatch offered by using a custom
+<code>left_binding_power_provider</code>, one can for instance consider <code>x.y</code>
+and <code>x&nbsp;.&nbsp;y</code> entirely differently, as in Haskell.</li><li class="li-itemize">If you want to forbide certains spacings (for instance,
+presence of whitespace before a "(" token), you can raise errors
+(or warnings) in the <code>left_binding_power_provider</code> or the parsing
+functions for some separations.</li><li class="li-itemize">If you want to consider newline as a statement separator, you
+need to prevent infix tokens appearing after a newline to be parsed
+as infix. For instance, in "x := 3 - 4", there are two
+consecutive statements. This can be achieved by giving a low left
+binding power to infix tokens separated by a newline.<p>For instance, in <code><span style="color: #228b22; ">L</span></code> we call the <code>parse</code> function with a
+<code>right_binding_power</code> of 0. Then we just need to give a negative
+<code>binding_power</code> to infix tokens that follow a newline to make them
+appear in different statements.</p></li></ul><!--TOC subsection id="sec11" Additional notes-->
+<h3 id="sec11" class="subsection">Additional notes</h3><!--SEC END --><!--TOC paragraph id="sec12" Using TDOP as part as a larger parser-->
+<h4 id="sec12" class="paragraph">Using TDOP as part as a larger parser</h4><!--SEC END --><p>The <code>parse</code> function provided by the TDOP parser is a regular
+parsing function, and can be integrated as a part of any
+hand-written parser; including another TDOP parser. Several
+instances of the module can indeed be used simultaneously, for
+instance, one for the grammar describing the expressions, and one
+for the grammar describing the types.</p><p>The interface of this module, with dynamic registration of parsing
+functions, guarantees that there will be no problem of self- or
+mutual- recursion using a TDOP parser: you can always begin by
+defining the TDOP modules, and then use the <code>parse</code> functions.</p><!--TOC paragraph id="sec13" Efficiency-->
+<h4 id="sec13" class="paragraph">Efficiency</h4><!--SEC END --><p>Top-down parsing using recursive descent parsers are often slow
+because the parser recurses on the rules, and expressing operator
+precedence using only rules make the parser call a lot of function
+before finding the correct rule that allows to parse a token.
+Moreover, talking about precedence levels makes the grammar easier
+to explain to understand. Because of these reasons, recursive
+descent parsers often come in combination with a more efficient
+"operator precedence" parser.</p><p>In TDOP, the actions are associated to the tokens, not to the rule,
+which makes the time complexity of the parsing linear in size of
+the stream of tokens; more over it makes operator precedence and
+recursive descent parsing are nicely integrated in a single simple
+framework. </p><!--TOC paragraph id="sec14" References-->
+<h4 id="sec14" class="paragraph">References</h4><!--SEC END --><p>The seminal paper that invented Pratt parsers was seen in Pratt,
+Vaughan. "Top down operator precedence." Proceedings of the 1st
+Annual ACM SIGACT-SIGPLAN Symposium on Principles of Programming
+Languages (1973). The subject was studied more in depth (in
+particular, how a TDOP-based formal language could be used to
+describe a language and implement a parser, as an alternative to
+yacc and BNF) by Van De Vanter, Michael L. "A Formalization and
+Correctness Proof of the CGOL Language System." (Master&#X2019;s Thesis).
+MIT Laboratory for Computer Science Technical Report MIT-LCS-TR-147
+(Cambridge, MA). 1975.</p><p><BR>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">BASE_PARSER</span>&nbsp;=<BR>
+<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  The type of the semantic values, returned by the semantic actions.  &#X2217;)</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t</p><p></code></div>&nbsp;&nbsp;
+Prefix handlers for base cases. 
+<BR><a id="src/parser/tdop.mli:12452"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;int_handler&nbsp;:&nbsp;<span style="color: #228b22; ">int</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Token.Stream.</span>t&nbsp;&#X2192;&nbsp;t<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;ident_handler&nbsp;:&nbsp;<span style="color: #228b22; ">Token.</span>ident&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Token.Stream.</span>t&nbsp;&#X2192;&nbsp;t<BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></p><p><a id="src/parser/tdop.mli:12561"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Make</span>&nbsp;:&nbsp;<span style="color: #0000ff; font-weight: bold;">functor</span>&nbsp;(<span style="color: #228b22; ">Base_parser</span>&nbsp;:&nbsp;<span style="color: #228b22; ">BASE_PARSER</span>)&nbsp;&#X2192;<BR>
+<span style="color: #0000ff; font-weight: bold;">sig</span></p><p></code></div>&nbsp;&nbsp;
+A prefix handler is a custom parser that is called whenever a
+specific keyword is encountered in prefix position. The keyword
+is still in the stream, and must be consumed by the handler. 
+<BR><a id="src/parser/tdop.mli:12825"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;prefix_handler&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>t&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Base_parser.</span>t</p><p></code></div>&nbsp;&nbsp;
+An infix handler is a custom parser that is called whenever a
+specific keyword is encountered in "infix" position. The keyword
+is still in the stream, and must be consumed by the handler
+function. The part at the left of the keyword is already parsed,
+and given as the second argument. 
+<BR><a id="src/parser/tdop.mli:13196"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;infix_handler&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>t&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Base_parser.</span>t&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Base_parser.</span>t</p><p></code></div>&nbsp;&nbsp;
+The binding power is a priority level for a token used as an
+infix operator. The higher it is, the stronger the operator binds
+the argument. For instance, 3 + 3 * 2 + 4 is parsed as 3 + (3 *
+2) + 4 because the left binding power of &#X2019;*&#X2019; is higher than the
+right binding power of &#X2019;+&#X2019;. </p><p>Said differently, if the <code>parse</code> function is called with a right
+binding power of <code>x</code>, then parsing will stop before tokens whose
+left binding power is <code>&#X2264;&nbsp;x</code>. 
+<BR><a id="src/parser/tdop.mli:13757"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;left_binding_power&nbsp;=&nbsp;<span style="color: #228b22; ">int</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;right_binding_power&nbsp;=&nbsp;<span style="color: #228b22; ">int</span></p><p></code></div>&nbsp;&nbsp;
+<code>left_binding_power_provider</code> changes the binding power according
+to separation level. The <code>left_binding_power_provider</code> can also
+return a parse error, if a token is used with incorrect
+separation. 
+<BR><a id="src/parser/tdop.mli:14044"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;left_binding_power_provider&nbsp;=&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Token.With_info.</span>t&nbsp;&#X2192;&nbsp;left_binding_power</p><p></code></div>&nbsp;&nbsp;
+Parses the stream with a right binding power x, e.g. stops the
+parse as soon as it encounters a token whose <code>left_binding_power</code>
+is <code>&#X2264;&nbsp;x</code>. Uses the prefix and infix handlers that have been
+defined. 
+<BR><a id="src/parser/tdop.mli:14351"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;parse&nbsp;:&nbsp;<span style="color: #228b22; ">Token.Stream.</span>t&nbsp;&#X2192;&nbsp;right_binding_power&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Base_parser.</span>t</p><p></code></div>&nbsp;&nbsp;
+Associates a prefix handler to a keyword. 
+<BR><a id="src/parser/tdop.mli:14471"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;define_prefix&nbsp;:&nbsp;<span style="color: #228b22; ">Token.</span>token&nbsp;&#X2192;&nbsp;prefix_handler&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span></p><p></code></div>&nbsp;&nbsp;
+Associates a left binding power and infix handler to a
+keyword. 
+<BR><a id="src/parser/tdop.mli:14609"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;define_infix&nbsp;:&nbsp;<span style="color: #228b22; ">Token.</span>token&nbsp;&#X2192;&nbsp;left_binding_power_provider&nbsp;&#X2192;&nbsp;infix_handler&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">unit</span></p><p></code></div>&nbsp;&nbsp;
+Most infix operators are left-associative or right-associative
+operators, i.e. to parse the right part of the token one just have
+to call the tdop parser again. These functions handle these
+cases. </p><p>The first argument is the parsed token to which the function is
+attached (in infix or prefix position). The second is the binding
+power of the operator. The last is a function that, given the
+object resulting from parsing the left part, and the one obtained
+from parsing the right part, gives the object obtained by
+combining them. 
+<BR><a id="src/parser/tdop.mli:15283"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;define_infix_left_associative&nbsp;:<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Token.</span>token&nbsp;&#X2192;&nbsp;left_binding_power_provider&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Token.With_info.</span>t&nbsp;&#X2192;&nbsp;left:<span style="color: #228b22; ">Base_parser.</span>t&nbsp;&#X2192;&nbsp;right:<span style="color: #228b22; ">Base_parser.</span>t&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Base_parser.</span>t)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">unit</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;define_infix_right_associative&nbsp;:<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Token.</span>token&nbsp;&#X2192;&nbsp;left_binding_power_provider&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Token.With_info.</span>t&nbsp;&#X2192;&nbsp;left:<span style="color: #228b22; ">Base_parser.</span>t&nbsp;&#X2192;&nbsp;right:<span style="color: #228b22; ">Base_parser.</span>t&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Base_parser.</span>t)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">unit</span></p><p></code></div>&nbsp;&nbsp;
+Returns the left_binding_power assigned to an infix operator.
+Unregistered tokens have a binding power of zero. 
+<BR><a id="src/parser/tdop.mli:15782"></a>
+<div class="ocamlweb-src"><code>
+&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;left_binding_power&nbsp;:&nbsp;<span style="color: #228b22; ">Token.With_info.</span>t&nbsp;&#X2192;&nbsp;left_binding_power</p><p><a id="src/parser/tdop.mli:15850"></a>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR><BR></code></div></p><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+
+   
+   <script src="/js/jquery.js"></script>
+   
+
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+   
+   <script type="text/javascript">
+   $('.my-email').html(function(){
+	var d = "t@l-la";
+	var e = "ma";
+	var a = "t";
+	var c = "ng.org";
+	var h = 'mailto:' + e + a + d + c;
+	$(this).parent('a').attr('href', h);
+	return e + a + d + c;
+   });
+   </script>
+
+  </body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>parser/path.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/"><i>The</i> L <i>language</i></a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Introduction to L</li>
+                   
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/parser" /><label for="/documentation/compiler_hyperbook/parser">&#x25B7;</label> parser
+     <ul>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/common" /><label for="/documentation/compiler_hyperbook/parser/common">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/common.ml">common.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/definition" /><label for="/documentation/compiler_hyperbook/parser/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/definition.ml">definition.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/expression" /><label for="/documentation/compiler_hyperbook/parser/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/expression.ml">expression.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/path" /><label for="/documentation/compiler_hyperbook/parser/path">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/path.ml">path.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/parser" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.mli">tdop.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.ml">tdop.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>parser/path.ml</h1>
+    </div>
+    
+<!--CUT STYLE article--><!--CUT DEF section 1 --><!--TOC section id="sec1" Module Path-->
+<h2 id="sec1" class="section">Module Path</h2><!--SEC END --><p>
+This module implements the TDOP-based parser of L paths and module
+names.</p>
+<!--TOC paragraph id="sec2" Module names-->
+<h4 id="sec2" class="paragraph">Module names</h4><!--SEC END --><p>Module names are identifiers that allow to name a module. In
+particular, in L a module can contain at most 1 type; and we also
+use module names to represent the type that they represent. Modules
+that contain a type are called classes.</p><p>Functors are functions that take modules as arguments, and return a
+new module. Functors in L are applicative, meaning that a functor
+given the same arguments return the same module. Applicative
+functors are necessary if we want to use module names to represent
+types. The notation for functor application is like a function
+call, with <code>(...)</code> replaced by <code>&lt;...&gt;</code>. As functors are applicative, it
+makes sense to use functor application to name a module (because
+applying a functor always refers to the same module). So one can
+see the BNF of module names as the following one:</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; ::= <br>
+   |   &#X27E8;<span style="font-style:italic">id</span>&#X27E9;<br>
+  |   &#X27E8;<span style="font-style:italic">id</span>&#X27E9;<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;</span></span></span></span>
+&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; (<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span> &#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;)* <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;</span></span></span></span>
+</li></ul>
+<!--TOC paragraph id="sec3" Paths-->
+<h4 id="sec3" class="paragraph">Paths</h4><!--SEC END --><p>Modules can contain components, and it is thus necessary to be able
+to refer to components inside of a module. As modules can contain
+other modules, there can be a complete <em>path</em> describing how
+to get down into modules to retrieve the components. Paths are
+composed of a sequence of module names, each one followed by a "/";
+then by the name of the component. By analogy with filesystem
+paths, we name the first part the "directory" part.</p><p>Adding paths changes the BNF as in the following:</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; ::= <br>
+   |   &#X27E8;<span style="font-style:italic">id</span>&#X27E9;<br>
+   |   &#X27E8;<span style="font-style:italic">id</span>&#X27E9;<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;</span></span></span></span> &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;
+(<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span> &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;)* <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;</span></span></span></span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">dir</span>&#X27E9; ::= (&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">/</span></span></span></span>)*
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; ::= &#X27E8;<span style="font-style:italic">dir</span>&#X27E9;&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;
+</li></ul>
+<!--TOC paragraph id="sec4" Type constructors-->
+<h4 id="sec4" class="paragraph">Type constructors</h4><!--SEC END --><p>Two families of functors have a special syntax: <code>&#X2192;</code>, and <code>(...)</code>.
+<code>&#X2192;</code> corresponds to the function type constructor (<code>&#X2192;</code> in OCaml),
+and (...) to the tuple type constructor (<code>×</code> in OCaml). They are
+actually functors, that construct a class that contains
+the constructed type obtained by taking the type part of the
+arguments (that must be classes). They are used when module names
+are used to denote the type they contain.</p><p>Even if they are normal functors, there is a syntactical
+restriction: they can appear in paths only as arguments to a
+functor. Paths like <code>(<span style="color: #228b22; ">Int</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Int</span>,<span style="color: #228b22; ">Float</span>)/to_string</code> are thus
+forbidden.</p><p>This makes the BNF look like the following one:
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; ::= <br>
+   |   &#X27E8;<span style="font-style:italic">id</span>&#X27E9;<br>
+   |   &#X27E8;<span style="font-style:italic">id</span>&#X27E9;<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;</span></span></span></span> &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9;
+(<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span> &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9;)* <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;</span></span></span></span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">dir</span>&#X27E9; ::= (&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">/</span></span></span></span>)*
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; ::= &#X27E8;<span style="font-style:italic">dir</span>&#X27E9;&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9; ::= <br>
+   |   &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; <br>
+   |   &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9;
+<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-&gt;</span></span></span></span> &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9; <br>
+   |   <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span> &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9;
+(<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span> &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9;)* <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span>
+</li></ul><p>There are several reasons for this limitation. The first is
+technical: the first form would require mixing the path and
+expression parsers, which would delay the detection of parse
+errors. The limitation keeps the path and expression grammars
+separated, and allows parsing of paths to remain in LL(2): it
+suffices to peek at the next to token, and check that the second
+token is a stuck &lt; or / (this requires that the grammar of the
+element following the path cannot use stuck / or &lt; after
+(upper-case) identifiers).</p><p>The second reason is readability, because the <code>(<span style="color: #228b22; ">Int</span>&nbsp;&#X2192;
+&nbsp;<span style="color: #228b22; ">Int</span>)/to_string</code> form would be highly uncommon and would look
+particularly obscure.</p><p>If one wants to use tuples and arrows in path, they can just use a
+named version, as in the following:</p><p><code><span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Pair</span>&lt;<span style="color: #228b22; ">M1</span>,<span style="color: #228b22; ">M2</span>&gt;&nbsp;=&nbsp;(<span style="color: #228b22; ">M1</span>,<span style="color: #228b22; ">M2</span>)</code>
+<code><span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Arrow</span>&lt;<span style="color: #228b22; ">M1</span>,<span style="color: #228b22; ">M2</span>&gt;&nbsp;=&nbsp;<span style="color: #228b22; ">M1</span>&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">M2</span></code>
+<code><span style="color: #228b22; ">Pair</span>&lt;<span style="color: #228b22; ">Arrow</span>&lt;<span style="color: #228b22; ">Int</span>,<span style="color: #228b22; ">Int</span>&gt;,<span style="color: #228b22; ">Int</span>&gt;/to_string&nbsp;</code></p>
+<!--TOC paragraph id="sec5" Types-->
+<h4 id="sec5" class="paragraph">Types</h4><!--SEC END --><p>In L, there is no need to have a special grammar for types: because
+modules can hold at most one type, we can use them to represent the
+type they contain. So we have</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">type</span>&#X27E9; = &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9;
+</li></ul><p>As &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9; is a
+lengthy name, we use &#X27E8;<span style="font-style:italic">type</span>&#X27E9; everywhere and define
+&#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9; to be an alias
+for it. So note that in some contexts, &#X27E8;<span style="font-style:italic">type</span>&#X27E9; can denote a
+path to a module name that may not contain any type. 
+<BR><a id="src/parser/path.ml:5159"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Common</span></p><p><a id="src/parser/path.ml:5173"></a>
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Token.With_info</span></p><p></code></div>
+Module names and paths. 
+<BR><a id="src/parser/path.ml:5295"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;r_parse_type&nbsp;=&nbsp;<span style="color: #228b22; ">ref</span>&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">assert</span>&nbsp;<span style="color: #a020f0; ">false</span>)</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">args</span>&#X27E9; ::=
+<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">type</span>&#X27E9; (<sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">type</span>&#X27E9;)* <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;</span></span></span></span>
+</li></ul><p>Module args is when &#X27E8;<span style="font-style:italic">type</span>&#X27E9; can appear in paths. 
+<BR><a id="src/parser/path.ml:5613"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_module_args&nbsp;stream&nbsp;left&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;lt&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;lt&nbsp;<span style="color: #228b22; ">Kwd.</span>lt&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;type_list&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+parse_comma_separated_list&nbsp;stream&nbsp;!r_parse_type&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;gt&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;gt&nbsp;<span style="color: #228b22; ">Kwd.</span>gt&nbsp;~before_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;right&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>delimited_list&nbsp;lt&nbsp;type_list&nbsp;gt&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Custom</span>&nbsp;<span style="color: #8b2252; ">"modapply"</span>;&nbsp;<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[&nbsp;left;&nbsp;right&nbsp;];<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_terms&nbsp;left&nbsp;right&nbsp;}<BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; ::= <br>
+   |   &#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">id</span>&#X27E9; <br>
+   |   &#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">id</span>&#X27E9;&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">args</span>&#X27E9;
+</li></ul><p> 
+<BR><a id="src/parser/path.ml:6201"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_module_name&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;module_id&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect_id&nbsp;module_id;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;following&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>peek&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;modul&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>single&nbsp;module_id&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;following.separation_before&nbsp;=&nbsp;<span style="color: #228b22; ">Sep.Stuck</span><BR>&nbsp;&nbsp;
+&#X2227;&nbsp;following.token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>lt<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;parse_module_args&nbsp;stream&nbsp;modul<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;modul<BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">dir</span>&#X27E9; ::= (&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">/</span></span></span></span><sup>&#X21AE;</sup>)*
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9; ::= &#X27E8;<span style="font-style:italic">dir</span>&#X27E9;&#X27E8;<span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;
+</li></ul><p>Note: "/" can be seen as a low-priority path operator.</p><p><BR><a id="src/parser/path.ml:6761"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;parse_path_to_module_name&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;mn&nbsp;=&nbsp;parse_module_name&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;maybe_slash&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>peek&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;maybe_slash.token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>slash<BR>&nbsp;&nbsp;
+&#X2227;&nbsp;maybe_slash.separation_before&nbsp;=&nbsp;<span style="color: #228b22; ">Sep.Stuck</span><BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>junk&nbsp;stream;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+expect&nbsp;maybe_slash&nbsp;<span style="color: #228b22; ">Kwd.</span>slash&nbsp;~after_max:<span style="color: #228b22; ">Sep.Stuck</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rest&nbsp;=&nbsp;parse_path_to_module_name&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>infix_binary_op&nbsp;mn&nbsp;maybe_slash&nbsp;rest)<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;mn<BR></p><p></code></div>
+Attempts to detect if there is a path; when the path is over, call
+parsefun. It cannot be used to parse paths to module names: this
+wuold parse <code>module_name</code>s greedily, and then fail because a
+trailing "/" would be required. This explains why we have a
+separated <code>parse_path_to_module_name</code> function. 
+<BR><a id="src/parser/path.ml:7501"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;parse_path_to&nbsp;parsefun&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;module_id&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>peek&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;following&nbsp;=&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>peek_nth&nbsp;stream&nbsp;1)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_upper&nbsp;id&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;id&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Ident.</span>to_string&nbsp;id&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;c&nbsp;=&nbsp;<span style="color: #228b22; ">String.</span>get&nbsp;id&nbsp;0&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;code&nbsp;=&nbsp;<span style="color: #228b22; ">Char.</span>code&nbsp;c&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #228b22; ">Char.</span>code&nbsp;<code>'A'</code>)&nbsp;&#X2264;&nbsp;code&nbsp;&#X2227;&nbsp;code&nbsp;&#X2264;&nbsp;(<span style="color: #228b22; ">Char.</span>code&nbsp;<code>'Z'</code>)<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;is_upper_id&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Token.Ident</span>(id)&nbsp;<span style="color: #a020f0; ">when</span>&nbsp;is_upper&nbsp;id&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">true</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">false</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;is_upper_id&nbsp;module_id.token<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2227;&nbsp;following.separation_before&nbsp;=&nbsp;<span style="color: #228b22; ">Sep.Stuck</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2227;&nbsp;(following.token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>slash&nbsp;&#X2228;&nbsp;following.token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>lt)<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;dir&nbsp;=&nbsp;parse_module_name&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;slash&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+expect&nbsp;slash&nbsp;<span style="color: #228b22; ">Kwd.</span>slash&nbsp;~before_max:<span style="color: #228b22; ">Sep.Stuck</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Stuck</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rest&nbsp;=&nbsp;parse_path_to&nbsp;parsefun&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>infix_binary_op&nbsp;dir&nbsp;slash&nbsp;rest<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+parsefun&nbsp;stream<BR></p><p></code></div>
+Types and module names with types and type constrs. 
+<BR>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">type</span>&#X27E9; ::= &#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span>&#X27E9;
+</li></ul><p> 
+<BR><a id="src/parser/path.ml:8565"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Base_type</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>term<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;int_handler&nbsp;n&nbsp;_&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.Parser.</span>raise_compiler_error&nbsp;<span style="color: #8b2252; ">"Found&nbsp;an&nbsp;int&nbsp;while&nbsp;parsing&nbsp;a&nbsp;module&nbsp;name"</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;ident_handler&nbsp;_id&nbsp;stream&nbsp;=&nbsp;parse_path_to_module_name&nbsp;stream<BR>
+<span style="color: #0000ff; font-weight: bold;">end</span></p><p><a id="src/parser/path.ml:8785"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Type_tdop</span>&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Tdop.Make</span>(<span style="color: #228b22; ">Base_type</span>)</p><p><a id="src/parser/path.ml:8829"></a>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_type&nbsp;stream&nbsp;=&nbsp;<span style="color: #228b22; ">Type_tdop.</span>parse&nbsp;stream&nbsp;0</p><p><a id="src/parser/path.ml:8880"></a>
+r_parse_type&nbsp;:=&nbsp;parse_type</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">tuple</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span>&#X27E9; ::= <br>
+   |   <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup><sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span><br>
+   |   <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">type</span>&#X27E9; (<sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">type</span>&#X27E9;)* <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">type</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">tuple</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+prefix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><span style="font-style:italic"> */</span>
+</li></ul><p> 
+<BR><a id="src/parser/path.ml:9238"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_tuple_type&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(lpar,rpar,list_paths)&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+parse_tuple_generic&nbsp;stream&nbsp;parse_type&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>delimited_list&nbsp;lpar&nbsp;list_paths&nbsp;rpar<BR>
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">Type_tdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>lparen&nbsp;parse_tuple_type</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">type</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">type</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-&gt;</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">type</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+rightassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-&gt;</span></span></span></span><span style="font-style:italic">, priority 0x80 */</span>
+</li></ul><p>
+<BR><a id="src/parser/path.ml:9597"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #228b22; ">Type_tdop.</span>define_infix_right_associative<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Kwd.</span>arrow&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0x8000</span>)<BR>&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;tok&nbsp;~left&nbsp;~right&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">P.</span>infix_binary_op&nbsp;left&nbsp;tok&nbsp;right)<BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9; ::= &#X27E8;<span style="font-style:italic">type</span>&#X27E9;
+</li></ul><p>&#X27E8;<span style="font-style:italic">type</span>&#X27E9; should be used when what is parsed really denotes a
+type; when a module is needed (which may not contain a type), the
+&#X27E8;<span style="font-style:italic">path</span><span style="font-style:italic">_</span><span style="font-style:italic">to</span><span style="font-style:italic">_</span><span style="font-style:italic">module</span><span style="font-style:italic">_</span><span style="font-style:italic">name</span><span style="font-style:italic">_</span><span style="font-style:italic">allow</span><span style="font-style:italic">_</span><span style="font-style:italic">type</span><span style="font-style:italic">_</span><span style="font-style:italic">constr</span>&#X27E9; is more suited. 
+<BR><a id="src/parser/path.ml:10064"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_path_to_module_name_allow_type_constr&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">Type_tdop.</span>parse&nbsp;stream&nbsp;0<BR></code></div></p><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+
+   
+   <script src="/js/jquery.js"></script>
+   
+
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+   
+   <script type="text/javascript">
+   $('.my-email').html(function(){
+	var d = "t@l-la";
+	var e = "ma";
+	var a = "t";
+	var c = "ng.org";
+	var h = 'mailto:' + e + a + d + c;
+	$(this).parent('a').attr('href', h);
+	return e + a + d + c;
+   });
+   </script>
+
+  </body>
+</html>

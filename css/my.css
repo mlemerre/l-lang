@@ -1,5 +1,9 @@
 /*  */
-body { padding:60px }
+body { padding-top:60px }
+
+/* . TODO: Add some space above the
+headers too. */
+.down-shifted { padding-top: 45px; margin-top: -45px; }
 
 /*  */
 
@@ -132,6 +136,10 @@ a[class~="disabled"] { opacity: 0.5; }
   font-size: 80%;
   margin-right: 0.5em; }
 
+.social-share-item form {
+  display: inline
+}
+
 .social-share-link {
   /* crude button styles */
   text-decoration: none;
@@ -177,3 +185,5 @@ a[class~="disabled"] { opacity: 0.5; }
 
 .social-ico-flattr {
   background-image: url("https://flattr.com/_img/icons/flattr_logo_16.png"); }
+
+.hero-unit { border: solid 1px gray; }

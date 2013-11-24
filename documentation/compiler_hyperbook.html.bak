@@ -28,7 +28,7 @@
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
            </button>
-           <a class="brand" href="/">The L language</a>
+           <a class="brand" href="/"><i>The</i> L <i>language</i></a>
            <div class="nav-collapse collapse">
              <ul class="nav">
                
@@ -42,6 +42,10 @@
                  <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
                     data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
                  <ul class="dropdown-menu">
+                   <li class="nav-header">Introduction to L</li>
+                   
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
                    <li class="nav-header">Inside the compiler</li>
                    <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
                  </ul>
@@ -125,6 +129,15 @@
    <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
      <ul>
        <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/parser" /><label for="/documentation/compiler_hyperbook/parser">&#x25B7;</label> parser
+     <ul>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/common" /><label for="/documentation/compiler_hyperbook/parser/common">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/common.ml">common.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/definition" /><label for="/documentation/compiler_hyperbook/parser/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/definition.ml">definition.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/expression" /><label for="/documentation/compiler_hyperbook/parser/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/expression.ml">expression.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/path" /><label for="/documentation/compiler_hyperbook/parser/path">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/path.ml">path.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/parser" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.mli">tdop.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.ml">tdop.ml</a></li></ul> </li>
      </ul>
    </li>
    <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
@@ -255,9 +268,11 @@
  
      </div>
           
+
    
    <script src="/js/jquery.js"></script>
    
+
    <script src="/js/bootstrap.min.js"></script>
 
    
@@ -268,6 +283,19 @@
      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
      ga('create', 'UA-42249123-1', 'l-lang.org');
      ga('send', 'pageview');
+   </script>
+
+   
+   <script type="text/javascript">
+   $('.my-email').html(function(){
+	var d = "t@l-la";
+	var e = "ma";
+	var a = "t";
+	var c = "ng.org";
+	var h = 'mailto:' + e + a + d + c;
+	$(this).parent('a').attr('href', h);
+	return e + a + d + c;
+   });
    </script>
 
   </body>

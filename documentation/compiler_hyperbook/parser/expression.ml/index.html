@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>parser/expression.ml</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/"><i>The</i> L <i>language</i></a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Introduction to L</li>
+                   
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li class="nav-header">
+        <a href="/documentation/compiler_hyperbook">Compiler HyperBook</a></li>
+      <div class="css-treeview" >
+       <ul>
+   <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/compilation_passes" /><label for="/documentation/compiler_hyperbook/compilation_passes">&#x2013;</label> <a href="/documentation/compiler_hyperbook/compilation_passes.ml">compilation_passes.ml</a> </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/cps" /><label for="/documentation/compiler_hyperbook/cps">&#x25B7;</label> cps
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpsbase" /><label for="/documentation/compiler_hyperbook/cps/cpsbase">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase.mli">cpsbase.mli</a>
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsast" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsast">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsast.ml">cpsast.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpscheck.ml">cpscheck.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.mli">cpsdef.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsdef.ml">cpsdef.ml</a></li></ul> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsprint.ml">cpsprint.ml</a> </li>
+           <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps/cpsbase" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.mli">cpsvar.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar" /><label for="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsbase/cpsvar.ml">cpsvar.ml</a></li></ul> </li>
+         </ul>
+       </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsconvertclosures" /><label for="/documentation/compiler_hyperbook/cps/cpsconvertclosures">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsconvertclosures.ml">cpsconvertclosures.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpsfree" /><label for="/documentation/compiler_hyperbook/cps/cpsfree">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpsfree.ml">cpsfree.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/cps" id="/documentation/compiler_hyperbook/cps/cpstransform" /><label for="/documentation/compiler_hyperbook/cps/cpstransform">&#x25B7;</label> cpstransform
+         <ul>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/base" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/base">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/base.ml">base.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/definition" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/definition.ml">definition.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/expression" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/expression.ml">expression.ml</a> </li>
+           <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/cps/cpstransform/rules" /><label for="/documentation/compiler_hyperbook/cps/cpstransform/rules">&#x2013;</label> <a href="/documentation/compiler_hyperbook/cps/cpstransform/rules.ml">rules.ml</a> </li>
+         </ul>
+       </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/llvm" /><label for="/documentation/compiler_hyperbook/llvm">&#x25B7;</label> llvm
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox" checked="checked" name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/parser" /><label for="/documentation/compiler_hyperbook/parser">&#x25B7;</label> parser
+     <ul>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/common" /><label for="/documentation/compiler_hyperbook/parser/common">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/common.ml">common.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/definition" /><label for="/documentation/compiler_hyperbook/parser/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/definition.ml">definition.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/expression" /><label for="/documentation/compiler_hyperbook/parser/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/expression.ml">expression.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/path" /><label for="/documentation/compiler_hyperbook/parser/path">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/path.ml">path.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/parser" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.mli">tdop.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.ml">tdop.ml</a></li></ul> </li>
+     </ul>
+   </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
+     <ul>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/unique.mli">unique.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/unique" /><label for="/documentation/compiler_hyperbook/support/unique">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/unique.ml">unique.ml</a></li></ul> </li>
+     </ul>
+   </li>
+ </ul>
+
+      </div>
+    </ul>
+  </div>
+  <div class="span9">
+    <div class="post-title">
+      <h1>parser/expression.ml</h1>
+    </div>
+    
+<!--CUT STYLE article--><!--CUT DEF section 1 --><!--TOC section id="src/parser/expression.ml:0" Module Expression-->
+<h2 id="src/parser/expression.ml:0" class="section">Module Expression</h2><!--SEC END --><p>
+This module implements the TDOP-based parser of L expressions. 
+<BR><a id="src/parser/expression.ml:152"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Common</span></p><p><a id="src/parser/expression.ml:166"></a>
+<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Token.With_info</span></p><p><a id="src/parser/expression.ml:189"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">List</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Extensions.List</span></p><p><a id="src/parser/expression.ml:222"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">ExpSemanticActions</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">struct</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>expression<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;int_handler&nbsp;n&nbsp;stream&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>single&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)</p><p><a id="src/parser/expression.ml:419"></a>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;ident_handler&nbsp;id&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Path.</span>parse_path_to<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(<span style="color: #a020f0; ">fun</span>&nbsp;stream&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">P.</span>single&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+stream<BR>&nbsp;&nbsp;
+</p><p></code></div>
+Note: we could allow the possibility to use keywords as regular
+idents in some places, by having a general "ident" rule that
+allows keywords. But maybe this would not be very robust. 
+<BR><a id="src/parser/expression.ml:746"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">end</span></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9; ::=<br>
+   |   &#X27E8;<span style="font-style:italic">int</span>&#X27E9;<br>
+   |   &#X27E8;<span style="font-style:italic">dir</span>&#X27E9;&#X27E8;<span style="font-style:italic">id</span>&#X27E9;
+</li></ul><p> 
+<BR><a id="src/parser/expression.ml:864"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">ExpTdop</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Tdop.Make</span>(<span style="color: #228b22; ">ExpSemanticActions</span>)</p><p><a id="src/parser/expression.ml:914"></a>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_expression&nbsp;stream&nbsp;=&nbsp;<span style="color: #228b22; ">ExpTdop.</span>parse&nbsp;stream&nbsp;0</p><p></code></div>
+Operator relative precedence is inspired by the C grammar. 
+<BR><a id="src/parser/expression.ml:1035"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;binary_infix&nbsp;tok&nbsp;~left&nbsp;~right&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>infix_binary_op&nbsp;left&nbsp;tok&nbsp;right<BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">==</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">==</span></span></span></span><span style="font-style:italic">, priority 0x90 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">!=</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">!=</span></span></span></span><span style="font-style:italic">, priority 0x90 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;</span></span></span></span><span style="font-style:italic">, priority 0xa0 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;=</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&lt;=</span></span></span></span><span style="font-style:italic">, priority 0xa0 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;=</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;=</span></span></span></span><span style="font-style:italic">, priority 0xa0 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">&gt;</span></span></span></span><span style="font-style:italic">, priority 0xa0 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">+</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">+</span></span></span></span><span style="font-style:italic">, priority 0xc0 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-</span></span></span></span><span style="font-style:italic">, priority 0xc0 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">*</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">*</span></span></span></span><span style="font-style:italic">, priority 0xd0 */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">/</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>  &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">/</span></span></span></span><span style="font-style:italic">, priority 0xd0 */</span>
+</li></ul><p> 
+<BR><a id="src/parser/expression.ml:2343"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>eq&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0x9000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:2433"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>ne&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0x9000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:2523"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>lt&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xa000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:2613"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>le&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xa000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:2703"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>ge&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xa000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:2793"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>gt&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xa000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:2883"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>plus&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xc000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:2973"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>minus&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xc000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:3063"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>star&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xd000</span>)&nbsp;binary_infix</p><p><a id="src/parser/expression.ml:3153"></a>
+<span style="color: #228b22; ">ExpTdop.</span>define_infix_left_associative&nbsp;<span style="color: #228b22; ">Kwd.</span>slash&nbsp;(infix_when_normal&nbsp;<span style="font-family:monospace">0xd000</span>)&nbsp;binary_infix</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-</span></span></span></span><sup>&#X2423;</sup> &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+prefix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-</span></span></span></span><span style="font-style:italic"> */</span>
+</li></ul><p> 
+<BR><a id="src/parser/expression.ml:3363"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #228b22; ">ExpTdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>minus&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;stream&nbsp;&#X2192;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;minus&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;minus&nbsp;<span style="color: #228b22; ">Kwd.</span>minus&nbsp;~after_max:<span style="color: #228b22; ">Sep.Normal</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;exp&nbsp;=&nbsp;<span style="color: #228b22; ">ExpTdop.</span>parse&nbsp;stream&nbsp;<span style="font-family:monospace">0xf000</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Token</span>&nbsp;minus;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[exp];<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_tok_term&nbsp;minus&nbsp;exp&nbsp;})<BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">tuple</span><span style="font-style:italic">_</span><span style="font-style:italic">exp</span>&#X27E9; ::=<br>
+   |   <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup><sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span><br>
+   |   <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; (<sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;)* ) <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">tuple</span><span style="font-style:italic">_</span><span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+prefix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><span style="font-style:italic"> */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;&#X27E8;<span style="font-style:italic">tuple</span><span style="font-style:italic">_</span><span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><span style="font-style:italic">, priority 0xf0 */</span>
+</li></ul><p>Note that function calls bind very strongly, more than other
+operators. This allows to write f() + g(), instead of (f()) +
+(g()); this is more useful than having + that bind more strongly
+than function call because e.g. (1 + g)() has no meaning. 
+<BR><a id="src/parser/expression.ml:4297"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_tuple&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;lpar,rpar,list_exp&nbsp;=&nbsp;parse_tuple_generic&nbsp;stream&nbsp;parse_expression&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>delimited_list&nbsp;lpar&nbsp;list_exp&nbsp;rpar<BR>
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">ExpTdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>lparen&nbsp;parse_tuple;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">ExpTdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>lparen&nbsp;parse_tuple;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;infix_fun&nbsp;stream&nbsp;caller&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;args&nbsp;=&nbsp;parse_tuple&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Custom</span>&nbsp;<span style="color: #8b2252; ">"apply"</span>;&nbsp;<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[caller;args];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_terms&nbsp;caller&nbsp;args&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">ExpTdop.</span>define_infix&nbsp;<span style="color: #228b22; ">Kwd.</span>lparen&nbsp;(infix_when_stuck&nbsp;<span style="font-family:monospace">0xf000</span>)&nbsp;infix_fun</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">if</span></span></span></span> <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup>
+ &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">else</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+prefix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">if</span></span></span></span><span style="font-style:italic"> */</span>
+</li></ul><p>Note: for now we require parens around the condition of the if. We
+can remove this condition, but this requires that it is always ok
+to parse consecutive expressions. Currently, f  x  or f ( x ) is
+flagged as an error, making impossible to write things like if f 
+x + 1. The parser is a bit conservative here to help catch these
+mistakes, but we will probably relax it later. 
+<BR><a id="src/parser/expression.ml:5423"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_if&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;iftok&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #228b22; ">Kwd.</span>lparen<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+~before_max:<span style="color: #228b22; ">Sep.Stuck</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cond&nbsp;=&nbsp;parse_expression&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #228b22; ">Kwd.</span>rparen<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+~before_max:<span style="color: #228b22; ">Sep.Strong</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;then_&nbsp;=&nbsp;parse_expression&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #228b22; ">Kwd.</span>else_&nbsp;~before_max:<span style="color: #228b22; ">Sep.Strong</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>&nbsp;;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;else_&nbsp;=&nbsp;parse_expression&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Token</span>&nbsp;iftok;&nbsp;<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[cond;then_;else_];<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_tok_term&nbsp;iftok&nbsp;else_&nbsp;}<BR>
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">ExpTdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>if_&nbsp;parse_if</p><p></code></div>
+The pattern language is actually a sub-language of the language of
+expressions. Parsing patterns as expressions allows to parse e.g.
+function definitions without backtracking. This requires to return
+the same thing for expressions and patterns, i.e. prevent having a
+complete AST in a single pass. This is one of the reason why we use
+<code><span style="color: #228b22; ">Parsetree</span></code> as an intermediate format. 
+<BR><a id="src/parser/expression.ml:6445"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_pattern&nbsp;=&nbsp;parse_expression</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">let</span><span style="font-style:italic">_</span><span style="font-style:italic">binding</span>&#X27E9; ::= &#X27E8;<span style="font-style:italic">pattern</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">=</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">expression</span>&#X27E9;
+</li></ul><p> 
+<BR><a id="src/parser/expression.ml:6654"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_let_binding&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;pattern&nbsp;=&nbsp;parse_pattern&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;eq_tok&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;eq_tok&nbsp;<span style="color: #228b22; ">Kwd.</span>equals&nbsp;~before_max:<span style="color: #228b22; ">Sep.Normal</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;exp&nbsp;=&nbsp;parse_expression&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  TODO: For and: return
+and(=(patt1,exp1),and(=(patt2,exp2),=(patt3,exp3)))  &#X2217;)</span><BR>&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  TODO: Should be in parse_let_bindings?  &#X2217;)</span><BR>&nbsp;&nbsp;
+(<span style="color: #a020f0; ">if</span>&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>peek&nbsp;stream).token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>and_<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"parser:&nbsp;and_&nbsp;not&nbsp;implemented"</span>);<BR>&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  P.infix_binary_op pattern eq_tok exp  &#X2217;)</span><BR>&nbsp;&nbsp;
+(pattern,exp)<BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">statement</span>&#X27E9; ::=<br>
+   |   <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">let</span></span></span></span><sub>&#X2423;</sub><sup>&#X2423;</sup> &#X27E8;<span style="font-style:italic">let</span><span style="font-style:italic">_</span><span style="font-style:italic">binding</span>&#X27E9;<br>
+   |   &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">statements</span>&#X27E9; ::= &#X27E8;<span style="font-style:italic">statement</span>&#X27E9; (<sub>\<span style="font-style:italic">n</span></sub>&#X27E8;<span style="font-style:italic">statement</span>&#X27E9;)*
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">pattern</span><span style="font-style:italic">_</span><span style="font-style:italic">matching</span>&#X27E9; ::= (&#X27E8;<span style="font-style:italic">pattern</span>&#X27E9;
+ <sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">-&gt;</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">statements</span>&#X27E9;)+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">lambda</span>&#X27E9; ::= <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">{</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">pattern</span><span style="font-style:italic">_</span><span style="font-style:italic">matching</span>&#X27E9; <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">}</span></span></span></span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">statements</span><span style="font-style:italic">_</span><span style="font-style:italic">block</span>&#X27E9; ::= <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">{</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">statements</span>&#X27E9; <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">}</span></span></span></span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">block</span>&#X27E9; ::=<br>
+   |   &#X27E8;<span style="font-style:italic">lambda</span>&#X27E9;<br>
+   |   &#X27E8;<span style="font-style:italic">statements</span><span style="font-style:italic">_</span><span style="font-style:italic">block</span>&#X27E9; </li></ul><p>This part is the trickiest to parse without using backtracking, and
+relies on the fact that parsing expressions and patterns use the
+same function. The idea is to call <code>parse_expression</code>; if it is
+followed by a <code><span style="color: #8b2252; ">"-&gt;"</span></code>, then it was a pattern; else it is an
+expression. A third case may arise where we parse a statement which
+is not an expression (currently, a <code><span style="color: #0000ff; font-weight: bold;">let</span></code>), but these are quickly
+detected because they use a special keyword as prefix.</p><p>This scheme could be easily extended to allow multiple arrows, as
+in  x -&gt; y -&gt; x + y , if this syntax extension is considered
+useful. 
+<BR>
+This function parses all the statements, up to (and including) the
+following pattern in the match list, or up to the } if there is no
+following pattern. 
+<BR><a id="src/parser/expression.ml:8685"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;parse_statements_and_maybe_next_pattern&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;continue_with&nbsp;stmt&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+expect_strong_separation&nbsp;stream;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(stmts,&nbsp;maybe_patt)&nbsp;=&nbsp;parse_statements_and_maybe_next_pattern&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+(stmt::stmts,&nbsp;maybe_patt)<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>peek&nbsp;stream).token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>let_<BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">begin</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;let_tok&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+expect&nbsp;let_tok&nbsp;<span style="color: #228b22; ">Kwd.</span>let_&nbsp;~after_min:<span style="color: #228b22; ">Sep.Normal</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Normal</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(patt,exp)&nbsp;=&nbsp;parse_let_binding&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;stmt&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Token</span>(let_tok);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[patt;exp];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_tok_term&nbsp;let_tok&nbsp;exp&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+continue_with&nbsp;stmt<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;pattern_or_expression&nbsp;=&nbsp;parse_expression&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;after&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>peek&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">if</span>&nbsp;after.token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>rbrace<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;<span style="color: #b22222">(&#X2217;  Last statement.  &#X2217;)</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+([pattern_or_expression],&nbsp;<span style="color: #228b22; ">None</span>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;<span style="color: #a020f0; ">if</span>&nbsp;after.token&nbsp;=&nbsp;<span style="color: #228b22; ">Kwd.</span>arrow<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">then</span>&nbsp;(expect&nbsp;after&nbsp;<span style="color: #228b22; ">Kwd.</span>arrow&nbsp;~before_max:<span style="color: #228b22; ">Sep.Normal</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Token.Stream.</span>junk&nbsp;stream;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+([&nbsp;],&nbsp;<span style="color: #228b22; ">Some</span>&nbsp;(pattern_or_expression,after)))<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">else</span>&nbsp;continue_with&nbsp;pattern_or_expression<BR></p><p></code></div>
+Parse a pattern matching once we know it is a pattern matching. 
+<BR><a id="src/parser/expression.ml:9858"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_rest_pattern_matching&nbsp;stream&nbsp;first_patt&nbsp;first_arrow&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;loop&nbsp;patt&nbsp;arrow&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;(stmts,&nbsp;maybe_patt)&nbsp;=&nbsp;parse_statements_and_maybe_next_pattern&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;stmts&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Custom</span>(<span style="color: #8b2252; ">"statements"</span>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;stmts;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_terms&nbsp;(<span style="color: #228b22; ">List.</span>hd&nbsp;stmts)&nbsp;(<span style="color: #228b22; ">List.</span>last&nbsp;stmts)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;patt_stmts&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>infix_binary_op&nbsp;patt&nbsp;arrow&nbsp;stmts&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;maybe_patt&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;[patt_stmts]<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(patt,arrow)&nbsp;&#X2192;&nbsp;patt_stmts::(loop&nbsp;patt&nbsp;arrow)<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;patt_stmts_list&nbsp;=&nbsp;loop&nbsp;first_patt&nbsp;first_arrow&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+patt_stmts_list<BR></p><p></code></div>
+Parse a lambda, between its { }. In this case, we know in advance that
+we expect a match list; this is use in the parse rule of
+<code><span style="color: #a020f0; ">match</span></code>. 
+<BR><a id="src/parser/expression.ml:10603"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_lambda&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;lbra&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;lbra&nbsp;<span style="color: #228b22; ">Kwd.</span>lbrace&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;first_pattern&nbsp;=&nbsp;parse_pattern&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;first_arrow&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;first_arrow&nbsp;<span style="color: #228b22; ">Kwd.</span>arrow;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;pattern_matching&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+parse_rest_pattern_matching&nbsp;stream&nbsp;first_pattern&nbsp;first_arrow&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rbra&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;rbra&nbsp;<span style="color: #228b22; ">Kwd.</span>rbrace&nbsp;~before_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>delimited_list&nbsp;lbra&nbsp;pattern_matching&nbsp;rbra<BR></p><p></code></div>
+When we encounter a {, we do not know whether it only introduces a
+new statement block, or if it is a lambda. This function parses in both
+cases. 
+<BR><a id="src/parser/expression.ml:11236"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_block&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;lbra&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;lbra&nbsp;<span style="color: #228b22; ">Kwd.</span>lbrace;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;stmts,&nbsp;maybe_patt&nbsp;=&nbsp;parse_statements_and_maybe_next_pattern&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #a020f0; ">match</span>&nbsp;stmts,&nbsp;maybe_patt&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Pattern matching.  &#X2217;)</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;[&nbsp;],&nbsp;<span style="color: #228b22; ">Some</span>(patt,arrow)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;pattern_matching&nbsp;=&nbsp;parse_rest_pattern_matching&nbsp;stream&nbsp;patt&nbsp;arrow&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rbra&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+expect&nbsp;rbra&nbsp;<span style="color: #228b22; ">Kwd.</span>rbrace;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>delimited_list&nbsp;lbra&nbsp;pattern_matching&nbsp;rbra<BR>&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Empty block:   &#X2217;)</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;[&nbsp;],&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">Log.Parser.</span>raise_compiler_error&nbsp;~loc:lbra.location<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #8b2252; ">"Error:&nbsp;nothing&nbsp;between&nbsp;{&nbsp;and&nbsp;}"</span><BR>&nbsp;&nbsp;
+<span style="color: #b22222">(&#X2217;  Statements.  &#X2217;)</span><BR>&nbsp;&nbsp;
+&#X2223;&nbsp;stmts,&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rbra&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+expect&nbsp;rbra&nbsp;<span style="color: #228b22; ">Kwd.</span>rbrace;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Custom</span>&nbsp;<span style="color: #8b2252; ">"statements"</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;stmts;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_terms&nbsp;(<span style="color: #228b22; ">List.</span>hd&nbsp;stmts)&nbsp;(<span style="color: #228b22; ">List.</span>last&nbsp;stmts)&nbsp;}<BR>&nbsp;&nbsp;
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">Log.Parser.</span>raise_compiler_error&nbsp;~loc:lbra.location<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #8b2252; ">"Error:&nbsp;a&nbsp;pattern&nbsp;matching&nbsp;must&nbsp;begin&nbsp;by&nbsp;\"&lt;pattern&gt;&nbsp;-&gt;\"&nbsp;"</span><BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">block</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+prefix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">{</span></span></span></span><span style="font-style:italic"> */</span>
+</li><li class="li-itemize">&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;&#X27E8;<span style="font-style:italic">block</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+leftassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">{</span></span></span></span><span style="font-style:italic">, priority 0xf0 */</span>
+</li></ul><p> 
+<BR><a id="src/parser/expression.ml:12336"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #228b22; ">ExpTdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>lbrace&nbsp;parse_block</p><p><a id="src/parser/expression.ml:12383"></a>
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;infix_fun&nbsp;stream&nbsp;left&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;right&nbsp;=&nbsp;parse_block&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Custom</span>&nbsp;<span style="color: #8b2252; ">"apply"</span>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[left;right];<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_terms&nbsp;left&nbsp;right&nbsp;}<BR>
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">ExpTdop.</span>define_infix&nbsp;<span style="color: #228b22; ">Kwd.</span>lbrace&nbsp;(infix_when_stuck&nbsp;<span style="font-family:monospace">0xf000</span>)&nbsp;infix_fun<BR></p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">match</span></span></span></span> <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">exp</span>&#X27E9; <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span> &#X27E8;<span style="font-style:italic">lambda</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+prefix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">match</span></span></span></span><span style="font-style:italic"> */</span>
+</li></ul><p>As for if, we could remove the () around the expression beeing
+matched. 
+<BR><a id="src/parser/expression.ml:12871"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_match&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;match_tok&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #228b22; ">Kwd.</span>lparen<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+~before_max:<span style="color: #228b22; ">Sep.Stuck</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cond&nbsp;=&nbsp;parse_expression&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #228b22; ">Kwd.</span>rparen&nbsp;~before_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;pattern_matching_block&nbsp;=&nbsp;parse_lambda&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Token</span>&nbsp;match_tok;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[&nbsp;cond;&nbsp;pattern_matching_block&nbsp;];<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_tok_term&nbsp;match_tok&nbsp;pattern_matching_block&nbsp;}<BR>
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">ExpTdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>match_&nbsp;parse_match</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= <span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">cast</span></span></span></span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">(</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;
+<sup>&#X2423;</sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">,</span></span></span></span><sup>\<span style="font-style:italic">n</span></sup> &#X27E8;<span style="font-style:italic">type</span>&#X27E9; <sup>\<span style="font-style:italic">n</span></sup><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">)</span></span></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+prefix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">cast</span></span></span></span><span style="font-style:italic"> */</span>
+</li></ul><p>This construction, and its syntax, are still alpha. 
+<BR><a id="src/parser/expression.ml:13680"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_cast&nbsp;stream&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;cast_tok&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+check&nbsp;cast_tok&nbsp;<span style="color: #228b22; ">Kwd.</span>cast;<BR>&nbsp;&nbsp;
+expect&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #228b22; ">Kwd.</span>lparen<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+~before_max:<span style="color: #228b22; ">Sep.Stuck</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;exp&nbsp;=&nbsp;parse_expression&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #228b22; ">Kwd.</span>comma&nbsp;~after_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;t&nbsp;=&nbsp;<span style="color: #228b22; ">Path.</span>parse_type&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;rparen&nbsp;=&nbsp;(<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;rparen&nbsp;<span style="color: #228b22; ">Kwd.</span>rparen&nbsp;~before_max:<span style="color: #228b22; ">Sep.Strong</span>;<BR>&nbsp;&nbsp;
+{&nbsp;<span style="color: #228b22; ">P.</span>func&nbsp;=&nbsp;<span style="color: #228b22; ">P.Token</span>&nbsp;cast_tok;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>arguments&nbsp;=&nbsp;[&nbsp;exp;&nbsp;t];<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>location&nbsp;=&nbsp;<span style="color: #228b22; ">P.</span>between_toks&nbsp;cast_tok&nbsp;rparen&nbsp;}<BR>
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">ExpTdop.</span>define_prefix&nbsp;<span style="color: #228b22; ">Kwd.</span>cast&nbsp;parse_cast</p><p></code></div>
+</p><ul class="itemize"><li class="li-itemize">
+&#X27E8;<span style="font-style:italic">exp</span>&#X27E9;  <span style="font-size:small">+</span>= &#X27E8;<span style="font-style:italic">exp</span>&#X27E9;<span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">::</span></span></span></span>&#X27E8;<span style="font-style:italic">type</span>&#X27E9; &nbsp;&nbsp;&nbsp;&nbsp; <span style="font-style:italic">/*
+noassoc infix token </span><span style="color:blue"><span style="font-size:large"><span style="font-weight:bold"><span style="font-family:monospace">{</span></span></span></span><span style="font-style:italic">, priority 0xe0 */</span>
+</li></ul><p>This construction, and its syntax, are still alpha. 
+<BR><a id="src/parser/expression.ml:14429"></a>
+<div class="ocamlweb-src"><code>
+
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;parse_annotation&nbsp;stream&nbsp;left&nbsp;=<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;dcolon&nbsp;=&nbsp;<span style="color: #228b22; ">Token.Stream.</span>next&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+expect&nbsp;dcolon&nbsp;<span style="color: #228b22; ">Kwd.</span>doublecolon&nbsp;~before_max:<span style="color: #228b22; ">Sep.Stuck</span>&nbsp;~after_max:<span style="color: #228b22; ">Sep.Stuck</span>;<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;typ&nbsp;=&nbsp;<span style="color: #228b22; ">Path.</span>parse_type&nbsp;stream&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;
+<span style="color: #228b22; ">P.</span>infix_binary_op&nbsp;left&nbsp;dcolon&nbsp;typ<BR>
+<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;<span style="color: #228b22; ">ExpTdop.</span>define_infix&nbsp;<span style="color: #228b22; ">Kwd.</span>doublecolon&nbsp;(<span style="color: #a020f0; ">function</span><BR>
+&#X2223;&nbsp;{<span style="color: #228b22; ">Token.With_info.</span>separation_before&nbsp;=&nbsp;<span style="color: #228b22; ">Sep.Stuck</span>}&nbsp;&#X2192;&nbsp;<span style="font-family:monospace">0xe000</span><BR>
+&#X2223;&nbsp;_&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"invalid&nbsp;use&nbsp;of&nbsp;annotation"</span>)&nbsp;parse_annotation<BR><BR></code></div></p><!--CUT END -->
+
+
+
+    <hr />
+  </div>
+</div>
+ 
+     </div>
+          
+
+   
+   <script src="/js/jquery.js"></script>
+   
+
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+   
+   <script type="text/javascript">
+   $('.my-email').html(function(){
+	var d = "t@l-la";
+	var e = "ma";
+	var a = "t";
+	var c = "ng.org";
+	var h = 'mailto:' + e + a + d + c;
+	$(this).parent('a').attr('href', h);
+	return e + a + d + c;
+   });
+   </script>
+
+  </body>
+</html>

@@ -28,7 +28,7 @@
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
            </button>
-           <a class="brand" href="/">The L language</a>
+           <a class="brand" href="/"><i>The</i> L <i>language</i></a>
            <div class="nav-collapse collapse">
              <ul class="nav">
                
@@ -42,6 +42,10 @@
                  <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
                     data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
                  <ul class="dropdown-menu">
+                   <li class="nav-header">Introduction to L</li>
+                   
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
                    <li class="nav-header">Inside the compiler</li>
                    <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
                  </ul>
@@ -127,6 +131,15 @@
        <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/llvm" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.mli">cpsllvm.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/llvm/cpsllvm" /><label for="/documentation/compiler_hyperbook/llvm/cpsllvm">&#x2013;</label> <a href="/documentation/compiler_hyperbook/llvm/cpsllvm.ml">cpsllvm.ml</a></li></ul> </li>
      </ul>
    </li>
+   <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/parser" /><label for="/documentation/compiler_hyperbook/parser">&#x25B7;</label> parser
+     <ul>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/common" /><label for="/documentation/compiler_hyperbook/parser/common">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/common.ml">common.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/definition" /><label for="/documentation/compiler_hyperbook/parser/definition">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/definition.ml">definition.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/expression" /><label for="/documentation/compiler_hyperbook/parser/expression">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/expression.ml">expression.ml</a> </li>
+       <li> <input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/path" /><label for="/documentation/compiler_hyperbook/parser/path">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/path.ml">path.ml</a> </li>
+       <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/parser" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.mli">tdop.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/parser/tdop" /><label for="/documentation/compiler_hyperbook/parser/tdop">&#x2013;</label> <a href="/documentation/compiler_hyperbook/parser/tdop.ml">tdop.ml</a></li></ul> </li>
+     </ul>
+   </li>
    <li> <input type="checkbox"  name="/documentation/compiler_hyperbook" id="/documentation/compiler_hyperbook/support" /><label for="/documentation/compiler_hyperbook/support">&#x25B7;</label> support
      <ul>
        <li> <input type="checkbox"  name="/documentation/compiler_hyperbook/support" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x25B7;</label> <a href="/documentation/compiler_hyperbook/support/union_find.mli">union_find.mli</a><ul><li><input type="checkbox" disabled="disabled" id="/documentation/compiler_hyperbook/support/union_find" /><label for="/documentation/compiler_hyperbook/support/union_find">&#x2013;</label> <a href="/documentation/compiler_hyperbook/support/union_find.ml">union_find.ml</a></li></ul> </li>
@@ -143,113 +156,113 @@
       <h1>cps/cpsbase/cpsast.ml</h1>
     </div>
     
-<!--CUT DEF section 1 --><!--TOC section Module Cpsast-->
-<H2 CLASS="section"><!--SEC ANCHOR -->Module Cpsast</H2><!--SEC END --><P>
-<B>1.</B>&nbsp;
-<A NAME="src/cps/cpsbase/cpsast.ml:0"></A><A NAME="src/cps/cpsbase/cpsast.ml:42"></A>This file presents the terms, i.e. the abstract syntax, of the CPS
+<!--CUT STYLE article--><!--CUT DEF section 1 --><!--TOC section id="sec1" Module Cpsast-->
+<h2 id="sec1" class="section">Module Cpsast</h2><!--SEC END --><p>
+<span style="font-weight:bold">1.</span>&nbsp;
+<a id="src/cps/cpsbase/cpsast.ml:42"></a>This file presents the terms, i.e. the abstract syntax, of the CPS
 intermediate language. These definitions originates from the
-"compiling with continuations, continued" paper, by Andrew Kennedy.</P><P>CPS (for continuation passing style) puts constraints on functional
-programs so that a function <I>f</I> never returns; instead it is passed
-a continuation <I>k</I>, which is a function that represents what is
-executed on <I>f</I> has finished its execution. So instead of returning
-a value <I>x</I>, <I>f</I> "returns" by calling <I>k</I>(<I>x</I>). CPS style makes
+"compiling with continuations, continued" paper, by Andrew Kennedy.</p><p>CPS (for continuation passing style) puts constraints on functional
+programs so that a function <span style="font-style:italic">f</span> never returns; instead it is passed
+a continuation <span style="font-style:italic">k</span>, which is a function that represents what is
+executed on <span style="font-style:italic">f</span> has finished its execution. So instead of returning
+a value <span style="font-style:italic">x</span>, <span style="font-style:italic">f</span> "returns" by calling <span style="font-style:italic">k</span>(<span style="font-style:italic">x</span>). CPS style makes
 returning from functions, and more generally control flow, explicit,
 at the expense of more verbosity (amounting to naming all
-intermediary results).</P><P>This file presents a particular representation of CPS expressions
+intermediary results).</p><p>This file presents a particular representation of CPS expressions
 that separates continuations, calling a continuations, variables
 holding continations from (respectively) normal functions, normal
 function calls, and normal variables. This distinction allows to
 compile the CPS program using a stack (see the <code><span style="color: #228b22; ">Cpsllvm</span></code> module for
-an implementation of that).</P><P>The representation also forces all values (including constants such
+an implementation of that).</p><p>The representation also forces all values (including constants such
 as integers) to be held in variables, which simplify later
 transformation algorithms. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:1277"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:1277"></a>
 <div class="ocamlweb-src"><code>
 
-<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">S</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR></code></div><B>2.</B>&nbsp;
-<A NAME="src/cps/cpsbase/cpsast.ml:1303"></A>The representation use separate types for variables (to use
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">S</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR></code></div><span style="font-weight:bold">2.</span>&nbsp;
+<a id="src/cps/cpsbase/cpsast.ml:1303"></a>The representation use separate types for variables (to use
 where the variable is bound) from occurrence of a variable (to use
 where a variable is used). Variables and occurrences are globally
 unique, which avoids any need for alpha conversion. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:1565"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:1565"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var<BR>&nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur<BR>&nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;cont_var<BR>&nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;cont_occur<BR></code></div><B>3.</B>&nbsp;
-<A NAME="src/cps/cpsbase/cpsast.ml:1628"></A>We distinguish the type <code>expression_</code>, that holds the sum type
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;cont_occur<BR></code></div><span style="font-weight:bold">3.</span>&nbsp;
+<a id="src/cps/cpsbase/cpsast.ml:1628"></a>We distinguish the type <code>expression_</code>, that holds the sum type
 representing the various expressions, and the type <code>expression</code>, that also
 holds other information (such as the uplink to the enclosing
-expression).</P><P>The representation of CPS expressions separates continuations from
-usual functions. The various expressions are:</P><UL CLASS="itemize"><LI CLASS="li-itemize">
-<B><I>let</I></B> <I>x</I> = <I>primitive</I>; <I>body</I> creates a binding to a primitive
+expression).</p><p>The representation of CPS expressions separates continuations from
+usual functions. The various expressions are:</p><ul class="itemize"><li class="li-itemize">
+<span style="font-weight:bold"><span style="font-style:italic">let</span></span> <span style="font-style:italic">x</span> = <span style="font-style:italic">primitive</span>; <span style="font-style:italic">body</span> creates a binding to a primitive
 value, or to the result of a primitive operation (to be used in
-body)</LI><LI CLASS="li-itemize"><B><I>let</I></B> <I>k</I>(<I>x</I>) = <I>t</I>; <I>body</I>  creates a binding to a
-continuation <I>k</I>. <I>x</I> is bound in <I>t</I>, but not in <I>body</I>. The <I>k</I>
-continuation variable is bound both in <I>body</I> and <I>t</I> (this allows
-loops).</LI><LI CLASS="li-itemize"><I>k</I>(<I>x</I>) calls the <EM>continuation</EM> <I>k</I> with <I>x</I>. It can be
-seen as a "jump with argument <I>x</I>"</LI><LI CLASS="li-itemize"><I>v</I>(<I>k</I>,<I>xl</I>) calls the <EM>function</EM> <I>v</I>, <I>k</I> being the
-return continuation, and <I>xl</I> a list of parameters. <I>v</I> does not
-return; instead it will call <I>k</I> with the "return values" as
-parameters.</LI><LI CLASS="li-itemize"><B><I>case</I></B>(<I>x</I>){ i_1 &#X2192;k_1 &#X2026;<I>i</I><SUB><I>n</I></SUB> &#X2192; <I>k</I><SUB><I>n</I></SUB> <SUB>&#X2192;</SUB><I>kdefault</I> } extracts the tag <I>i</I> and value <I>v</I> from <I>x</I>; then
-compares <I>i</I> to all the <I>i</I><SUB>1</SUB> &#X2026; <I>i</I><SUB><I>n</I></SUB>, and if equal calls the
-corresponding continuation <I>k</I> with argument <I>v</I>. If no suitable
-<I>i</I> is found, a default must have been provided, and <I>kdefault</I> is
-called with argument <I>x</I>.
+body)</li><li class="li-itemize"><span style="font-weight:bold"><span style="font-style:italic">let</span></span> <span style="font-style:italic">k</span>(<span style="font-style:italic">x</span>) = <span style="font-style:italic">t</span>; <span style="font-style:italic">body</span>  creates a binding to a
+continuation <span style="font-style:italic">k</span>. <span style="font-style:italic">x</span> is bound in <span style="font-style:italic">t</span>, but not in <span style="font-style:italic">body</span>. The <span style="font-style:italic">k</span>
+continuation variable is bound both in <span style="font-style:italic">body</span> and <span style="font-style:italic">t</span> (this allows
+loops).</li><li class="li-itemize"><span style="font-style:italic">k</span>(<span style="font-style:italic">x</span>) calls the <em>continuation</em> <span style="font-style:italic">k</span> with <span style="font-style:italic">x</span>. It can be
+seen as a "jump with argument <span style="font-style:italic">x</span>"</li><li class="li-itemize"><span style="font-style:italic">v</span>(<span style="font-style:italic">k</span>,<span style="font-style:italic">xl</span>) calls the <em>function</em> <span style="font-style:italic">v</span>, <span style="font-style:italic">k</span> being the
+return continuation, and <span style="font-style:italic">xl</span> a list of parameters. <span style="font-style:italic">v</span> does not
+return; instead it will call <span style="font-style:italic">k</span> with the "return values" as
+parameters.</li><li class="li-itemize"><span style="font-weight:bold"><span style="font-style:italic">case</span></span>(<span style="font-style:italic">x</span>){ i_1 &#X2192;k_1 &#X2026;<span style="font-style:italic">i</span><sub><span style="font-style:italic">n</span></sub> &#X2192; <span style="font-style:italic">k</span><sub><span style="font-style:italic">n</span></sub> <sub>&#X2192;</sub><span style="font-style:italic">kdefault</span> } extracts the tag <span style="font-style:italic">i</span> and value <span style="font-style:italic">v</span> from <span style="font-style:italic">x</span>; then
+compares <span style="font-style:italic">i</span> to all the <span style="font-style:italic">i</span><sub>1</sub> &#X2026; <span style="font-style:italic">i</span><sub><span style="font-style:italic">n</span></sub>, and if equal calls the
+corresponding continuation <span style="font-style:italic">k</span> with argument <span style="font-style:italic">v</span>. If no suitable
+<span style="font-style:italic">i</span> is found, a default must have been provided, and <span style="font-style:italic">kdefault</span> is
+called with argument <span style="font-style:italic">x</span>.
 Note: <code><span style="color: #228b22; ">Apply_cont</span></code> can be seen as a special case of <code><span style="color: #228b22; ">Case</span></code> with a
-default argument and no pattern rule; and could be removed.</LI><LI CLASS="li-itemize"><I>halt</I>(<I>x</I>) is used only as a base case, to stop induction. Its
+default argument and no pattern rule; and could be removed.</li><li class="li-itemize"><span style="font-style:italic">halt</span>(<span style="font-style:italic">x</span>) is used only as a base case, to stop induction. Its
 semantics is that it returns the value <code>x</code>, which is the result of
 the computation, to the caller.
-</LI></UL><P> 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:3400"></A>
+</li></ul><p> 
+<BR><a id="src/cps/cpsbase/cpsast.ml:3400"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;expression</P><P><A NAME="src/cps/cpsbase/cpsast.ml:3420"></A>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;expression</p><p><a id="src/cps/cpsbase/cpsast.ml:3420"></a>&nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;expression_&nbsp;=<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;×&nbsp;primitive&nbsp;×&nbsp;expression<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;cont_var&nbsp;×&nbsp;var&nbsp;×&nbsp;expression&nbsp;×&nbsp;expression<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Apply_cont</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;cont_occur&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Apply</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;function_type&nbsp;×&nbsp;occur&nbsp;×&nbsp;cont_occur&nbsp;×&nbsp;occur&nbsp;<span style="color: #228b22; ">list</span><BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Case</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur&nbsp;×&nbsp;cont_occur&nbsp;case_map&nbsp;×&nbsp;cont_occur&nbsp;<span style="color: #228b22; ">option</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Halt</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur</P><P></code></div>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Halt</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur</p><p></code></div>&nbsp;&nbsp;
 A structure mapping cases (represented by an int) to something
 representing the body corresponding to the case. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:3846"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:3846"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;&#X3B1;&nbsp;case_map</P><P></code></div>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;&#X3B1;&nbsp;case_map</p><p></code></div>&nbsp;&nbsp;
 Primitive are values, or operations that return a value. The
 various operations do not take values as parameters (even
 constants such as int), only variables: the representation forces
 all values to be bound in a variable. This allows a uniform
-treatment that helps transformation passes.</P><P>The various operations are:</P><UL CLASS="itemize"><LI CLASS="li-itemize"><I>x</I>[<I>i</I>] get the <I>i</I>th element out of <I>x</I>. <I>x</I> is a variable
-bound to a tuple.</LI><LI CLASS="li-itemize"><I>x</I><SUB>1</SUB> <I>op</I> <I>x</I><SUB>2</SUB> applies a binary operation to two arguments.</LI><LI CLASS="li-itemize"><I>x</I><SUB><I>i</I></SUB> <I>pred</I> <I>x</I><SUB>2</SUB> applies a binary predicate to two arguments.</LI></UL><P>Note that there are no primitive that would allow to write <B><I>let</I></B> <I>x</I> = <I>y</I>, where <I>y</I> is a variable; thus there cannot be two
+treatment that helps transformation passes.</p><p>The various operations are:</p><ul class="itemize"><li class="li-itemize"><span style="font-style:italic">x</span>[<span style="font-style:italic">i</span>] get the <span style="font-style:italic">i</span>th element out of <span style="font-style:italic">x</span>. <span style="font-style:italic">x</span> is a variable
+bound to a tuple.</li><li class="li-itemize"><span style="font-style:italic">x</span><sub>1</sub> <span style="font-style:italic">op</span> <span style="font-style:italic">x</span><sub>2</sub> applies a binary operation to two arguments.</li><li class="li-itemize"><span style="font-style:italic">x</span><sub><span style="font-style:italic">i</span></sub> <span style="font-style:italic">pred</span> <span style="font-style:italic">x</span><sub>2</sub> applies a binary predicate to two arguments.</li></ul><p>Note that there are no primitive that would allow to write <span style="font-weight:bold"><span style="font-style:italic">let</span></span> <span style="font-style:italic">x</span> = <span style="font-style:italic">y</span>, where <span style="font-style:italic">y</span> is a variable; thus there cannot be two
 variables that directly share the same value. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:4684"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:4684"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;primitive&nbsp;=<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Value</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;value<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Projection</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_operation</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Constant.Ibop.</span>t&nbsp;×&nbsp;occur&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_predicate</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Constant.Ibpred.</span>t&nbsp;×&nbsp;occur&nbsp;×&nbsp;occur</P><P></code></div>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_predicate</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">Constant.Ibpred.</span>t&nbsp;×&nbsp;occur&nbsp;×&nbsp;occur</p><p></code></div>&nbsp;&nbsp;
 Values are completely evaluated objects. They are separated from
 primitives only because they can be evaluated statically and put
-in a read-only data section.</P><UL CLASS="itemize"><LI CLASS="li-itemize"><code><span style="color: #228b22; ">Constant</span></code> is self-explinatory;</LI><LI CLASS="li-itemize"><I>t</I> = (<I>x</I><SUB>0</SUB>,...,<I>x</I><SUB><I>n</I>&#X2212;1</SUB>) corresponds to a contiguous zone of
-memory; each field <I>i</I> is accessible using <I>t</I>[<I>i</I>] (<code><span style="color: #228b22; ">Proj</span></code>). The
+in a read-only data section.</p><ul class="itemize"><li class="li-itemize"><code><span style="color: #228b22; ">Constant</span></code> is self-explinatory;</li><li class="li-itemize"><span style="font-style:italic">t</span> = (<span style="font-style:italic">x</span><sub>0</sub>,...,<span style="font-style:italic">x</span><sub><span style="font-style:italic">n</span>&#X2212;1</sub>) corresponds to a contiguous zone of
+memory; each field <span style="font-style:italic">i</span> is accessible using <span style="font-style:italic">t</span>[<span style="font-style:italic">i</span>] (<code><span style="color: #228b22; ">Proj</span></code>). The
 reason why we prefer <code><span style="color: #228b22; ">Tuple</span></code> over using chains of <code><span style="color: #228b22; ">Pair</span></code>, is
 <code><span style="color: #228b22; ">Pair</span></code> cannot be compiled to a contiguous zone of memory (without
-indirection), without prior transformation to <code><span style="color: #228b22; ">Tuple</span></code>.</LI><LI CLASS="li-itemize"><I>inj</I><SUB><I>i</I>/<I>j</I></SUB>(<I>x</I>) creates a variant value, with tag number <I>i</I>
-(starting from 0) over <I>j</I> possible tags.</LI><LI CLASS="li-itemize">{ <I>k</I> &#X2192; (<I>x</I><SUB>0</SUB>,...,<I>x</I><SUB><I>n</I>&#X2212;1</SUB>) &#X2192; <I>body</I>} build a function.
+indirection), without prior transformation to <code><span style="color: #228b22; ">Tuple</span></code>.</li><li class="li-itemize"><span style="font-style:italic">inj</span><sub><span style="font-style:italic">i</span>/<span style="font-style:italic">j</span></sub>(<span style="font-style:italic">x</span>) creates a variant value, with tag number <span style="font-style:italic">i</span>
+(starting from 0) over <span style="font-style:italic">j</span> possible tags.</li><li class="li-itemize">{ <span style="font-style:italic">k</span> &#X2192; (<span style="font-style:italic">x</span><sub>0</sub>,...,<span style="font-style:italic">x</span><sub><span style="font-style:italic">n</span>&#X2212;1</sub>) &#X2192; <span style="font-style:italic">body</span>} build a function.
 Functions can have several arguments, because this simplifies
 closure conversion, and allows to express some transformations
-such as arity-raising.</LI><LI CLASS="li-itemize"><code><span style="color: #a020f0; ">external</span>(&nbsp;name)</code> denotes a value defined in another
-compilation unit.</LI></UL><P>
+such as arity-raising.</li><li class="li-itemize"><code><span style="color: #a020f0; ">external</span>(&nbsp;name)</code> denotes a value defined in another
+compilation unit.</li></ul><p>
 Note that contrary to the source language, we can have Tuple
 objets with 1 element; they correspond to pointers to an object.
 <code>x</code> is different from <code><span style="color: #228b22; ">Tuple</span>(&nbsp;[x])</code>. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:6101"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:6101"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;value&nbsp;=<BR>&nbsp;&nbsp;
@@ -257,64 +270,64 @@ objets with 1 element; they correspond to pointers to an object.
 &#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur&nbsp;<span style="color: #228b22; ">list</span><BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Injection</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;<span style="color: #228b22; ">int</span>&nbsp;×&nbsp;occur<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Lambda</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;function_type&nbsp;×&nbsp;cont_var&nbsp;×&nbsp;var&nbsp;<span style="color: #228b22; ">list</span>&nbsp;×&nbsp;expression<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">External</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">string</span></P><P></code></div>&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">External</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;<span style="color: #228b22; ">string</span></p><p></code></div>&nbsp;&nbsp;
 We distinguish closures, that may contain free variables which
 constitutes an environment that need to be stored, from
 functions, who may not. We distinguish them only as an argument
 to <code><span style="color: #228b22; ">Apply</span></code> and <code><span style="color: #228b22; ">Lambda</span></code>, because most of the code that access
 them does not depend on this distinction. Having functions at
 the top level is useful, for instance, to interact with C. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:6690"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:6690"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;function_type&nbsp;=<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Closure</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">No_environment</span><BR></code></div><B>4.</B>&nbsp;
-<A NAME="src/cps/cpsbase/cpsast.ml:6749"></A>We now present the logical structure of toplevel definitions. A
+&#X2223;&nbsp;<span style="color: #228b22; ">No_environment</span><BR></code></div><span style="font-weight:bold">4.</span>&nbsp;
+<a id="src/cps/cpsbase/cpsast.ml:6749"></a>We now present the logical structure of toplevel definitions. A
 definition is like a let-binding, except that the variable is
 bound globally (and are thus accessible to all the following
 definitions), instead of just in the body the let-binding. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:7012"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:7012"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;definitions&nbsp;=&nbsp;definition&nbsp;<span style="color: #228b22; ">list</span><BR></code></div><B>5.</B>&nbsp;
-<A NAME="src/cps/cpsbase/cpsast.ml:7054"></A>A <code>definition</code> binds a (global) variable to a value, with some
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;definitions&nbsp;=&nbsp;definition&nbsp;<span style="color: #228b22; ">list</span><BR></code></div><span style="font-weight:bold">5.</span>&nbsp;
+<a id="src/cps/cpsbase/cpsast.ml:7054"></a>A <code>definition</code> binds a (global) variable to a value, with some
 <code>visibility</code>. <code><span style="color: #228b22; ">Public</span></code> global variables may be used by other
 modules. <code><span style="color: #228b22; ">Private</span></code> ones can be used by other definitions of the
 module. <code><span style="color: #228b22; ">Unused</span></code> ones cannot be used by any code, they are used to
-represent computations used only for their side effects.</P><P>Note that <code><span style="color: #228b22; ">Unused</span></code> cannot be replaced by a check that the variable
+represent computations used only for their side effects.</p><p>Note that <code><span style="color: #228b22; ">Unused</span></code> cannot be replaced by a check that the variable
 has no occurrences when compiling incrementally: indeed when the
 definition is compiled, the variable may not yet have any
 occurrence. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:7606"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:7606"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;definition&nbsp;=&nbsp;<span style="color: #228b22; ">Definition</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;visibility&nbsp;×&nbsp;definition_type<BR>&nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;visibility&nbsp;=&nbsp;<span style="color: #228b22; ">Public</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Private</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Unused</span></P><P></code></div>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;visibility&nbsp;=&nbsp;<span style="color: #228b22; ">Public</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Private</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;var&nbsp;&#X2223;&nbsp;<span style="color: #228b22; ">Unused</span></p><p></code></div>&nbsp;&nbsp;
 Variables can be bound either to statically computed and
 allocated values and functions (put in .data/.rodata/.text
 sections), or dynamic values, computed at initialization time and
 compiled into constructors calls (.ctors and .bss). 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:8082"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:8082"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;definition_type&nbsp;=<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Static_value</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;value<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Dynamic_value</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;expression<BR></code></div><B>6.</B>&nbsp;
-<A NAME="src/cps/cpsbase/cpsast.ml:8168"></A><code><span style="color: #228b22; ">Enclosing</span></code>s are uplinks from any element (variables,
+&#X2223;&nbsp;<span style="color: #228b22; ">Dynamic_value</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;expression<BR></code></div><span style="font-weight:bold">6.</span>&nbsp;
+<a id="src/cps/cpsbase/cpsast.ml:8168"></a><code><span style="color: #228b22; ">Enclosing</span></code>s are uplinks from any element (variables,
 occurrences, expressions...) to the enclosing expression or
 toplevel definition. They are thus not part of the AST stricto
 sensu (the AST provides only downlinks from expressions to
-elements).</P><P><code><span style="color: #228b22; ">Enclosing_uninitialized</span></code> is a temporary state, encountered only
+elements).</p><p><code><span style="color: #228b22; ">Enclosing_uninitialized</span></code> is a temporary state, encountered only
 during CPS expression creation or transformation. 
-<BR><A NAME="src/cps/cpsbase/cpsast.ml:8560"></A>
+<BR><a id="src/cps/cpsbase/cpsast.ml:8560"></a>
 <div class="ocamlweb-src"><code>
 &nbsp;&nbsp;
 <span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;enclosing&nbsp;=<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_definition</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;definition<BR>&nbsp;&nbsp;
 &#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_expression</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;expression<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_uninitialized</span></P><P><A NAME="src/cps/cpsbase/cpsast.ml:8687"></A>
-<span style="color: #0000ff; font-weight: bold;">end</span>&nbsp;<BR></code></div></P><!--CUT END -->
+&#X2223;&nbsp;<span style="color: #228b22; ">Enclosing_uninitialized</span></p><p><a id="src/cps/cpsbase/cpsast.ml:8687"></a>
+<span style="color: #0000ff; font-weight: bold;">end</span>&nbsp;<BR></code></div></p><!--CUT END -->
 
 
 

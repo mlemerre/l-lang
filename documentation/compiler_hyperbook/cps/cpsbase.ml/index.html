@@ -3,7 +3,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>cps/cpsbase/cpsprint.ml</title>
+    <title>cps/cpsbase.ml</title>
     <meta name="viewport" content="width=device-width,
                                    initial-scale=1.0">
     <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -153,101 +153,46 @@
   </div>
   <div class="span9">
     <div class="post-title">
-      <h1>cps/cpsbase/cpsprint.ml</h1>
+      <h1>cps/cpsbase.ml</h1>
     </div>
     
-<!--CUT STYLE article--><!--CUT DEF section 1 --><!--TOC section id="sec1" Module Cpsprint-->
-<h2 id="sec1" class="section">Module Cpsprint</h2><!--SEC END --><p>
-These functions output a printed representation of a CPS term
-(expression or definition). One problem of the CPS representation
-is that it is difficult to read, especially because of the deep
-level of nesting. We tried to simplify this representation by not
-showing the nesting explicitely to the user; instead a parent
-always has the same level of indentation than its children in the
-tree. The syntax looks a lot like assembly language, or SSA
-representation.</p><p>Still, this representation could be readily parsed back into a CPS
-data structure if needed. 
-<BR><a id="src/cps/cpsbase/cpsprint.ml:629"></a>
+<!--CUT STYLE article--><!--CUT DEF section 1 --><!--TOC section id="sec1" Module Cpsbase-->
+<h2 id="sec1" class="section">Module Cpsbase</h2><!--SEC END --><p>
+<a id="src/cps/cpsbase.ml:1"></a>
 <div class="ocamlweb-src"><code>
 
-<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Format</span></p><p><a id="src/cps/cpsbase/cpsprint.ml:643"></a>
-<span style="color: #0000ff; font-weight: bold;">open</span>&nbsp;<span style="color: #228b22; ">Cpsdef</span></p><p><a id="src/cps/cpsbase/cpsprint.ml:658"></a>
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;var&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Var.Var.</span>to_string&nbsp;v)<BR>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;occur&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Var.Occur.</span>to_string&nbsp;v)<BR>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_var&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Cont_var.Var.</span>to_string&nbsp;v)<BR>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;cont_occur&nbsp;ppf&nbsp;v&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Cont_var.Occur.</span>to_string&nbsp;v)</p><p><a id="src/cps/cpsbase/cpsprint.ml:911"></a>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;var_list&nbsp;ppf&nbsp;vl&nbsp;=&nbsp;(<span style="color: #228b22; ">Make_printer.</span>list&nbsp;~sep:<span style="color: #8b2252; ">",&nbsp;"</span>&nbsp;var)&nbsp;ppf&nbsp;vl<BR>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;occur_list&nbsp;ppf&nbsp;vl&nbsp;=&nbsp;(<span style="color: #228b22; ">Make_printer.</span>list&nbsp;~sep:<span style="color: #8b2252; ">",&nbsp;"</span>&nbsp;occur)&nbsp;ppf&nbsp;vl</p><p><a id="src/cps/cpsbase/cpsprint.ml:1042"></a>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;expression&nbsp;ppf&nbsp;t&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;t&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Halt</span>&nbsp;v&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"halt&nbsp;%a"</span>&nbsp;occur&nbsp;v<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Apply</span>(_,callerv,k,callees)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%a(&nbsp;%a,&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-occur&nbsp;callerv&nbsp;cont_occur&nbsp;k&nbsp;occur_list&nbsp;callees<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Apply_cont</span>(k,v)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%a(&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-cont_occur&nbsp;k&nbsp;occur&nbsp;v<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(k,v,loccont,incont)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"decl&nbsp;%a"</span>&nbsp;cont_var&nbsp;k;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;loop&nbsp;accu&nbsp;e&nbsp;=&nbsp;<span style="color: #a020f0; ">match</span>&nbsp;<span style="color: #228b22; ">Expression.</span>get&nbsp;e&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Let_cont</span>(k,v,loccont,incont)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">",&nbsp;%a"</span>&nbsp;cont_var&nbsp;k;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-loop&nbsp;((k,v,loccont)::accu)&nbsp;incont<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&#X2223;&nbsp;final_incont&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@\n@[&lt;v&gt;%a@]"</span>&nbsp;expression&nbsp;e;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span style="color: #228b22; ">List.</span>iter&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;(k,v,cont)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@\n@\n%a(&nbsp;%a)&nbsp;=&nbsp;{@\n&nbsp;&nbsp;@[&lt;v&gt;%a@]@\n}"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-cont_var&nbsp;k&nbsp;var&nbsp;v&nbsp;expression&nbsp;cont)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-accu<BR>&nbsp;&nbsp;&nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">in</span>&nbsp;loop&nbsp;[k,v,loccont]&nbsp;incont<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Let_prim</span>(v,p,body)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@[&lt;v&gt;let&nbsp;%a&nbsp;=&nbsp;%a&nbsp;in@&nbsp;%a@]"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-var&nbsp;v&nbsp;prim&nbsp;p&nbsp;expression&nbsp;body<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Case</span>(v,l,d)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;case&nbsp;ppf&nbsp;(i,k)&nbsp;=&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%d&nbsp;-&gt;&nbsp;%a"</span>&nbsp;i&nbsp;cont_occur&nbsp;k&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;case_list&nbsp;ppf&nbsp;l&nbsp;=&nbsp;<span style="color: #228b22; ">Make_printer.</span>list&nbsp;~sep:<span style="color: #8b2252; ">"@\n"</span>&nbsp;case&nbsp;ppf&nbsp;l&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;default&nbsp;ppf&nbsp;d&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-(<span style="color: #a020f0; ">match</span>&nbsp;d&nbsp;<span style="color: #a020f0; ">with</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">None</span>&nbsp;&#X2192;&nbsp;()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Some</span>(k)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@\n_&nbsp;-&gt;&nbsp;%a"</span>&nbsp;cont_occur&nbsp;k)&nbsp;<span style="color: #0000ff; font-weight: bold;">in</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"case(%a){@\n&nbsp;&nbsp;@[&lt;v&gt;%a%a@]@\n}"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-occur&nbsp;v&nbsp;case_list&nbsp;(<span style="color: #228b22; ">CaseMap.</span>bindings&nbsp;l)&nbsp;default&nbsp;d</p><p><a id="src/cps/cpsbase/cpsprint.ml:2347"></a>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;prim&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Value</span>&nbsp;v&nbsp;&#X2192;&nbsp;value&nbsp;ppf&nbsp;v<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Projection</span>(i,x)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"#%d(&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-i&nbsp;occur&nbsp;x<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_operation</span>(op,v1,v2)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s(&nbsp;%a,&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-(<span style="color: #228b22; ">Constant.</span>integer_binary_operation_to_string&nbsp;op)&nbsp;occur&nbsp;v1&nbsp;occur&nbsp;v2<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Integer_binary_predicate</span>(pred,v1,v2)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s(&nbsp;%a,&nbsp;%a)"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-(<span style="color: #228b22; ">Constant.</span>integer_binary_predicate_to_string&nbsp;pred)&nbsp;occur&nbsp;v1&nbsp;occur&nbsp;v2</p><p><a id="src/cps/cpsbase/cpsprint.ml:2771"></a>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;value&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Constant</span>(c)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%s"</span>&nbsp;(<span style="color: #228b22; ">Constant.</span>to_string&nbsp;c)<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Tuple</span>(l)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"(&nbsp;%a)"</span>&nbsp;occur_list&nbsp;l<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Injection</span>(i,j,x)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"inj_{%d/%d}(&nbsp;%a)"</span>&nbsp;i&nbsp;j&nbsp;occur&nbsp;x<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Lambda</span>(_,k,vl,expression_)&nbsp;&#X2192;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@,@[&lt;v&gt;{&nbsp;@[&lt;v&gt;%a&nbsp;-&gt;&nbsp;(%a)&nbsp;-&gt;@\n@[&lt;v&gt;%a@]@]@\n}@]"</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-cont_var&nbsp;k&nbsp;var_list&nbsp;vl&nbsp;expression&nbsp;expression_<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">External</span>(str)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"external(&nbsp;\"%s\")"</span>&nbsp;str</p><p><a id="src/cps/cpsbase/cpsprint.ml:3197"></a>
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">rec</span>&nbsp;definition&nbsp;ppf&nbsp;(<span style="color: #228b22; ">Definition</span>(v,dt))&nbsp;=<BR>&nbsp;&nbsp;
-fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"%a&nbsp;=&nbsp;@[%a@]"</span>&nbsp;visibility&nbsp;v&nbsp;definition_type&nbsp;dt</p><p><a id="src/cps/cpsbase/cpsprint.ml:3303"></a>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;visibility&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Public</span>(v)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"def&nbsp;%a"</span>&nbsp;var&nbsp;v<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Private</span>(v)&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"let&nbsp;%a"</span>&nbsp;var&nbsp;v<BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Unused</span>&nbsp;&#X2192;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"let&nbsp;_"</span><BR>
-<span style="color: #0000ff; font-weight: bold;">and</span>&nbsp;definition_type&nbsp;ppf&nbsp;=&nbsp;<span style="color: #a020f0; ">function</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Static_value</span>(_)&nbsp;&#X2192;&nbsp;<span style="color: #a020f0; ">failwith</span>&nbsp;<span style="color: #8b2252; ">"Not&nbsp;yet&nbsp;implemented"</span><BR>&nbsp;&nbsp;
-&#X2223;&nbsp;<span style="color: #228b22; ">Dynamic_value</span>(t)&nbsp;&#X2192;&nbsp;expression&nbsp;ppf&nbsp;t</p><p><a id="src/cps/cpsbase/cpsprint.ml:3589"></a>
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;definitions&nbsp;ppf&nbsp;l&nbsp;=<BR>&nbsp;&nbsp;
-<span style="color: #228b22; ">List.</span>iter&nbsp;(<span style="color: #a020f0; ">fun</span>&nbsp;def&nbsp;&#X2192;&nbsp;definition&nbsp;ppf&nbsp;def;&nbsp;fprintf&nbsp;ppf&nbsp;<span style="color: #8b2252; ">"@."</span>)&nbsp;l</p><p><a id="src/cps/cpsbase/cpsprint.ml:3678"></a>
-<span style="color: #0000ff; font-weight: bold;">let</span>&nbsp;debug_expression&nbsp;t&nbsp;=<BR>&nbsp;&nbsp;
-<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"----------------------------------------\n"</span>;<BR>&nbsp;&nbsp;
-<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"%a\n"</span>&nbsp;expression&nbsp;t;<BR>&nbsp;&nbsp;
-<span style="color: #228b22; ">Format.</span>eprintf&nbsp;<span style="color: #8b2252; ">"----------------------------------------\n@?"</span><BR></code></div></p><!--CUT END -->
+<span style="color: #a020f0; ">include</span>&nbsp;<span style="color: #228b22; ">Cpsbasepack.Cpsdef</span></p><p><a id="src/cps/cpsbase.ml:30"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Print</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbasepack.Cpsprint</span></p><p><a id="src/cps/cpsbase.ml:68"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Change</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbasepack.Cpschange</span></p><p><a id="src/cps/cpsbase.ml:108"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Build</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbasepack.Cpsbuild</span></p><p><a id="src/cps/cpsbase.ml:146"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Check</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbasepack.Cpscheck</span></p><p><a id="src/cps/cpsbase.ml:184"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Traverse</span>&nbsp;=&nbsp;<span style="color: #228b22; ">Cpsbasepack.Cpstraverse</span></p><p><a id="src/cps/cpsbase.ml:229"></a>
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;<span style="color: #228b22; ">VAR</span>&nbsp;=&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;var<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur_maker<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;occur<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Var</span>:&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;number_of_occurrences&nbsp;=<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">No_occurrence</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">One_occurrence</span>&nbsp;<span style="color: #a52a2a; ">of</span>&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#X2223;&nbsp;<span style="color: #228b22; ">Several_occurrences</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;number_of_occurrences:&nbsp;var&nbsp;&#X2192;&nbsp;number_of_occurrences<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;fold_on_occurrences:&nbsp;var&nbsp;&#X2192;&nbsp;&#X3B1;&nbsp;&#X2192;&nbsp;(&#X3B1;&nbsp;&#X2192;&nbsp;occur&nbsp;&#X2192;&nbsp;&#X3B1;)&nbsp;&#X2192;&nbsp;&#X3B1;<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;binding_site:&nbsp;var&nbsp;&#X2192;&nbsp;enclosing<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;to_string&nbsp;:&nbsp;var&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">string</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Map</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Map.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;key&nbsp;=&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Set</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Set.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;elt&nbsp;=&nbsp;var<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span></p><p><a id="src/cps/cpsbase.ml:721"></a>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Occur</span>:&nbsp;<span style="color: #0000ff; font-weight: bold;">sig</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;maker&nbsp;=&nbsp;occur_maker<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;maker:&nbsp;var&nbsp;&#X2192;&nbsp;maker<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;rec_maker:&nbsp;var&nbsp;&#X2192;&nbsp;maker<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;binding_variable&nbsp;:&nbsp;occur&nbsp;&#X2192;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">val</span>&nbsp;to_string&nbsp;:&nbsp;occur&nbsp;&#X2192;&nbsp;<span style="color: #228b22; ">string</span><BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Map</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Map.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;key&nbsp;=&nbsp;occur<BR>&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">module</span>&nbsp;<span style="color: #228b22; ">Set</span>&nbsp;:&nbsp;<span style="color: #228b22; ">Set.S</span>&nbsp;<span style="color: #a020f0; ">with</span>&nbsp;<span style="color: #0000ff; font-weight: bold;">type</span>&nbsp;elt&nbsp;=&nbsp;occur<BR>&nbsp;&nbsp;
+<span style="color: #0000ff; font-weight: bold;">end</span><BR>
+<span style="color: #0000ff; font-weight: bold;">end</span><BR><BR></code></div></p><!--CUT END -->
 
 
 

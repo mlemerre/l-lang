@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Descent into L</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet"
+          media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+     <div class="navbar navbar-inverse navbar-fixed-top">
+       <div class="navbar-inner">
+         <div class="container">
+           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="brand" href="/"><i>The</i> L <i>language</i></a>
+           <div class="nav-collapse collapse">
+             <ul class="nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Introduction to L</li>
+                   
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
+                   <li class="nav-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="nav-header">Recent posts</li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li><a href="/blog/My-first-blog-entry">My first blog entry</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="span3">
+    
+
+    <ul class="nav nav-list sidenav">
+      <li class="nav-header">Features</li>
+      <hr>
+      <li><a href="#open-source-implementation">Open source implementation</a><hr></li>
+      <li><a href="#simple-familiar-syntax">A simple, familiar syntax</a><hr></li>
+      <li><a href="#algebraic-datatypes-and-pattern-matching">Algebraic datatypes and pattern matching</a><hr></li>
+      <li><a href="#parametric-polymorphism">Parametric polymorphism</a><hr></li>
+      <li><a href="#first-class-functions">First-class functions</a><hr></li>
+      <li><a href="#static-typing-with-complete-type-inference">Static typing with complete type inference</a><hr></li>
+      <li><a href="#macro-and-syntax-extensions">Macros and syntax extensions</a><hr></li>
+      <li><a href="#native-compilation-using-llvm">Interpretation and native compilation to LLVM</a><hr></li>
+      <li><a href="#mutable-variables-and-imperative-features">Mutable variables and imperative features</a><hr></li>
+      <li><a href="#garbage-collection">Garbage collection</a><hr></li>
+      <li><a href="#guaranteed-optimizations">Guaranteed optimizations</a><hr></li>
+      <li><a href="#and-more">And more</a><hr></li>
+    </ul>
+
+
+</div>
+  <div class="span9">
+  <!-- TODO: Reprendre le style du blogpost, et le rendre plus general
+       C'est le style des titres de mes pages. -->
+    <div class="post-title">
+      <h1>Descent into L</h1>
+    </div>
+
+    L is a multi-paradigm (functional/imperative) programming language
+    which emphasizes readability, simplicity, conciseness and
+    performance. The L compiler is being actively implemented and most
+    of the following features are already working; an initial release
+    is planned in the next few months. This document describes the
+    features of the L language and the <code>elle</code> binary; for a
+    shorter introduction to the main features of the language,
+    <a href="/documentation/intro/short">click here</a>. Note that the
+    language is not yet frozen, so minor elements (especially syntax)
+    in the following are subject to change; this document will be
+    updated together with the code.
+
+    <h2 class="down-shifted" id="open-source-implementation">Open source implementation</h2>
+
+    <p>The L compiler is licensed under the Cecill-C license, a copyleft
+    and LGPL-compatible license that allows linking without restriction.</p>
+
+    <p>The source code of the compiler is has been specially written to
+    make it as readable <a href="/documentation/compiler_hyperbook">as
+    a book</a> and welcome new contributors, or anyone that would like
+    to study its internals.</p>
+
+    <h2 class="down-shifted" id="simple-familiar-syntax">A simple, familiar syntax</h2>
+
+    <p>Great languages have not only a nice (simple and powerful)
+    semantic, but also a good (simple and readable) syntax. However it
+    is easy to just accumulate syntax extensions as new features are
+    added. In contrast, there has been many iterations that led to the
+    current syntax, leading to a more consistent (i.e. simpler and
+    less surprising) language. Actually, the syntax is not frozen yet,
+    and minor changes can still happen before 1.0.</p>
+
+    <h3>Everything is an expression</h3>
+
+    <p>The syntax looks similar than C's, except that there
+    is no distinction between statement and expressions: everything is
+    an expression. This makes the language simpler and more uniform.
+    However, sequences and introduction of variables is done using
+    brace ({}) characters, which provide the nice alignment property
+    and view of sequential execution found in imperative languages.</p>
+
+    <pre>
+{ let a = if( x == 0) 3 else { let u = 5; u*(u-1) }
+  let b = { 
+    let y = 5
+    let z = 6
+    y*y + z*z
+  }
+  print( a)
+  print( b)
+  a + b
+}   </pre>    
+
+    <h3>Optional type annotations</h3>
+
+    <p>In L, type annotations are entirely optional, which contributes
+    to the lightness of the syntax. <code>let</code> introduces
+    read-only bindings (preferred whenever possible),
+    and <code>var</code> mutable ones. L preferred style is to use
+    <code>let</code> bindings whenever possible (in particular to hold
+    intermediary results), and use <code>var</code> only when mutation
+    is necessary. The use of mutable variables makes code more
+    difficult to understand, in particular when reusing a variable for
+    different purposes; limiting mutable variables and marking them
+    explicitly encourages a better style.</p>
+
+    <pre>
+{ var x := 0
+  var y:Int := 5 // Explicit declaration: no runtime difference
+  if (a == 3) {
+    x := x + y
+  } 
+  x
+}
+
+// Equivalent program without mutable variables
+{ let x = 0
+  let y:Int = 5 // Explicit declaration: no runtime difference
+  let x_possibly_incremented = 
+    if (a == 3) x
+    else x+y
+  x_possibly_incremented
+}  </pre>
+
+  <h3>Statement separation</h3>
+
+  <p>Delimiting statements in C-like languages is necessary to
+    disambiguate the syntax; for instance it allows to
+    differentiate<code>f(x)&nbsp;-&nbsp;f(y)</code>
+    from <code>f(x);&nbsp;-f(y)</code>, or <code>f(x+3)</code>
+    from <code>f;&nbsp;(x+3)</code>. Often, ';' is used as a statement
+    separator or terminator.</p>
+
+  <p>Instead, L relies on the idea of <em>token separation</em> to
+  disambiguate such cases. There are four degrees of separation, that
+  depend on the characters between two tokens; namely (from stronger
+  to weaker):
+    <ul>
+      <li><b>Explicit</b>, when the characters between two tokens
+      contain a ';'
+      <li><b>Newline</b>, when the characters between two tokens
+      contain a '\n' and no ';'
+      <li><b>Whitespace</b>, when there is a non-empty number of
+      characters between two tokens, that contain neither ';' nor '\n'
+      <li><b>Stuck</b>, when there are no characters between the tokens
+    </ul>
+  The fact that a token is part of a statement or of the following
+  statement depends on this separation level. Generally, tokens
+  separated by '\n' or ';' are part of the next statement, while
+  other tokens are part of the current statement.
+
+  Sometimes, the same token with different separation levels before
+  and/or after can even be viewed as if they were two different tokens
+  (they have different syntax, meaning, and priorities).
+
+  While these rules may seem complex when enunciated, they are
+  actually quite natural and generic. Generally, it boils down to:
+
+    <ul>
+      <li>
+        Statements should be separated by newlines, unless
+        everything fits on one line, in which case they should be
+        separated by ';'. 
+      </li>
+      <li>
+        When in need to split a statement on several lines, you
+        should split after infix operators. I.e. <code>a+\nb</code>
+        contains one statement, while <code>a\n+b</code> contains
+        two.
+      </li>
+      <li>
+        One exception is function calls, which are denoted only by a
+        stuck open '(' or '{'. <code>f(x)</code> is <code>f</code>
+        calling <code>x</code>; <code>f&nbsp;(x)</code> does not mean
+        anything; <code>f\n(x)</code> and <code>f;(x)</code>
+        is <code>f</code> followed by <code>x</code>. Forcing stuck
+        calls enforce a single indentation style for all L programs,
+        and help identifying calls visually.
+      </li>
+      <li>
+        The other exception is the . operator for reverse function
+        application (and advanced namespace resolution), which can be
+        separated by a newline (but not by a ';'). However, it must be
+        stuck to the following token. The reason for this is that it
+        allows chaining calls:
+        <pre>
+f(a, computation)
+  .another_one(a_param)
+  .final_computation</pre>
+      </li>
+    </ul>
+
+    <h3>Vertical alignment and indentation</h3>
+
+    <p>L syntax contributes to maintaining a correct alignment and
+    indentation. When performing <a href="#">pattern matching</a>, the
+    start of a match is identified using indentation. Nested function
+    calls are aligned, and provide visually a tree structure. Blocks,
+    introduced with {}, allows to maintain the same level of
+    indentation when writing a sequential computation.</p>
+
+<pre>
+{ let f = {
+    0 -> 
+      let a = 3
+      let b = 5
+      a + b
+    1 -> 
+       function1( a_function( 4, 5)
+                  another_one( an_argument,
+                               another_arg))
+    n -> 8 + n
+  }
+  f(4)
+} </pre>    
+
+    <h2 class="down-shifted" id="algebraic-datatypes-and-pattern-matching">Algebraic datatypes and pattern matching</h2>
+
+    <h3>Pattern matching</h3>
+
+    <p><em><a href="http://en.wikipedia.org/wiki/Pattern_matching">Pattern
+    matching</a></em> is a construct that allows to extract several
+    components of an object at once. For instance:
+      
+<pre>
+{ let x = (1,2,3)
+  let (a,_,c) = x
+  a + c // 4
+} </pre>
+
+   The <code>x</code> variable contains a tuple with three elements.
+   Later, we use pattern matching to extract the first and third
+   component out of the tuple. This code would be even more useful if
+   the tuple construction and pattern matching were more separated,
+   e.g. were in different functions. </p>
+
+    <p>
+      Patterns appear in many different places in the code. As we saw,
+      The <code>let</code> construct introduces a pattern (note:
+      the <code>var</code> construct does not). But the arguments to a
+      function are also a tuple pattern:
+
+      <pre>
+def f(a,(b,c),d) = a + b + c + d
+{ let u = (1,2) 
+  f(1,u,3)
+} </pre>
+      
+    </p>
+
+    <h3>Algebraic datatypes</h3>    
+
+    <p>You can define your own datatypes (record and sum types), and
+    match them in patterns. Here is an example of a simple record
+    datatype. Note: the <code>x:</code> and <code>y:</code> parts are
+    optional, but they allow the use of the <code>p.x</code> notation
+    to extract an individual component.
+
+<pre>
+  data Point(x:Int, y:Int)
+
+  { let p = Point(1,2)
+    let Point(a,b) = p
+    a+b // 3
+  } </pre>
+    </p>
+
+    <p>
+      A more complex form allows to define sum types, a generalized form
+      of enum that can carry data. Here is a simple example of the use
+      of sum types to define the type of mathematical expressions, and a
+      small calculator written in L:
+<pre>
+  data Expression {
+    Number(Int)
+    Add(Expression,Expression)
+    Sub(Expression,Expression)
+    Mul(Expression,Expression)
+    Div(Expression,Expression)
+  }
+
+  def eval(e) = e.{
+    Number(n) -> n
+    Add(e1,e2) -> eval(e1) + eval(e2)
+    Sub(e1,e2) -> eval(e1) - eval(e2)
+    Mul(e1,e2) -> eval(e1) * eval(e2)
+    Div(e1,e2) -> eval(e1) / eval(e2)
+  }  
+  
+  eval( Add( 3, Mul( 2, 4))) // 11 </pre>
+
+   <p>The <code>expression.{ pattern_1 -> body_1 ... pattern_n ->
+   body_n }</code> construct matches each pattern against the given
+   expression in turn, selects the first that matches, assigns the
+   variables to the corresponding components in the expression, and
+   executes the corresponding body. This construct allows to eliminate
+   a lot of boilerplate code.</p>
+
+  <p>The form <code>data Point(Int,Int)</code> is actually a shorthand
+    for the case where the sum type has only one element: <code>data
+    Point { Point(Int,Int) }</code></p>
+
+  <p>Sum types are ubiquitous when defining complex data structures;
+    but it is often implicit. Its most common form in many other
+    languages is the use of the special "null" pointer (this is Tony
+    Hoare's <a href="http://en.wikipedia.org/wiki/Tony_Hoare">billion
+    dollar mistake</a>, avoided by the L language.</p>
+
+  <h2 class="down-shifted" id="parametric-polymorphism">Parametric polymorphism</h2>
+
+    <p>With L one can write data structures and algorithms which are
+      <a href="wikipedia">parametrically polymorphic</a>, i.e. that
+      work for any type.
+
+      Note that the <code>length</code> and <code>append</code>
+      functions below are polymorphic (they work on both lists of Int
+      and Bool), without requiring any annotation to make them so.
+ </p>
+
+    <pre>
+data List&lt;t&gt; = {
+  Cons(head:t, tail:List&lt;t&gt;)
+  Nil
+}
+
+def length = { 
+  Cons( _, tail) -> 1+length(tail)
+  Nil -> 0
+}
+
+def list_int = Cons(11, Cons(22, Cons(33, Nil)))
+list_int.length // => 3
+
+def list_bool = Cons(true, Cons(false, Nil))
+lits_bool.length // => 2
+
+def append(l1,l2) = l1.{ 
+  Nil -> l2
+  Cons(x,tail) = Cons(x, tail.append( l2))
+}
+
+append( list_int, Cons(44, Nil))
+// Cons(11, Cons(22, Cons(33, Cons( 44, Nil))))
+
+append( Cons( true, Cons( true, Nil)), list_bool)
+// Cons( true, Cons( true, Cons( true, Cons( false, Nil))))
+    </pre>
+    
+    <h2 class="down-shifted" id="first-class-functions">First-class functions</h2>
+
+    <h3>Syntax for creating functions</h3>
+
+    <p>In L, functions are first-class citizens, meaning that they can
+    be passed around at will. Functions can be created simply using
+    the <code>{ arg1,arg2,...,argn -> body}</code> syntax.</p>
+
+    <pre>
+{ let f = { a,b -> { x -> a * x + b }}
+  let g = f(2,3)
+  g(1) // 5
+}</pre>
+
+    <p>Observe that multiple arguments are passed as tuples, instead
+    of
+    being <a href="http://en.wikipedia.org/wiki/Currying">curried</a>
+    as in most functional languages. This allows to determine more
+    easily when closures are created.</p>
+
+    <p>L features a special syntax for creating simple functions.
+    Blocks that contain an '_' character are transformed into
+    functions, each _ being replaced with an argument. This way of
+    performing
+    <a href="http://en.wikipedia.org/wiki/Partial_application">partial
+    application</a> avoids hard-to-find type errors arising when
+    forgetting some of the arguments of a curried function. </p>
+
+    <pre>
+def plus = {_+_} // equivalent to { a,b -> a + b }
+def three_times = { 3 * _ } // equivalent to { x -> 3 * x } </pre>
+
+    <p>Functions argument are actually patterns and can be matched
+    directly. Actually, the <code>arg.{ pattern1 -> body1; ...
+    patternn -> bodyn</code> syntax presented above is a special case
+    of function pattern matching, where <code>arg</code> is matched
+    by applying it to a function.</p>
+
+    <pre>
+def fact = {
+  0 -> 1
+  n -> n * fact(n -1)
+}
+fact(5) // 120 </pre>
+
+    <h3>Examples of downward and upward passing of functions</h3>
+
+    <p>Passing functions downward is perfect for parameterizing an
+    algorithm, like the traversal of a data structure or a sorting
+    function.</p>
+
+    <pre>
+// Splits l according to the predicate p. Stable.
+def partition(l:List&lt;t&gt;, p:t->Bool) = l.{
+  Nil -> Nil
+  Cons(head,tail) -> 
+    let (part_true, part_false) = partition(tail,p)
+    if p(head) (Cons(head,part_true), part_false)
+    else (part_true, Cons(head, part_false))
+}
+
+// Sorts l.
+def quicksort(l, greater?:t->t->Bool) = l.{
+  Nil -> NIl
+  Cons(x,tail) ->
+    let (great_ones,small_ones) = tail.partition{ _.greater?(x) }
+    small_ones.quicksort(greater?).append( Cons( x, great_ones.quicksort(greater?)))
+}
+
+// Sort a list of integers using reversed order
+Cons( 2, Cons( 3, Cons( 1, Nil))).quicksort{ x,y -> x <= y }
+// => Cons( 3, Cons( 2, Cons( 1, Nil)))
+
+// Sort a list of pairs of integers using lexical order
+Cons( (2,2), Cons( (3,1), Cons( (2,1), Nil))).quicksort{ (x1,x2),(y1,y2) ->
+  x1 > x2 || x1 = x2 && y1 >= y2 
+}
+// => Cons( (2,1), Cons( (2,2), Cons( (3,1), Nil)))
+    </pre>
+
+    Passing functions upward also has many uses. One is dynamic
+    compilation, e.g. dynamically creating a function that matches a
+    regular expression.
+
+    <pre>
+def id? = Regexp.compile("[A-Za-z_]+") // => id?: String -> Bool
+"hello".id? // => true
+"23".id? // => false
+    </pre>
+
+    
+
+      
+    <h2 class="down-shifted" id="static-typing-with-complete-type-inference">Static typing with complete type inference</h2>
+
+    
+  <p>L is statically typed, which means that many simple errors are
+    detected at compile time. </p>
+
+    <pre>
+def applyn( f, n, x) = 
+  if( n == 0) x
+  else f( applyn( f,n-1, x))
+
+applyn( 3, { _ + 2 }, 10) // => Type error: expected t -> t, got Int
+applyn( { _ + 2 }, 3, 10) // => 16
+applyn( { _ * 2 }, 10., 3) // => Type error: exected Int, got Float
+applyn( { _ * 2 }, 3, 10.) // => 80.
+
+append( list_int, list_bool) // => Type error: expected List&lt;Int&gt;, got List&lt;Bool&gt;</pre>
+
+    <p>In addition, static typing guarantees that the program executes
+    safely, e.g. it will not cause an unexpected segmentation fault;
+    without causing the overhead of the runtime checks done in a
+    dynamically typed language.</p>
+
+    <p>L features complete type inference, which means that the whole
+    program can be written without a single type annotation. However,
+    you can write type annotations if you want to.</p>
+
+    <pre>
+def applyn( f:t -> t, n:Int, x:t) -> t = 
+  if( n == 0) x
+  else f( applyn( f,n-1, x))
+
+applyn( { _ + 2 }, 3, 10:Int) // => 16
+applyn( { _ * 2 }:Float -> Float, 3, 10.) // => 80</pre>
+
+    This combination combines the benefits of a lightweight syntax, as
+    found in dynamic languages, with the strong error detection and
+    efficiency of statically typed languages.
+
+  <h2 class="down-shifted" id="macro-and-syntax-extensions">Macros and syntax extensions</h2>
+
+  <p>L provides several extension points. First, L offers a way to
+  dynamically extend the concrete syntax of the language. Second,
+  Lisp-like macros can perform changes in the parse tree. These
+  extension points allow to add domain specific languages to L, for
+  instance to mix XML and L, SQL and L, adding a nice syntax for the
+  active record pattern...</p>
+
+  <p>One of the examples of the standard library where these macro
+  extensions are used is the <code>print</code>
+  macro. <code>print</code> is followed by a list of expressions
+  between braces. This makes the printing code much more readable (as
+  compared to, for instance, C-like format strings).</p>
+
+  <pre>
+  print{ "Hello, " user.name "!\n"
+         "Today you are " user.age + 1 ".\n" } </pre>
+
+  <h2 class="down-shifted" id="native-compilation-using-llvm">Interpretation and native compilation to LLVM</h2>
+
+  <p>L features an interactive toplevel (or REPL) that you can use to try
+  the language or debug a program.
+  <pre>
+$ elle interactive 
+Welcome to L!
+> 4+5
+9:Int</pre>
+  </p>
+
+  <p>L can be used as an interpreter:
+
+  <pre>
+#!/usr/bin/env elle run
+print{ "Hello, world!\n"}</pre>
+  </p>
+
+  <p>For more substantive development comprising several files, each
+  file has to be compiled individually. The current supported workflow
+  is to compile to a LLVM bitcode file, and then link the different
+  modules with the LLVM linker. In the future L will support several
+  compilation options, which allows choosing between faster compile
+  time (during development) or faster resulting program (for
+  production). </p>
+
+  <pre>
+$ elle compile -to-llvm program.l -o program.bc
+$ file program.bc
+  program.bc: LLVM bitcode 
+
+$ clang -O2 -c -emit-llvm other.c -o other.bc
+$ llvm-ld program.bc other.bc -native program.run
+$ elle compile program.l -o program.run
+$ file program.run
+  program.run: ELF 32-bit LSB executable, Intel 80386, ... </pre>
+
+  <h2 class="down-shifted" id="mutable-variables-and-imperative-features">Mutable variables and imperative features</h2>
+  
+  <p>L is a functional programming language, but does not discourage the
+  use of imperative features: in-place update is sometimes the way to
+  write the most efficient algorithm.</p>
+
+  <p>L features mutable variables, introduced by the <code>var</code>
+  keyword. Assignment is done using the <code>:=</code> assignment
+  operator. The only restriction regarding mutable variables is that
+  they cannot hold a polymorphic value (this would be unsound). L
+  preferred style is to avoid mutable variables when they can be
+  replaced by immutable ones (introduced by <code>let</code>), because
+  they are harder to optimize (and can lead to less efficient code),
+  and their use can make code harder to understand.</p>
+
+  <pre>
+def fact(n) = 
+{ var i := n
+  var result := 1
+  while(i &lt; n){ result := result * i; i := i+1 }
+  result
+} </pre>
+
+  <p>Note that variables must be given an initial value; in the future
+    we may assign variables to the <code>undef</code> special value,
+    provided we can prove that the variable is not read before being
+    assigned. </p>
+
+
+
+  <p>To accommodate mix functional/imperative programming, L is a strict
+  language with a completely defined evaluation order; i.e. arguments
+  are evaluated from left to right before calling the function.</p>
+
+  <pre>
+(f(3))(g(4),h(5)) // equivalent to:
+{ let a = f(3); let b = g(4); let c = h(5); a(b,c) }</pre>
+  
+  <p>Delayed and lazy executions are possible, by making them explicit.</p>
+
+  <pre>
+{ let delayed = { () -> print{ "Delayed hello world!"}}
+  print{ "Before delayed "}
+  delayed()
+} // Displays: Before delayed Delayed hello world!</pre>
+
+  <h2 class="down-shifted" id="garbage-collection">Garbage collection</h2>
+
+  L can free the programmer of the burden of explicitly allocating
+  and deallocating objects. When doing general-purpose programming,
+  this results in a productivity boost.
+
+  The L garbage collector is not generational, so as not to slow down
+  in-place updates. L will encourage a programming style that avoids
+  creating too many short-lived objects, by:
+  <ul>
+    <li>Maximizing stack allocations,
+    and <a href="#guaranteed-optimizations">guaranteeing</a> that
+    some allocations are made on the stack</li>
+    <li>Using programming techniques that avoid creating intermediary
+    objects, such as using streams (lazy lists) instead of lists.</li>
+    <li>Using analyses and transformations to avoid creating
+    intermediary objects, such as linear typing, deforestation and
+    storage reuse
+    <li>Allowing the programmer to use explicit memory or region
+    management where it makes sense</li>
+  </ul>
+
+  When memory management is important for the application, such as in
+  system, real-time, or high-performance applications, L allows fine
+  control over memory allocation, by guaranteeing that some
+  allocations are done on the stack, using explicit region management,
+  or using manual (unsafe) memory allocation.
+
+  <h2 class="down-shifted" id="guaranteed-optimizations">Guaranteed optimizations</h2>
+
+  <p>What makes an optimization guaranteed is just the fact that it
+  appears in the L standard, not just in some L compiler (The L
+  compiler will also perform optimizations that will not be
+  guaranteed). This may seem to be a tiny difference. In fact, being
+  in the standard means that the code can rely on the optimization
+  being performed for whatever version of the compiler being used, or
+  even for a different implementation of L.</p>
+
+  <p>One use is to write modular code that may look inefficient as is,
+  but that you know the compiler will make efficient by the sole use
+  of the guaranteed optimizations. For instance, you can write code
+  such as:
+    
+    <pre>
+def an_option = true
+{ var res := 0
+  [0..1000].each{ i ->
+    [0..800].each{ j ->
+      if( an_option) 
+        res := res + i*j
+      else
+        res := res + i+j
+    }
+  }
+}</pre>
+
+    This code is logically clean, because the choice introduced
+    by <code>if</code> is close to the different alternatives. But
+    as-is, it is horribly inefficient because the test is done inside
+    the loop. But a guaranteed optimization says that conditionals to
+    constants are removed away. Thanks to guaranteed optimization, you
+    know that every compiler will remove the test, so you can leave
+    the code as it is knowing that this will never cause a performance
+    issue. Actually, this guaranteed optimization remove the need for
+    preprocessing conditional in the language. </p>
+
+  <p>Another use of guaranteed optimization allows to control memory
+  allocation. By guaranteeing that some allocations are always made on
+  the stack, and by writing the functions carefully (and checking that
+  all allocation is indeed done on the stack), you can writing
+  real-time code, system code such as a garbage collector, or
+  performance-critical code, using L's high-level language and
+  constructs; instead of rewriting code in C. A guaranteed
+  optimization that falls into this category is the classical
+  tail-call optimization, that allows to bound stack allocation when
+  functions are carefully written.</p>
+
+  <p>The list of guaranteed optimizations is not definite yet, and
+    will grew as the need arise and the optimizations themselves are
+    implemented in the prototype compiler. But they will comprehend at
+    least:
+
+    <ul>
+      <li>Inter-function tail-call optimization (tail calls are
+        transformed into jumps, so that mutually recursive functions do
+        not consume all the stack</li>
+      <li>That it will apply iteratively apply a set of syntactic
+        rewriting rules (until no rewriting rule has been applied).
+        These rules include contification ((transformation of inner
+        functions into simple <code>goto</code>s), inlining of
+        functions used once, simplification of <code>if(
+        constant)</code></li>
+      <li>That some allocations are performed or the stack (more
+      precisely: not in the heap)</li>
+    </ul>
+
+  <h2 class="down-shifted" id="and-more">And more</h2>
+
+  Module and typeclass system, type-directed name resolution, and many
+  other features are planned!
+
+  </div>
+</div>
+
+
+ 
+     </div>
+          
+
+   
+   <script src="/js/jquery.js"></script>
+   
+
+   <script src="/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+   
+   <script type="text/javascript">
+   $('.my-email').html(function(){
+	var d = "t@l-la";
+	var e = "ma";
+	var a = "t";
+	var c = "ng.org";
+	var h = 'mailto:' + e + a + d + c;
+	$(this).parent('a').attr('href', h);
+	return e + a + d + c;
+   });
+   </script>
+
+  </body>
+</html>
