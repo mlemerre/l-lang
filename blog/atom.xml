@@ -3,7 +3,7 @@
  <title>L language - blog</title>
  <link href="http://l-lang.org/blog-atom.xml" rel="self"/>
  <link href="http://l-lang.org"/>
- <updated>2013-11-24T22:16:28+01:00</updated>
+ <updated>2013-12-01T16:02:15+01:00</updated>
  <id>http://l-lang.org/</id>
  <author>
    <name>Matthieu Lemerre</name>
@@ -2853,9 +2853,8 @@ to take this idea further.
 
 &lt;i&gt;
 &lt;p&gt;
-&lt;b&gt;Update (2013/07/07)&lt;/b&gt;: I no longer use blogger; &lt;a
-href=&quot;http://l-lang.org/blog/New-website&quot;&gt;this blog post&lt;/a&gt;
-describes my new setup.
+&lt;b&gt;Update (2013/07/07)&lt;/b&gt;: I no longer use blogger; but org-mode and
+jekyll; perhaps someday I will describe my new setup.
 &lt;/p&gt;
 &lt;/i&gt;
 

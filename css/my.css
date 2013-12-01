@@ -3,34 +3,37 @@ body { padding-top:60px }
 
 /* . TODO: Add some space above the
 headers too. */
-.down-shifted { padding-top: 45px; margin-top: -45px; }
+.down-shifted { padding-top: 55px; margin-top: -55px; }
 
 /*  */
 
 .sidenav  { 
      
     text-align: right;
+    list-style: none;
 }
 
 @media (min-width: 1200px) {
     .sidenav { width: 226px; }
 }
 
-@media (min-width: 980px and max-width:1199px) {
+@media (min-width: 992px and max-width:1199px) {
     .sidenav { width: 186px; }
 }
 
-@media (min-width: 768px) and (max-width: 979px) {
-    .sidenav { width: 136px; }
-}
+/* @media (min-width: 768px) and (max-width: 979px) { */
+/*     .sidenav { width: 136px; } */
+/* } */
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     
     .sidenav { text-align:left; width: 100%; }
 }
 
-.sidenav hr { margin-top: 0; 
-              margin-bottom: 0;
+.sidenav hr { margin-top: 4px;
+              margin-bottom: 4px;
+              color: #aaaaaa;
+              border-color: #aaaaaa;
             }
 
 /*  */
@@ -64,6 +67,13 @@ pre {
     white-space: pre-wrap;      /* css-3 */
 }
 
+.ocamlweb-src code {
+    background-color: transparent;
+    color: black;
+    font-size: 100%;
+    padding: 0px 0px 0px 0px;
+ }
+
 /*  */
 
 /*  */
@@ -93,6 +103,8 @@ pre {
                               -o-transition: 0.4s;
 
  }
+
+.css-treeview input + label:hover { color: red; }
 
 .css-treeview input:checked + label { transform: rotate(90deg);
                                       -moz-transform: rotate(90deg);
@@ -183,7 +195,10 @@ a[class~="disabled"] { opacity: 0.5; }
 .social-ico-e_mail {
   background-image: url("/img/e_mail.ico"); }
 
+.social-ico-paypal {
+  background-image: url("http://paypal.com/favicon.ico"); }
+
 .social-ico-flattr {
   background-image: url("https://flattr.com/_img/icons/flattr_logo_16.png"); }
 
-.hero-unit { border: solid 1px gray; }
+.jumbotron { border: solid 1px gray; }
