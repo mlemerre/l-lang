@@ -202,3 +202,27 @@ a[class~="disabled"] { opacity: 0.5; }
   background-image: url("https://flattr.com/_img/icons/flattr_logo_16.png"); }
 
 .jumbotron { border: solid 1px gray; }
+
+
+.carousel-no-transition .carousel-control {
+    background-image: none !important; /* remove background gradients on controls */
+    color: black;
+}
+
+.carousel-no-transition .carousel-control.left {
+    left: -30px;
+}
+
+.carousel-no-transition .carousel-control.right {
+    right: -30px;
+}
+
+.carousel-no-transition .carousel-inner .item img {
+    border: 1px solid;
+}
+
+.carousel-no-transition .carousel-caption {
+    position:static;
+    color: black;
+    max-width:600px;
+}

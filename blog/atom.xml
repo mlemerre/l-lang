@@ -3,13 +3,307 @@
  <title>L language - blog</title>
  <link href="http://l-lang.org/blog-atom.xml" rel="self"/>
  <link href="http://l-lang.org"/>
- <updated>2013-12-01T16:02:15+01:00</updated>
+ <updated>2014-01-03T18:25:53+01:00</updated>
  <id>http://l-lang.org/</id>
  <author>
    <name>Matthieu Lemerre</name>
    <email>contact @@@ l-lang.org</email>
  </author>
 
+ 
+ <entry>
+   <title>TDOP / Pratt parser in pictures</title>
+   <link href="http://l-lang.org/blog/TDOP---Pratt-parser-in-pictures"/>
+   <updated>2014-01-03T00:00:00+01:00</updated>
+   <id>http://l-lang.org/blog/TDOP---Pratt-parser-in-pictures</id>
+   <content type="html">&lt;div class=&quot;figure&quot;&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+The L parser has been cleaned up and is now commited on &lt;a href=&quot;http://github.com/lemerre/l-lang&quot;&gt;github&lt;/a&gt;. As
+always, it is written in a literate programming style, and you can
+have a look at the generated documents corresponding to its &lt;a href=&quot;/documentation/compiler_hyperbook/parser/tdop.mli&quot; alt=&quot;interface&quot;/&gt;interface&lt;/a&gt;
+and &lt;a href=&quot;/documentation/compiler_hyperbook/parser/tdop.ml&quot; alt=&quot;implementation&quot;/&gt;implementation&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+For the implementation I wrote a big diagram explaining how TDOP
+parsing works in practice. I also wrote a more interactive version of
+this diagram below for this blog post.
+&lt;/p&gt;
+
+&lt;p&gt;
+To understand this diagram, you should have a &lt;a href=&quot;/documentation/compiler_hyperbook/parser/tdop.mli&quot; alt=&quot;look at the tdop.mli
+file&quot;/&gt;look at the tdop.mli
+file&lt;/a&gt;, that defines the interface of the TDOP parser. For people in a
+hurry, here is a summary of the main points:
+&lt;/p&gt;
+&lt;ul class=&quot;org-ul&quot;&gt;
+&lt;li&gt;TDOP defines a &lt;code&gt;parse&lt;/code&gt; function that will, in our case, parse an
+expression.
+&lt;/li&gt;
+&lt;li&gt;TDOP works by associating parsing functions to tokens (and not to
+rules, as in the case in classic parsing frameworks such as
+bison/yacc, ANTR, or PEGs).
+&lt;/li&gt;
+&lt;li&gt;The parsing function called depend on the position of the token:
+tokens at the beginning of an expression are in &quot;prefix&quot; position,
+others are in &quot;infix&quot; position. This allows to handle things like
+unary minus without resorting to lexing hacks.
+&lt;/li&gt;
+&lt;li&gt;Tokens are given two priorities: the left binding power and the
+right binding power. If a string has a form &lt;code&gt;aEb&lt;/code&gt;, where &lt;code&gt;a&lt;/code&gt; and &lt;code&gt;b&lt;/code&gt;
+are tokens and &lt;code&gt;E&lt;/code&gt; is an expression, then the right binding power of
+&lt;code&gt;a&lt;/code&gt; is compared to the left binding power of &lt;code&gt;b&lt;/code&gt;. &lt;code&gt;E&lt;/code&gt; is associated
+with the the token with the highest binding power.
+
+&lt;p&gt;
+This scheme is more powerful than classical operator precedence, and
+in particular allows to deal with associativity.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;The left binding power of a token is retrieved through a mapping
+table. The right binding power is given by the parsing function
+associated to a token as an argument to the &lt;code&gt;parse&lt;/code&gt; function.
+&lt;/li&gt;
+&lt;li&gt;The tdop.mli file of the L compiler allows to deal with separation
+(i.e. spacing) between tokens, but I will not speak about them in
+this post.
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+The following diagram will explain both how the parser works, and how
+it is used to parse a simple mathematical expression.
+&lt;/p&gt;
+
+&lt;div class=&quot;carousel-no-transition&quot;&gt;
+&lt;div id=&quot;my-carousel&quot; class=&quot;carousel&quot; data-ride=&quot;carousel&quot; data-interval=&quot;false&quot;
+style=&quot;width: 712px; margin: 0 auto&quot;&gt;
+
+  &lt;!-- Wrapper for slides --&gt;
+  &lt;div class=&quot;carousel-inner&quot;&gt;
+    &lt;div class=&quot;item active&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-0.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         The first call to the &lt;code&gt;parse&lt;/code&gt; function has a base right binding power of 0.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-1.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          The first token encountered by &lt;code&gt;parse&lt;/code&gt; is, by definition, 
+          in prefix position. The associated parsing function just asks &lt;code&gt;parse&lt;/code&gt; for another
+          expression, with a high priority (3).
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-2.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         So &lt;code&gt;parse&lt;/code&gt; is called with a right binding power of 3.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-3.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         &lt;code&gt;parse&lt;/code&gt; finds &quot;a&quot; in prefix position.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-4.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+        &quot;a&quot; is a terminal symbol, with no further parsing action other than returning &quot;a&quot; as a parse tree.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-5.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          &lt;code&gt;parse&lt;/code&gt; finds &quot;+&quot; in infix position. However, the left binding power of &quot;+&quot; is 1,
+          which is smaller than 3, the right binding power of that invocation of parse. So &quot;+&quot; is not 
+          part of the expression, and &lt;code&gt;parse&lt;/code&gt; returns.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-6.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          The parse function associated with &quot;-&quot; changes the &quot;a&quot; parsetree, and returns &quot;-a&quot;.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-7.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          &lt;code&gt;parse&lt;/code&gt; finds &quot;+&quot; in infix position. As the right binding power of that invocation
+          of parse is 0, and the left binding power of &quot;+&quot; is 1, &quot;+&quot; is part of the expression.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-8.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          The parsing function associated with infix &quot;+&quot; is called with the result of the parse so far (&quot;-a&quot;).
+          This function just asks &lt;code&gt;parse&lt;/code&gt;for another expression, with a priority of 1.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-9.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         So &lt;code&gt;parse&lt;/code&gt; is called with a right binding power of 1.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-10.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+        &lt;code&gt;parse&lt;/code&gt; finds &quot;b&quot; in prefix position. &quot;b&quot; is a terminal symbol, 
+        with no further parsing action other than returning &quot;b&quot; as a parse tree.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-11.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         &lt;code&gt;parse&lt;/code&gt; finds &quot;*&quot; in infix position. As the right binding power of that invocation
+          of parse is 1, and the left binding power of &quot;*&quot; is 2, &quot;*&quot; is part of the expression. The 
+          use of left and right priority thus allowed to express that &quot;*&quot; binds stronger than &quot;+&quot;.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-12.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          The parsing function associated with infix &quot;*&quot; is called with the result of the parse so far (&quot;b&quot;).
+          This function just asks &lt;code&gt;parse&lt;/code&gt;for another expression, with a priority of 2.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-13.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+       So &lt;code&gt;parse&lt;/code&gt; is called with a right binding power of 2.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-14.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+        &lt;code&gt;parse&lt;/code&gt; finds &quot;c&quot; in prefix position. &quot;c&quot; is a terminal symbol,
+         with no further parsing action other than returning &quot;c&quot; as a parse tree.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-15.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         &lt;code&gt;parse&lt;/code&gt; finds &quot;+&quot; in infix position. However, the left binding power of &quot;+&quot; is 1,
+          which is smaller than 2, the right binding power of that invocation of parse. So &quot;+&quot; is not 
+          part of the expression, and &lt;code&gt;parse&lt;/code&gt; returns.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-16.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          The parsing function associated to &quot;*&quot; combines the parse tree, received as an argument (&quot;b&quot;) 
+          with the parsetree just returned &quot;c&quot; and returns the parsetree &quot;b*c&quot;. Thus the parse functions 
+          associated with tokens are responsible for implementing semantic actions.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-17.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         &lt;code&gt;parse&lt;/code&gt; finds &quot;+&quot; in infix position. However, the left binding power of &quot;+&quot; is 1,
+          which is not greater than 1, the right binding power of that invocation of parse. So &quot;+&quot; is not 
+          part of the expression, and &lt;code&gt;parse&lt;/code&gt; returns. Tokens that have their left binding power 
+          and right binding power equals are thus left-associative; to obtain right-associativity, the 
+          right binding power should have been set to the &quot;left binding power minus 1&quot; (1-1 = 0 for the &quot;+&quot; token).
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-18.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+        The parsing function associated to &quot;+&quot; combines &quot;-a&quot; with &quot;b*c&quot; to return the parse tree &quot;(-a)+(b*c)&quot;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-19.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          &lt;code&gt;parse&lt;/code&gt; finds &quot;+&quot; in infix position. As the right binding power of that invocation
+          of parse is 0, and the left binding power of &quot;+&quot; is 1, &quot;+&quot; is part of the expression
+         (but in a left-associative way).
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-20.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          The end is similar to what was already seen: the parsing function associated to &quot;+&quot; calls &lt;code&gt;parse&lt;/code&gt;...
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-21.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          which finds the terminal symbol &quot;d&quot;...
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-22.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          which is returned as a parse tree ...
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-23.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          Here, &lt;code&gt;parse&lt;/code&gt; finds the symbol &quot;end-of-file&quot; in infix position,
+          which has a very low left binding power of 0, and thus cannot be part of any expression.
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-24.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+          The &quot;d&quot; parse tree is comined with &quot;(-a) + (b*c)&quot;...
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;
+      &lt;img src=&quot;/img/tdop_example-25.png&quot; alt=&quot;Anim 0&quot;&gt;
+      &lt;div class=&quot;carousel-caption&quot;&gt;
+         &lt;code&gt;parse&lt;/code&gt; finds &quot;end-of-file&quot; again, and returns the expression completely parsed.
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Controls --&gt;
+  &lt;a class=&quot;left carousel-control&quot; href=&quot;#my-carousel&quot; data-slide=&quot;prev&quot;&gt;
+    &lt;span class=&quot;glyphicon glyphicon-chevron-left&quot;&gt;&lt;/span&gt;
+  &lt;/a&gt;
+  &lt;a class=&quot;right carousel-control&quot; href=&quot;#my-carousel&quot; data-slide=&quot;next&quot;&gt;
+    &lt;span class=&quot;glyphicon glyphicon-chevron-right&quot;&gt;&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+This explanation is probably a bit short if you never encountered a
+TDOP parser before, so I really encourage you to &lt;a href=&quot;/documentation/compiler_hyperbook/parser/tdop.mli&quot; alt=&quot;read tdop.mli&quot;/&gt;read tdop.mli&lt;/a&gt;, see
+&lt;a href=&quot;/documentation/compiler_hyperbook/parser/expression.ml&quot; alt=&quot;how&quot;/&gt;how&lt;/a&gt; &lt;a href=&quot;/documentation/compiler_hyperbook/parser/definition.ml&quot; alt=&quot;it's&quot;/&gt;it's&lt;/a&gt; &lt;a href=&quot;/documentation/compiler_hyperbook/parser/path.ml&quot; alt=&quot;used&quot;/&gt;used&lt;/a&gt; in the L parser, or have a look at &lt;a href=&quot;http://javascript.crockford.com/tdop/tdop.html&quot;&gt;other&lt;/a&gt; &lt;a href=&quot;http://journal.stuffwithstuff.com/2011/02/13/extending-syntax-from-within-a-language/&quot;&gt;nice&lt;/a&gt;
+&lt;a href=&quot;http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing&quot;&gt;presentations&lt;/a&gt; of &lt;a href=&quot;http://effbot.org/zone/simple-top-down-parsing.htm&quot;&gt;TDOP&lt;/a&gt; on the internet (or of their implementation in
+other languages than OCaml).
+&lt;/p&gt;
+
+&lt;p&gt;
+I found that TDOP parsers were easy to implement, easy to use, and in
+particular match well the thought process. I believe that human beings
+distinguish &quot;-&quot; by this notion of &quot;prefix&quot; versus &quot;infix&quot; position,
+for instance, and mentally parse strings using relative priority
+between infix tokens; they are not expanding parsing rules to see if
+one matches.
+&lt;/p&gt;
+
+&lt;p&gt;
+In the future, I would like to experiment with TDOP-based parser
+generation. The extension to EBNF notation that you can see in the
+documentation of the parser allows to see what it could look like.
+&lt;/p&gt;
+
+&lt;p&gt;
+A future blog article will present the syntax of the L language in
+more details.
+&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Structuring the compiler</title>

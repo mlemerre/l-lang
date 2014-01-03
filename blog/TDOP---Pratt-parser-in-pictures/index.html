@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>TDOP / Pratt parser in pictures</title>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/my.css" rel="stylesheet" media="screen">
+    <link rel="alternate" type="application/rss+xml" title="L language - blog" href="/blog/rss.xml" />
+    <link rel="alternate" type="application/atom+xml" title="L language - blog" href="/blog/atom.xml" />
+  </head>
+
+  <body>
+     
+
+
+
+
+   <div class="navbar navbar-inverse navbar-fixed-top navbar-default">
+     <div class="container">
+       <div class="navbar-header">
+         <button
+            type="button" class="navbar-toggle" data-toggle="collapse"
+            data-target="#my-navbar">
+           <span class="sr-only">Toggle navigation</span>
+           
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </button>
+         <a class="navbar-brand" href="/"><i>The</i> L <i>language</i></a>
+       </div>
+       <div id="my-navbar" class="navbar-collapse collapse">
+             <ul class="nav navbar-nav">
+               
+
+               
+               
+               
+
+               
+               <li class="dropdown">
+                 <a href="/documentation/compiler_hyperbook" class="dropdown-toggle"
+                    data-toggle="dropdown"> Documentation <b class="caret"></b> </a>
+                 <ul class="dropdown-menu list-group">
+                   <li class="dropdown-header">Introduction to L</li>
+                   <li><a href="/documentation/intro/short">A tour of L (short intro)</a></li>
+                   <li><a href="/documentation/intro/long">Descent into L (long intro)</a></li>
+                   <li role="presentation" class="divider"></li>
+                   <li class="dropdown-header">Inside the compiler</li>
+                   <li><a href="/documentation/compiler_hyperbook/compilation_passes.ml">Compiler hyperbook</a></li>
+                 </ul>
+               </li>
+
+               
+
+               <li class="dropdown">
+                 <a href="/blog" class="dropdown-toggle"
+                    data-toggle="dropdown"> Blog <b class="caret"></b> </a>
+                 <ul class="dropdown-menu">
+                   <li class="dropdown-header">Recent posts</li>
+                   
+                   <li><a href="/blog/TDOP---Pratt-parser-in-pictures">TDOP / Pratt parser in pictures</a></li>
+                   
+                   <li><a href="/blog/Structuring-the-compiler">Structuring the compiler</a></li>
+                   
+                   <li><a href="/blog/Compiling-pattern-matching">Compiling pattern matching</a></li>
+                   
+                   <li><a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)</a></li>
+                   
+                   <li><a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe</a></li>
+                   
+                   <li><a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure</a></li>
+                   
+                   <li><a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming</a></li>
+                   
+                   <li><a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild</a></li>
+                   
+                   <li><a href="/blog/A-typecast-with-many-uses">A typecast with many uses</a></li>
+                   
+                   <li><a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages</a></li>
+                   
+                   <li class="divider"></li>
+                   <li><a href="/blog">More blog entries...</a></li>
+                 </ul>
+               </li>
+
+               <li><a href="https://github.com/mlemerre/l-lang">GitHub</a></li>
+
+             </ul>
+
+             
+           </div><!--/.nav-collapse -->
+         </div>
+       </div>
+
+     <div class="container">
+     <div class="row">
+  <div class="col-md-3">
+    <ul class="sidenav">
+      <li><h4>Blog posts</h4></li>
+      <hr>
+      
+      <li>
+        <a href="/blog/TDOP---Pratt-parser-in-pictures">TDOP / Pratt parser in pictures
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Structuring-the-compiler">Structuring the compiler
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Compiling-pattern-matching">Compiling pattern matching
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-framework-for-CPS-transformation-and-a-Github-account">A framework for CPS transformation (and a Github account)
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Using-OCaml-packages-with-ocamlbuild-a-recipe">Using OCaml packages with ocamlbuild: a recipe
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-literate-union-find-data-structure">A literate union-find data structure
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/CPS-to-LLVM-SSA-conversion-in-literate-programming">CPS to LLVM SSA conversion in literate programming
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Incorporating-C-code-in-an-Ocaml-project-using-Ocamlbuild">Incorporating C code in an Ocaml project using Ocamlbuild
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/A-typecast-with-many-uses">A typecast with many uses
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/Guaranteed-optimizations-for-system-programming-languages">Guaranteed optimizations for system programming languages
+        </a>
+        <hr>
+      </li>
+      
+      <li>
+        <a href="/blog/My-first-blog-entry">My first blog entry
+        </a>
+        <hr>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="col-md-9">
+    <div class="post-title">
+      <h1>TDOP / Pratt parser in pictures</h1>
+      <i>by:</i> <b>Matthieu Lemerre</b>&nbsp;
+      <i>tags:</i> <b>l, parser, and ocaml</b>&nbsp;
+      <i>published:</i> <b>03 January 2014</b>
+    </div>
+    <div class="figure">
+<p>
+</p>
+</div>
+
+<p>
+The L parser has been cleaned up and is now commited on <a href="http://github.com/lemerre/l-lang">github</a>. As
+always, it is written in a literate programming style, and you can
+have a look at the generated documents corresponding to its <a href="/documentation/compiler_hyperbook/parser/tdop.mli" alt="interface"/>interface</a>
+and <a href="/documentation/compiler_hyperbook/parser/tdop.ml" alt="implementation"/>implementation</a>.
+</p>
+
+<p>
+For the implementation I wrote a big diagram explaining how TDOP
+parsing works in practice. I also wrote a more interactive version of
+this diagram below for this blog post.
+</p>
+
+<p>
+To understand this diagram, you should have a <a href="/documentation/compiler_hyperbook/parser/tdop.mli" alt="look at the tdop.mli
+file"/>look at the tdop.mli
+file</a>, that defines the interface of the TDOP parser. For people in a
+hurry, here is a summary of the main points:
+</p>
+<ul class="org-ul">
+<li>TDOP defines a <code>parse</code> function that will, in our case, parse an
+expression.
+</li>
+<li>TDOP works by associating parsing functions to tokens (and not to
+rules, as in the case in classic parsing frameworks such as
+bison/yacc, ANTR, or PEGs).
+</li>
+<li>The parsing function called depend on the position of the token:
+tokens at the beginning of an expression are in "prefix" position,
+others are in "infix" position. This allows to handle things like
+unary minus without resorting to lexing hacks.
+</li>
+<li>Tokens are given two priorities: the left binding power and the
+right binding power. If a string has a form <code>aEb</code>, where <code>a</code> and <code>b</code>
+are tokens and <code>E</code> is an expression, then the right binding power of
+<code>a</code> is compared to the left binding power of <code>b</code>. <code>E</code> is associated
+with the the token with the highest binding power.
+
+<p>
+This scheme is more powerful than classical operator precedence, and
+in particular allows to deal with associativity.
+</p>
+</li>
+<li>The left binding power of a token is retrieved through a mapping
+table. The right binding power is given by the parsing function
+associated to a token as an argument to the <code>parse</code> function.
+</li>
+<li>The tdop.mli file of the L compiler allows to deal with separation
+(i.e. spacing) between tokens, but I will not speak about them in
+this post.
+</li>
+</ul>
+
+<p>
+The following diagram will explain both how the parser works, and how
+it is used to parse a simple mathematical expression.
+</p>
+
+<div class="carousel-no-transition">
+<div id="my-carousel" class="carousel" data-ride="carousel" data-interval="false"
+style="width: 712px; margin: 0 auto">
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+    <div class="item active">
+      <img src="/img/tdop_example-0.png" alt="Anim 0">
+      <div class="carousel-caption">
+         The first call to the <code>parse</code> function has a base right binding power of 0.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-1.png" alt="Anim 0">
+      <div class="carousel-caption">
+          The first token encountered by <code>parse</code> is, by definition, 
+          in prefix position. The associated parsing function just asks <code>parse</code> for another
+          expression, with a high priority (3).
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-2.png" alt="Anim 0">
+      <div class="carousel-caption">
+         So <code>parse</code> is called with a right binding power of 3.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-3.png" alt="Anim 0">
+      <div class="carousel-caption">
+         <code>parse</code> finds "a" in prefix position.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-4.png" alt="Anim 0">
+      <div class="carousel-caption">
+        "a" is a terminal symbol, with no further parsing action other than returning "a" as a parse tree.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-5.png" alt="Anim 0">
+      <div class="carousel-caption">
+          <code>parse</code> finds "+" in infix position. However, the left binding power of "+" is 1,
+          which is smaller than 3, the right binding power of that invocation of parse. So "+" is not 
+          part of the expression, and <code>parse</code> returns.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-6.png" alt="Anim 0">
+      <div class="carousel-caption">
+          The parse function associated with "-" changes the "a" parsetree, and returns "-a".
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-7.png" alt="Anim 0">
+      <div class="carousel-caption">
+          <code>parse</code> finds "+" in infix position. As the right binding power of that invocation
+          of parse is 0, and the left binding power of "+" is 1, "+" is part of the expression.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-8.png" alt="Anim 0">
+      <div class="carousel-caption">
+          The parsing function associated with infix "+" is called with the result of the parse so far ("-a").
+          This function just asks <code>parse</code>for another expression, with a priority of 1.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-9.png" alt="Anim 0">
+      <div class="carousel-caption">
+         So <code>parse</code> is called with a right binding power of 1.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-10.png" alt="Anim 0">
+      <div class="carousel-caption">
+        <code>parse</code> finds "b" in prefix position. "b" is a terminal symbol, 
+        with no further parsing action other than returning "b" as a parse tree.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-11.png" alt="Anim 0">
+      <div class="carousel-caption">
+         <code>parse</code> finds "*" in infix position. As the right binding power of that invocation
+          of parse is 1, and the left binding power of "*" is 2, "*" is part of the expression. The 
+          use of left and right priority thus allowed to express that "*" binds stronger than "+".
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-12.png" alt="Anim 0">
+      <div class="carousel-caption">
+          The parsing function associated with infix "*" is called with the result of the parse so far ("b").
+          This function just asks <code>parse</code>for another expression, with a priority of 2.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-13.png" alt="Anim 0">
+      <div class="carousel-caption">
+       So <code>parse</code> is called with a right binding power of 2.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-14.png" alt="Anim 0">
+      <div class="carousel-caption">
+        <code>parse</code> finds "c" in prefix position. "c" is a terminal symbol,
+         with no further parsing action other than returning "c" as a parse tree.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-15.png" alt="Anim 0">
+      <div class="carousel-caption">
+         <code>parse</code> finds "+" in infix position. However, the left binding power of "+" is 1,
+          which is smaller than 2, the right binding power of that invocation of parse. So "+" is not 
+          part of the expression, and <code>parse</code> returns.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-16.png" alt="Anim 0">
+      <div class="carousel-caption">
+          The parsing function associated to "*" combines the parse tree, received as an argument ("b") 
+          with the parsetree just returned "c" and returns the parsetree "b*c". Thus the parse functions 
+          associated with tokens are responsible for implementing semantic actions.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-17.png" alt="Anim 0">
+      <div class="carousel-caption">
+         <code>parse</code> finds "+" in infix position. However, the left binding power of "+" is 1,
+          which is not greater than 1, the right binding power of that invocation of parse. So "+" is not 
+          part of the expression, and <code>parse</code> returns. Tokens that have their left binding power 
+          and right binding power equals are thus left-associative; to obtain right-associativity, the 
+          right binding power should have been set to the "left binding power minus 1" (1-1 = 0 for the "+" token).
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-18.png" alt="Anim 0">
+      <div class="carousel-caption">
+        The parsing function associated to "+" combines "-a" with "b*c" to return the parse tree "(-a)+(b*c)"
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-19.png" alt="Anim 0">
+      <div class="carousel-caption">
+          <code>parse</code> finds "+" in infix position. As the right binding power of that invocation
+          of parse is 0, and the left binding power of "+" is 1, "+" is part of the expression
+         (but in a left-associative way).
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-20.png" alt="Anim 0">
+      <div class="carousel-caption">
+          The end is similar to what was already seen: the parsing function associated to "+" calls <code>parse</code>...
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-21.png" alt="Anim 0">
+      <div class="carousel-caption">
+          which finds the terminal symbol "d"...
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-22.png" alt="Anim 0">
+      <div class="carousel-caption">
+          which is returned as a parse tree ...
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-23.png" alt="Anim 0">
+      <div class="carousel-caption">
+          Here, <code>parse</code> finds the symbol "end-of-file" in infix position,
+          which has a very low left binding power of 0, and thus cannot be part of any expression.
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-24.png" alt="Anim 0">
+      <div class="carousel-caption">
+          The "d" parse tree is comined with "(-a) + (b*c)"...
+      </div>
+    </div>
+    <div class="item">
+      <img src="/img/tdop_example-25.png" alt="Anim 0">
+      <div class="carousel-caption">
+         <code>parse</code> finds "end-of-file" again, and returns the expression completely parsed.
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#my-carousel" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+  </a>
+  <a class="right carousel-control" href="#my-carousel" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+  </a>
+</div>
+</div>
+
+<p>
+This explanation is probably a bit short if you never encountered a
+TDOP parser before, so I really encourage you to <a href="/documentation/compiler_hyperbook/parser/tdop.mli" alt="read tdop.mli"/>read tdop.mli</a>, see
+<a href="/documentation/compiler_hyperbook/parser/expression.ml" alt="how"/>how</a> <a href="/documentation/compiler_hyperbook/parser/definition.ml" alt="it's"/>it's</a> <a href="/documentation/compiler_hyperbook/parser/path.ml" alt="used"/>used</a> in the L parser, or have a look at <a href="http://javascript.crockford.com/tdop/tdop.html">other</a> <a href="http://journal.stuffwithstuff.com/2011/02/13/extending-syntax-from-within-a-language/">nice</a>
+<a href="http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing">presentations</a> of <a href="http://effbot.org/zone/simple-top-down-parsing.htm">TDOP</a> on the internet (or of their implementation in
+other languages than OCaml).
+</p>
+
+<p>
+I found that TDOP parsers were easy to implement, easy to use, and in
+particular match well the thought process. I believe that human beings
+distinguish "-" by this notion of "prefix" versus "infix" position,
+for instance, and mentally parse strings using relative priority
+between infix tokens; they are not expanding parsing rules to see if
+one matches.
+</p>
+
+<p>
+In the future, I would like to experiment with TDOP-based parser
+generation. The extension to EBNF notation that you can see in the
+documentation of the parser allows to see what it could look like.
+</p>
+
+<p>
+A future blog article will present the syntax of the L language in
+more details.
+</p>
+
+    <hr />
+    <div class="footer">
+
+
+
+      
+
+      <ul class="social-share">
+        <li class="social-share-item"><b>Follow:</b></li>
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-rss"
+             href="/blog/rss.xml" target="_blank">RSS</a>
+        </li>
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-rss"
+             href="/blog/atom.xml" target="_blank">Atom</a>
+        </li>
+
+        
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-twitter"
+             href="https://twitter.com/intent/follow?original_referer=http://l-lang.org/blog/TDOP---Pratt-parser-in-pictures&screen_name=l_language"
+             rel="nofollow" target="_blank">@l_language</a>
+        </li>
+      </ul>
+
+      <ul class="social-share">
+        <li class="social-share-item"><b>Contact:</b></li>
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-e_mail"
+             rel="nofollow"
+             target="_blank"><span class="my-email">matt*l-lang.org</span></a>
+        </li>
+
+        <li class="social-share-item"><b>&nbsp;&nbsp;Support:</b></li>
+
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-flattr"
+             href="https://flattr.com/submit/auto?user_id=mlemerre&title=TDOP+%2F+Pratt+parser+in+pictures&url=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures&tags=programming,l&category=software"
+             rel="nofollow" target="_blank">Flattr</a>
+        </li>
+
+        
+
+        <li class="social-share-item">
+          <form action="https://www.paypal.com/cgi-bin/webscr"
+                method="post" target="_top"
+                 >
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id"
+             value="2TFN99SEWMEHE">
+            <input type="image"
+                   src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif"
+                   border="0" name="submit" alt="PayPal - The safer,
+                                                 easier way to pay
+                                                 online!"
+                   style="vertical-align:middle"> 
+            <!-- <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="2">  -->
+
+          </form>
+        </li>
+
+        
+
+      </ul>
+
+      <ul class="social-share">
+        <li class="social-share-item"><b>Share:</b></li>
+
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-google"
+             href="http://plus.google.com/share?url=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures"
+             rel="nofollow" target="_blank">Google+</a>
+        </li>
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-twitter"
+             href="http://twitter.com/share?text=New+blog+post+on+L%3A+%22TDOP+%2F+Pratt+parser+in+pictures%22&url=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures&counturl=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures&via=l_language&related=l_language"
+             rel="nofollow" target="_blank">Twitter</a>
+        </li>
+
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-hackernews"
+             href="http://news.ycombinator.com/submitlink?u=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures"
+             rel="nofollow" target="_blank">Hacker News</a>
+        </li>
+
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-reddit"
+             href="http://www.reddit.com/submit?title=TDOP / Pratt parser in pictures&url=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures"
+             rel="nofollow" target="_blank">Reddit</a>
+        </li>
+
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-facebook"
+             href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures&t=TDOP / Pratt parser in pictures"
+             rel="nofollow" target="_blank">Facebook</a>
+        </li>
+
+        <li class="social-share-item">
+          <a class="social-share-link social-ico-e_mail"
+             href="mailto:?subject=TDOP / Pratt parser in pictures&body=http%3A%2F%2Fl-lang.org%2Fblog%2FTDOP---Pratt-parser-in-pictures"
+             rel="nofollow" target="_blank">Mail</a>
+        </li>
+
+
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+ 
+     </div>
+          
+
+   
+   <script src="/js/jquery.js"></script>
+   
+
+   <script src="/dist/js/bootstrap.min.js"></script>
+
+   
+   <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+     ga('create', 'UA-42249123-1', 'l-lang.org');
+     ga('send', 'pageview');
+   </script>
+
+   
+   <script type="text/javascript">
+   $('.my-email').html(function(){
+	var d = "t@l-la";
+	var e = "ma";
+	var a = "t";
+	var c = "ng.org";
+	var h = 'mailto:' + e + a + d + c;
+	$(this).parent('a').attr('href', h);
+	return e + a + d + c;
+   });
+   </script>
+
+  </body>
+</html>
