@@ -2339,7 +2339,7 @@ produced.
 &lt;/p&gt;
 
 &lt;p&gt;
-It turned out that writing these C stubs was not hard at all; and &lt;a href=&quot;http://caml.inria.fr/pub/docs/manual-ocaml/manual033.html&quot;&gt;the
+It turned out that writing these C stubs was not hard at all; and &lt;a href=&quot;http://caml.inria.fr/pub/docs/manual-ocaml/intfc.html&quot;&gt;the
 OCaml documentation&lt;/a&gt; for doing that is quite good. The most difficult
 part was fighting Ocamlbuild to incorporate these C stubs into the
 project.

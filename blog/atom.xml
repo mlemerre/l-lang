@@ -3,7 +3,7 @@
  <title>L language - blog</title>
  <link href="http://l-lang.org/blog-atom.xml" rel="self"/>
  <link href="http://l-lang.org"/>
- <updated>2014-01-05T00:27:21+01:00</updated>
+ <updated>2014-01-05T00:35:26+01:00</updated>
  <id>http://l-lang.org/</id>
  <author>
    <name>Matthieu Lemerre</name>
@@ -2347,7 +2347,7 @@ produced.
 &lt;/p&gt;
 
 &lt;p&gt;
-It turned out that writing these C stubs was not hard at all; and &lt;a href=&quot;http://caml.inria.fr/pub/docs/manual-ocaml/manual033.html&quot;&gt;the
+It turned out that writing these C stubs was not hard at all; and &lt;a href=&quot;http://caml.inria.fr/pub/docs/manual-ocaml/intfc.html&quot;&gt;the
 OCaml documentation&lt;/a&gt; for doing that is quite good. The most difficult
 part was fighting Ocamlbuild to incorporate these C stubs into the
 project.
