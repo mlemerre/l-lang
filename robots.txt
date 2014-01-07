@@ -1,2 +1,4 @@
 Sitemap: http://l-lang.org/sitemap.xml
+User-agent: Mediapartners-Google
+Disallow:
 
