@@ -109,8 +109,8 @@ module Safe:UNION_FIND;;
   [module Test = struct
   type description = string
   type element = test
-  let get_link t = t.z
-  let set_link t z = t.z <- z
+  let get t = t.z
+  let set t z = t.z <- z
   end]
 
   [module A = Union_find.Safe.Make(Test)]
