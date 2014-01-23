@@ -23,3 +23,21 @@ let rec last = function
   | [] -> failwith "List.last called on empty list"
   | [x] -> x
   | a::b -> last b
+
+let rec subst f = function
+  | [] as l -> l (* Note: reusing [l] is not necessary here
+                    because [] is uniquely represented. *)
+  | a::b as l ->
+    let new_b = subst f b in
+    let new_a = f a in
+    if a == new_a && b == new_b then l
+    else new_a::new_b
+
+let rec map_filter f = function
+  | [] -> []
+  | a::b ->
+    let mapb = map_filter f b in
+    (match f a with
+    | None -> mapb
+    | Some(x) -> x::mapb)
+;;

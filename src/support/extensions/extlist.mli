@@ -19,3 +19,11 @@ val foldk : ('a -> 'b -> ('a -> 'c) ->'c) -> 'a -> 'b list -> ('a -> 'c) -> 'c
 
 (* [first l] returns the last element in l. l must be non-empty. *)
 val last: 'a list -> 'a
+
+(* Map on a list, but preserve sharing as much as possible (if the
+   provided function returns the same argument for a suffix of the
+   list, reuse that suffix. *)
+val subst: ('a -> 'a) -> 'a list -> 'a list
+
+(* Perform a map and filter at the same time. *)
+val map_filter: ('a -> 'b option) -> 'a list  -> 'b list;;
