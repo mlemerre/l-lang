@@ -161,7 +161,7 @@ let parse_module_implementation stream =
     done;
     let rbrace = Token.Stream.next stream in
     expect rbrace Kwd.rbrace ~before_max:Sep.Strong;
-    let modul = P.delimited_list lbrace !defs rbrace in
+    let modul = P.delimited_list lbrace (List.rev !defs) rbrace in
     modul
 ;;
 
