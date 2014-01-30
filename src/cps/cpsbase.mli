@@ -20,21 +20,23 @@ open Cpsbasepack
 module CaseMap:Extensions.Map.S with type key = int and type 'a t = 'a Cpsdef.case_map;;
 
 include Cpsast.S with type expression = Cpsdef.expression
-                 and type expression_ = Cpsdef.expression_
+                 and type var = Cpsdef.var
+                 and type occur = Cpsdef.occur
+                 and type cont_var = Cpsdef.cont_var
+                 and type cont_occur = Cpsdef.cont_occur
 		 and type 'a case_map = 'a Cpsdef.case_map
-                 and type primitive = Cpsdef.primitive
-                 and type value = Cpsdef.value
                  and type function_type = Cpsdef.function_type
+                 and type value = Cpsdef.value
+                 and type primitive = Cpsdef.primitive
+                 and type expression_ = Cpsdef.expression_
                  and type visibility = Cpsdef.visibility
                  and type definition_type = Cpsdef.definition_type
                  and type definition = Cpsdef.definition
                  and type definitions = Cpsdef.definitions
                  and type enclosing = Cpsdef.enclosing
-                 and type var = Cpsdef.var
-                 and type occur = Cpsdef.occur
-                 and type cont_var = Cpsdef.cont_var
-                 and type cont_occur = Cpsdef.cont_occur
+
 ;;
+(* include (module type of Cpsdef:Cpsast.S);; *)
 
 (*s In addition to the base abstract syntax tree, the representation
   of CPS expressions provide additional "links" between entities: it
