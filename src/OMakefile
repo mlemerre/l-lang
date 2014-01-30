@@ -21,8 +21,12 @@ OCAML_LIBS[] = support/support
 
 OCAMLINCLUDES +=  . cps support llvm ../next/ast
 
-OCAMLPACKS = llvm-3_0 llvm-3_0.bitreader llvm-3_0.executionengine llvm-3_0.analysis llvm-3_0.bitwriter
+# Note: one may have to change ocamlfind.conf to add the library with
+# the META files for LLVM. Works with llvm-ocaml 3.5
+OCAMLPACKS = llvm llvm.bitreader llvm.executionengine llvm.analysis llvm.bitwriter
 
+#OCAML_LIB_FLAGS[] = -cclib -lllvm
+#OCAML_OTHER_LIBS[] = llvm
 OCamlProgram(main, $(FILES))
 
 all: main.run

@@ -29,8 +29,31 @@ OMakeFlags(-Wdeclare)
 
 # The default OMake configuration for Ocaml fails on warning (-warn-error A)
 # we change that.
+
+# The METAS files for ocamlfind are lacking in debian, so we hack
+# around using this. getting the proper link flags to link to LLVM is
+# a nightmare; the llvm-config tool helps somewhat.
 OCAMLFLAGS=
 OCAMLFLAGS += -annot
+OCAML_LINK_FLAGS += -cclib -lllvm
+OCAML_LINK_FLAGS += -cclib -lllvm_bitreader -cclib -lLLVMBitReader
+#OCAMLFLAGS += -cclib -lllvm_bitwriter
+OCAML_LINK_FLAGS += -cclib -lllvm_analysis -cclib -lLLVMAnalysis -cclib -lLLVMTarget
+OCAML_LINK_FLAGS += -cclib -lllvm_executionengine -cclib -lLLVMX86Disassembler\
+	      -cclib -lLLVMX86AsmParser -cclib  -lLLVMX86CodeGen\
+	      -cclib -lLLVMSelectionDAG -cclib -lLLVMAsmPrinter\
+	      -cclib -lLLVMMCParser -cclib  -lLLVMX86Desc -cclib -lLLVMX86Info\
+              -cclib -lLLVMX86AsmPrinter -cclib -lLLVMX86Utils -cclib -lLLVMJIT\
+	      -cclib -lLLVMExecutionEngine -cclib -lLLVMCodeGen\
+	      -cclib -lLLVMScalarOpts -cclib -lLLVMInstCombine\
+	      -cclib -lLLVMTransformUtils -cclib -lLLVMipa -cclib -lLLVMAnalysis
+OCAML_LINK_FLAGS += -cclib -lllvm_target -cclib -lLLVMTarget\
+		    -cclib -lLLVMMC -cclib -lLLVMObject
+OCAML_LINK_FLAGS += -cclib -lLLVMInterpreter
+OCAML_LINK_FLAGS += -cclib -lLLVMCore -cclib -lLLVMSupport
+OCAML_LINK_FLAGS += -cclib -lffi
+
+#ocamlfind ocamlc -package llvm,llvm.bitreader,llvm.executionengine,llvm.analysis,llvm.bitwriter -annot -cc g++ -g -I . -I . -I cps -I support -I llvm -I ../next/ast -custom -o main.run support/support.cma constant.cmo tokenpack.cmo token.cmo parserpack.cmo parser.cmo ../next/ast/ast.cmo cps/cpsbasepack.cmo cps/cpsbase.cmo cps/cpsfree.cmo cps/cpsconvertclosures.cmo cps/cpstransformpack.cmo cps/cpstransform.cmo llvm/llvmenv.cmo llvm/cpsllvm.cmo llvm/llvmexec.cmo compilation_passes.cmo pretty_print.cmo main.cmo -linkpkg -cclib -lllvm -cclib -lllvm_bitreader -cclib -lllvm_executionengine -cclib -lLLVMExecutionEngine -cclib -lLLVMJIT -cclib -lLLVMCodeGen -cclib -lLLVMX86CodeGen -cclib -lllvm_target -cclib -lLLVMTarget -cclib -lLLVMCore -cclib -lLLVMSupport 
 
 # General configuration.
 NATIVE_ENABLED = false
