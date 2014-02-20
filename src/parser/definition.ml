@@ -169,13 +169,13 @@ let parse_module_implementation stream =
    \item $\call{module\_expr} ::=\\
    \alt \call{module\_implementation}\\
    \alt \call{data}\\
-   \alt \call{path\_to\_module\_name\_allow\_type\_constr}$
+   \alt \call{path\_allow\_type\_constr}$
    \end{grammar} *)
 let parse_module_expr stream =
   match (Token.Stream.peek stream) with
   | t when t.token = Kwd.lbrace -> parse_module_implementation stream
   | t when t.token = Kwd.data -> parse_data stream
-  | _ -> Path.parse_path_to_module_name_allow_type_constr stream
+  | _ -> Path.parse_path_allow_type_constr stream
 ;;
 
 (* \begin{grammar}

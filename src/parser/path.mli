@@ -1,7 +1,7 @@
 (* Copyright 2013 Matthieu Lemerre *)
 
 (* Parse a module with its path.  *)
-val parse_path_to_module_name_allow_type_constr:
+val parse_path_allow_type_constr:
   Token.Stream.t -> Parsetree.term
 
 (* An alias for the above, used when we use the module name to access

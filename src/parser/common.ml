@@ -90,6 +90,13 @@ let expect_strong_separation stream =
   | _ -> failwith "strong separation expected"
 ;;
 
+let expect_stuck_separation stream =
+  match (Token.Stream.peek stream).separation_before with
+  | Token.Separation.Stuck -> ()
+  | _ -> failwith "The token should be stuck"
+;;
+
+
 (* The difference between assert and check is that checks could be
    removed (it detects a compiler error, not a user one). *)
 let check (ti:Token.With_info.t) (t:Token.token) = 

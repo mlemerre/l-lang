@@ -123,6 +123,7 @@ open Token.With_info;;
 (****************************************************************)
 (* Module names and paths. *)
 
+(* Difference with path: -> and () are allowed. *)
 let r_parse_type = ref (fun _ -> assert false);;
 
 (* \begin{grammar}
@@ -144,82 +145,114 @@ let parse_module_args stream left =
 ;;
 
 (* \begin{grammar}
-   \item $\call{module\_name} ::= \\
+   \item $\call{path} ::= \\
    \alt \call{module\_id} \\
-   \alt \call{module\_id}\call{module\_args}$
+   \alt \call{path}\tok{/}^\nleftrightarrow\call{module\_id} \\
+   \alt \call{path}\call{module\_args} $
    \end{grammar} *)
-let parse_module_name stream =
-  let module_id = Token.Stream.next stream in
-  expect_id module_id;
-  let following = Token.Stream.peek stream in
-  let modul = P.single module_id in
-  if following.separation_before = Sep.Stuck
-  && following.token = Kwd.lt
-  then parse_module_args stream modul
-  else modul
+
+(* Note: [parse_path] is parsed quite differently from
+   [parse_path_to]:
+
+   \begin{itemize}
+   \item In [parse_path_to], we need to detect whether we are on a path;
+     there is a trailing "/" introducing the following element (which
+     will be an id)
+
+   \item In [parse_path], we know that we are on a path, and there is no
+     trailing "/".
+   \end{itemize}
+
+   Thus we have two different functions for parsing these two, even if
+   the grammar is quite similar.
+
+   Extending [Type_tdop] (below) to handle [parse_path] does not work,
+   because we want to forbid things like A/(B,C) and (A,B)/C ( (A,B)
+   is a valid type, but not a valid path). Note that we could have
+   detected there erroneous constructs at a later phase. *)
+let parse_path stream =
+  let rec loop leftb =
+    let module_id = Token.Stream.next stream in
+    let is_upper id =
+      let id = Token.Ident.to_string id in
+      let c = String.get id 0 in
+      let code = Char.code c in
+      (Char.code 'A') <= code && code <= (Char.code 'Z')
+    in
+    let is_upper_id = function
+      | Token.Ident(id) when is_upper id -> true
+      | _ -> false
+    in
+    if not (is_upper_id module_id.token)
+    then Log.Parser.raise_user_error ~loc:module_id.location "expected upper id";
+    let left = leftb (P.single module_id) in
+    let left =
+      let rec loop_on_calls left =
+        let following = Token.Stream.peek stream in
+        if following.separation_before = Sep.Stuck && (following.token = Kwd.lt)
+        then parse_module_args stream left
+        else left  in
+      loop_on_calls left in
+    let following = Token.Stream.peek stream in
+    if following.token = Kwd.slash then
+      (expect_stuck_separation stream;
+       Token.Stream.junk stream;
+       let leftb x = P.infix_binary_op (leftb left) following x in
+       loop leftb)
+    else left in
+  loop (fun x -> x)
 ;;
 
-(* \begin{grammar}
-   \item $\call{dir} ::= (\call{module\_name} \tok{/}^\nleftrightarrow)*$
-   \item $\call{path\_to\_module\_name} ::=  \call{dir}\call{module\_name}$
-   \end{grammar}
 
-   Note: "/" can be seen as a low-priority path operator.
-*)
-let rec parse_path_to_module_name stream =
-  let mn = parse_module_name stream in
-  let maybe_slash = Token.Stream.peek stream in
-  if maybe_slash.token = Kwd.slash
-  && maybe_slash.separation_before = Sep.Stuck
-  then (Token.Stream.junk stream;
-        expect maybe_slash Kwd.slash ~after_max:Sep.Stuck;
-        let rest = parse_path_to_module_name stream in
-        P.infix_binary_op mn maybe_slash rest)
-  else mn
-;;
 
-(* Attempts to detect if there is a path; when the path is over, call
-   parsefun. It cannot be used to parse paths to module names: this
-   wuold parse [module_name]s greedily, and then fail because a
-   trailing "/" would be required. This explains why we have a
-   separated [parse_path_to_module_name] function. *)
-let rec parse_path_to parsefun stream =
-  let module_id = Token.Stream.peek stream in
-  let following = (Token.Stream.peek_nth stream 1) in
-  let is_upper id =
-    let id = Token.Ident.to_string id in
-    let c = String.get id 0 in
-    let code = Char.code c in
-    (Char.code 'A') <= code && code <= (Char.code 'Z')
-  in
-  let is_upper_id = function
-    | Token.Ident(id) when is_upper id -> true
-    | _ -> false
-  in
-  if is_upper_id module_id.token
-    && following.separation_before = Sep.Stuck
-    && (following.token = Kwd.slash || following.token = Kwd.lt)
-  then
-    let dir = parse_module_name stream in
-    let slash = Token.Stream.next stream in
-    expect slash Kwd.slash ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
-    let rest = parse_path_to parsefun stream in
-    P.infix_binary_op dir slash rest
-  else
-    parsefun stream
+let parse_path_to parsefun stream =
+  let rec loop leftb =
+    let module_id = Token.Stream.peek stream in
+    let following = (Token.Stream.peek_nth stream 1) in
+    let is_upper id =
+      let id = Token.Ident.to_string id in
+      let c = String.get id 0 in
+      let code = Char.code c in
+      (Char.code 'A') <= code && code <= (Char.code 'Z')
+    in
+    let is_upper_id = function
+      | Token.Ident(id) when is_upper id -> true
+      | _ -> false
+    in
+    if not (is_upper_id module_id.token
+            && following.separation_before = Sep.Stuck
+              && (following.token = Kwd.slash || following.token = Kwd.lt))
+    then leftb (parsefun stream)
+    else
+      (* We got a path! *)
+      (  Token.Stream.junk stream;
+         let left = P.single module_id in
+         if following.token = Kwd.slash then
+           (Token.Stream.junk stream;
+            let leftb x = P.infix_binary_op (leftb left) following x in
+            loop leftb)
+         else
+           (assert (following.token = Kwd.lt);
+            let left = leftb left in
+            let left = parse_module_args stream left in
+            let slash = (Token.Stream.next stream) in
+            (* TODO: Parse args in a loop; we should allow P<X><X> *)
+            expect slash  Kwd.slash ~before_max:Sep.Stuck ~after_max:Sep.Stuck;
+            loop (fun x -> P.infix_binary_op left slash x)))
+  in loop (fun x -> x)
 ;;
 
 (****************************************************************)
-(* Types and module names with types and type constrs. *)
+(* Types are paths with two added constructs, [(...)] and [->]. *)
 
 (*\begin{grammar}
-  \item $\call{type} ::= \call{path\_to\_module\_name}$
+  \item $\call{type} ::= \call{path}$
   \end{grammar} *)
 module Base_type = struct
   type t = P.term
   let int_handler n _ =
-    Log.Parser.raise_compiler_error "Found an int while parsing a module name"
-  let ident_handler _id stream = parse_path_to_module_name stream
+    Log.Parser.raise_compiler_error "Found an int while parsing a type"
+  let ident_handler _id stream = parse_path stream
 end;;
 
 module Type_tdop =
@@ -249,11 +282,11 @@ Type_tdop.define_infix_right_associative
 ;;
 
 (*\begin{grammar}
-  \item $\call{path\_to\_module\_name\_allow\_type\_constr} ::= \call{type}$
+  \item $\call{path\_allow\_type\_constr} ::= \call{type}$
   \end{grammar}
 
   $\call{type}$ should be used when what is parsed really denotes a
   type; when a module is needed (which may not contain a type), the
   $\call{path\_to\_module\_name\_allow\_type\_constr}$ is more suited. *)
-let parse_path_to_module_name_allow_type_constr stream =
+let parse_path_allow_type_constr stream =
   Type_tdop.parse stream 0;;
