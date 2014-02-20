@@ -35,4 +35,12 @@ let iter_and_copy f stream =
   | None -> None
   | Some(a) as p -> f a; Stream.junk stream; p)
 
+let rec fold f acc stream =
+  match Stream.peek stream with
+  | None -> acc
+  | Some x -> Stream.junk stream; fold f (f acc x) stream
+;;
+
+let to_list stream = List.rev (fold (fun a b -> b::a) [] stream);;
+
 let sink stream = Stream.iter (fun _ -> ()) stream;;

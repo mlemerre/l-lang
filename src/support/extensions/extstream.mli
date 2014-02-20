@@ -15,4 +15,7 @@ val stateless_transformer : ('a -> 'b list) -> 'a Stream.t -> 'b Stream.t
    elements in [input_stream]. *)
 val iter_and_copy : ('a -> unit) -> 'a Stream.t -> 'a Stream.t
 
+val fold: ('a -> 'b -> 'a) -> 'a -> 'b Stream.t -> 'a
+val to_list: 'a Stream.t -> 'a list
+
 val sink: 'a Stream.t -> unit
