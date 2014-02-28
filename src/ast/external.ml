@@ -86,7 +86,7 @@ module Module = struct
   type datatype = variant list
 
   type definition = 
-  | Def_module of Id.modul * module_expr
+  | Def_module of Id.modul * module_expression
   | Def_value of Id.var * Expression.t
   | Expression of Expression.t
   | Declare of Id.var * Path.typ
@@ -128,10 +128,10 @@ module Module = struct
      }
      and f = { 12 -> 0; n -> X.g(n) + 1 } *)
 
-  and module_expr =
+  and module_expression =
   | Defined of module_statement list
   | Alias of Path.path              
-  | Functor of Id.modul list * module_expr 
+  | Functor of Id.modul list * module_expression
   | Data of datatype
 
 (* [Defined] creates a new module. For instance,
