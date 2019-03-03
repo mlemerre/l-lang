@@ -1,18 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- saved from url=(0029)http://yyyyyyyyyyyyyyyyy.com/ -->
+<!-- saved from url=(0029)http://outillage.com/ -->
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head profile="http://gmpg.org/xfn/11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 
 <title> 17个为什么</title>
 
 <link rel="stylesheet" href="./renaud_files/style.css" type="text/css" media="screen">
-<link rel="pingback" href="http://yyyyyyyyyyyyyyyyy.com/xmlrpc.php">
+<link rel="pingback" href="http://outillage.com/xmlrpc.php">
 
 <link rel="dns-prefetch" href="http://s.w.org/">
-<link rel="alternate" type="application/rss+xml" title="17个为什么 » Feed" href="http://yyyyyyyyyyyyyyyyy.com/feed">
-<link rel="alternate" type="application/rss+xml" title="17个为什么 » Comments Feed" href="http://yyyyyyyyyyyyyyyyy.com/comments/feed">
+<link rel="alternate" type="application/rss+xml" title="17个为什么 » Feed" href="http://outillage.com/feed">
+<link rel="alternate" type="application/rss+xml" title="17个为什么 » Comments Feed" href="http://outillage.com/comments/feed">
 		<script type="text/javascript">
-			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.2.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.2.1\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/yyyyyyyyyyyyyyyyy.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.7.12"}};
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.2.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.2.1\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/outillage.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.7.12"}};
 			!function(a,b,c){function d(a){var b,c,d,e,f=String.fromCharCode;if(!k||!k.fillText)return!1;switch(k.clearRect(0,0,j.width,j.height),k.textBaseline="top",k.font="600 32px Arial",a){case"flag":return k.fillText(f(55356,56826,55356,56819),0,0),!(j.toDataURL().length<3e3)&&(k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57331,65039,8205,55356,57096),0,0),b=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57331,55356,57096),0,0),c=j.toDataURL(),b!==c);case"emoji4":return k.fillText(f(55357,56425,55356,57341,8205,55357,56507),0,0),d=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55357,56425,55356,57341,55357,56507),0,0),e=j.toDataURL(),d!==e}return!1}function e(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i,j=b.createElement("canvas"),k=j.getContext&&j.getContext("2d");for(i=Array("flag","emoji4"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
 		</script><script src="./renaud_files/wp-emoji-release.min.js.téléchargement" type="text/javascript" defer=""></script>
 		<style type="text/css">
@@ -29,14 +29,14 @@ img.emoji {
 	padding: 0 !important;
 }
 </style>
-<link rel="https://api.w.org/" href="http://yyyyyyyyyyyyyyyyy.com/wp-json/">
-<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://yyyyyyyyyyyyyyyyy.com/xmlrpc.php?rsd">
-<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://yyyyyyyyyyyyyyyyy.com/wp-includes/wlwmanifest.xml"> 
+<link rel="https://api.w.org/" href="http://outillage.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://outillage.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://outillage.com/wp-includes/wlwmanifest.xml"> 
 <meta name="generator" content="WordPress 4.7.12">
 		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
 		<style type="text/css">
 #header{
-	background: url(http://yyyyyyyyyyyyyyyyy.com/wp-content/uploads/2014/03/header221.png) no-repeat;
+	background: url(http://outillage.com/wp-content/uploads/2014/03/header221.png) no-repeat;
 }
 #header h1 a, #desc {
 	color:#E5F2E9;
@@ -49,7 +49,7 @@ img.emoji {
 <body id="home" class="">
 <div id="wrap" class="clearfix">
 <div id="header">
-	<h1><a href="http://yyyyyyyyyyyyyyyyy.com/">17个为什么</a></h1>
+	<h1><a href="http://outillage.com/">17个为什么</a></h1>
 	<p id="desc">收集最有趣、最古怪、最蛋疼、最发人深思的问题</p>
 </div><div id="content">
 									<div id="post-641" class="entry entry-1 post-641 post type-post status-publish format-standard hentry category-uncategorized">
@@ -59,7 +59,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/641#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/641#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -72,7 +72,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/639#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/639#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -85,7 +85,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/636#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/636#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -98,7 +98,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/634#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/634#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -111,7 +111,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/632#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/632#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -124,7 +124,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/630#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/630#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -137,7 +137,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/628#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/628#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -150,7 +150,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/626#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/626#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -163,7 +163,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/624#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/624#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -176,7 +176,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/622#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/622#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -189,7 +189,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/620#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/620#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -202,7 +202,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/617#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/617#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -215,7 +215,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/614#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/614#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -228,7 +228,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/612#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/612#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -241,7 +241,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/610#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/610#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -254,7 +254,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/608#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/608#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -267,7 +267,7 @@ img.emoji {
 
 		
 		<div class="entrymeta">
-		<a href="http://yyyyyyyyyyyyyyyyy.com/archives/606#comments" class="commentslink">网友们都评论了些什么？</a>		
+		<a href="http://outillage.com/archives/606#comments" class="commentslink">网友们都评论了些什么？</a>		
 		</div>
 		
 	</div>
@@ -275,7 +275,7 @@ img.emoji {
 			</div>
 				<div class="navigation">
 			<div class="alignleft"></div>
-			<div class="alignright"><a href="http://yyyyyyyyyyyyyyyyy.com/page/2">下一页还有什么精彩的问题？</a></div>
+			<div class="alignright"><a href="http://outillage.com/page/2">下一页还有什么精彩的问题？</a></div>
 		</div>
 		
 		
@@ -283,12 +283,12 @@ img.emoji {
 
 
 <div id="sidebar">
-你有什么好问题吗？欢迎来信投稿：<a href="mailto:questions@yyyyyyyyyyyyyyyyy.com">questions@yyyyyyyyyyyyyyyyy.com</a>
+你有什么好问题吗？欢迎来信投稿：<a href="mailto:questions@outillage.com">questions@outillage.com</a>
 </div>
 
 
 </div>
-<div id="footer">Powered by <a href="http://wordpress.com/" rel="generator">WordPress</a> | Theme by <a href="http://ifelse.co.uk/" rel="generator">Phu Ly</a>, Revised by <a href="http://yyyyyyyyyyyyyyyyy.com/" rel="generator">yyyyyyyyyyyyyyyyy.com</a>
+<div id="footer">Powered by <a href="http://wordpress.com/" rel="generator">WordPress</a> | Theme by <a href="http://ifelse.co.uk/" rel="generator">Phu Ly</a>, Revised by <a href="http://outillage.com/" rel="generator">outillage.com</a>
 </div>
 <div style="display:none"><script src="./renaud_files/stat.php" language="JavaScript"></script><script src="./renaud_files/core.php" charset="utf-8" type="text/javascript"></script><a href="https://www.cnzz.com/stat/website.php?web_id=3219733" target="_blank" title="站长统计">站长统计</a></div>
 <script type="text/javascript" src="./renaud_files/wp-embed.min.js.téléchargement"></script>
